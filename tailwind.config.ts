@@ -70,9 +70,9 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         // Digital Twin specific colors
-        physical: "hsl(var(--physical-device))",
-        twin: "hsl(var(--digital-twin))",
-        sync: "hsl(var(--sync-active))",
+        physical: "hsl(var(--physical))",
+        twin: "hsl(var(--twin))",
+        sync: "hsl(var(--sync))",
         attack: "hsl(var(--attack-state))",
       },
       borderRadius: {

@@ -1,33 +1,61 @@
 import { PhysicalDevice, DigitalTwin, Alert, SystemMetrics } from '@/types/dashboard';
 
-// Physical Network Layer - TOP (y: 60-140)
-// True network topology with device-to-device connections
+// ============================================
+// MILITARY TOPOLOGY: Hierarchical Command Structure
+// Gateway at center-top, devices radiate in command hierarchy
+// ============================================
 
 export const militaryDevices: PhysicalDevice[] = [
   {
-    id: 'mil-001',
+    id: 'mil-gateway',
+    name: 'Secure Gateway',
+    type: 'Network Gateway',
+    deviceType: 'gateway',
+    manufacturer: 'NetSecure',
+    model: 'GW-1000',
+    firmwareVersion: '3.0.2',
+    osVersion: 'Linux 5.10',
+    location: 'Command Center',
+    owner: 'IT Division',
+    networkType: 'Fiber Optic',
+    ipAddress: '192.168.1.1',
+    macAddress: 'AA:BB:CC:DD:E1:01',
+    status: 'online',
+    signalStrength: 100,
+    latency: 2,
+    lastHeartbeat: new Date(),
+    // Central top position - command node
+    position: { x: 250, y: 70 },
+    // Gateway connects to ALL field devices (star topology from command)
+    connections: ['mil-radar', 'mil-camera', 'mil-sensor'],
+  },
+  {
+    id: 'mil-radar',
     name: 'Site Radar',
     type: 'Radar System',
+    deviceType: 'radar',
     manufacturer: 'DefenseTech',
     model: 'SR-500',
     firmwareVersion: '4.2.1',
     osVersion: 'VxWorks 7.0',
     location: 'Perimeter Zone A',
     owner: 'Military Command',
-    networkType: 'Fiber Optic',
+    networkType: '5G Private',
     ipAddress: '192.168.1.10',
     macAddress: 'AA:BB:CC:DD:E1:10',
     status: 'online',
     signalStrength: 98,
     latency: 5,
     lastHeartbeat: new Date(),
-    position: { x: 100, y: 80 },
-    connections: ['mil-002', 'mil-003'],
+    // Left subordinate position
+    position: { x: 100, y: 140 },
+    connections: ['mil-gateway', 'mil-sensor'],
   },
   {
-    id: 'mil-002',
+    id: 'mil-camera',
     name: 'Security Camera',
     type: 'Surveillance Camera',
+    deviceType: 'camera',
     manufacturer: 'SecureVision',
     model: 'SC-4K',
     firmwareVersion: '2.8.0',
@@ -41,13 +69,15 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 92,
     latency: 12,
     lastHeartbeat: new Date(),
-    position: { x: 280, y: 60 },
-    connections: ['mil-001', 'mil-004'],
+    // Right subordinate position
+    position: { x: 400, y: 140 },
+    connections: ['mil-gateway', 'mil-sensor'],
   },
   {
-    id: 'mil-003',
+    id: 'mil-sensor',
     name: 'Field Sensor',
     type: 'Environmental Sensor',
+    deviceType: 'sensor',
     manufacturer: 'SensorTech',
     model: 'FS-200',
     firmwareVersion: '1.5.3',
@@ -61,36 +91,23 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 85,
     latency: 25,
     lastHeartbeat: new Date(),
-    position: { x: 200, y: 140 },
-    connections: ['mil-001', 'mil-004'],
-  },
-  {
-    id: 'mil-004',
-    name: 'Gateway',
-    type: 'Network Gateway',
-    manufacturer: 'NetSecure',
-    model: 'GW-1000',
-    firmwareVersion: '3.0.2',
-    osVersion: 'Linux 5.10',
-    location: 'Command Center',
-    owner: 'IT Division',
-    networkType: 'Ethernet',
-    ipAddress: '192.168.1.40',
-    macAddress: 'AA:BB:CC:DD:E1:40',
-    status: 'online',
-    signalStrength: 100,
-    latency: 3,
-    lastHeartbeat: new Date(),
-    position: { x: 380, y: 120 },
-    connections: ['mil-002', 'mil-003'],
+    // Bottom center - field level
+    position: { x: 250, y: 170 },
+    connections: ['mil-radar', 'mil-camera'],
   },
 ];
 
+// ============================================
+// SMART CITY TOPOLOGY: Distributed Mesh Network
+// Decentralized many-to-many connections
+// ============================================
+
 export const smartCityDevices: PhysicalDevice[] = [
   {
-    id: 'sc-001',
+    id: 'sc-traffic',
     name: 'Traffic Controller',
     type: 'Traffic System',
+    deviceType: 'radar',
     manufacturer: 'UrbanFlow',
     model: 'TC-500',
     firmwareVersion: '3.1.0',
@@ -104,13 +121,16 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 94,
     latency: 15,
     lastHeartbeat: new Date(),
-    position: { x: 100, y: 80 },
-    connections: ['sc-002', 'sc-003'],
+    // Top-left - distributed position
+    position: { x: 120, y: 80 },
+    // Mesh: connects to multiple peers
+    connections: ['sc-light', 'sc-sensor', 'sc-gateway'],
   },
   {
-    id: 'sc-002',
-    name: 'Smart Streetlight',
+    id: 'sc-light',
+    name: 'Smart Lighting Node',
     type: 'Lighting Controller',
+    deviceType: 'camera',
     manufacturer: 'LumiCity',
     model: 'SL-300',
     firmwareVersion: '2.0.5',
@@ -124,13 +144,15 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 78,
     latency: 45,
     lastHeartbeat: new Date(Date.now() - 30000),
-    position: { x: 280, y: 60 },
-    connections: ['sc-001', 'sc-004'],
+    // Top-right
+    position: { x: 380, y: 80 },
+    connections: ['sc-traffic', 'sc-gateway'],
   },
   {
-    id: 'sc-003',
+    id: 'sc-sensor',
     name: 'Air Quality Sensor',
     type: 'Environmental Sensor',
+    deviceType: 'sensor',
     manufacturer: 'CleanAir',
     model: 'AQ-100',
     firmwareVersion: '1.8.2',
@@ -144,28 +166,31 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 88,
     latency: 80,
     lastHeartbeat: new Date(),
-    position: { x: 200, y: 140 },
-    connections: ['sc-001', 'sc-004'],
+    // Bottom-left
+    position: { x: 120, y: 170 },
+    connections: ['sc-traffic', 'sc-gateway'],
   },
   {
-    id: 'sc-004',
-    name: 'Smart Meter',
-    type: 'Utility Meter',
+    id: 'sc-gateway',
+    name: 'City Gateway',
+    type: 'Utility Gateway',
+    deviceType: 'gateway',
     manufacturer: 'GridSmart',
-    model: 'SM-200',
+    model: 'CG-200',
     firmwareVersion: '2.5.1',
     osVersion: 'Contiki',
-    location: 'District 5',
-    owner: 'Energy Authority',
-    networkType: 'Cellular',
-    ipAddress: '10.0.1.40',
-    macAddress: 'CC:DD:EE:FF:01:40',
+    location: 'District Hub',
+    owner: 'City IT',
+    networkType: 'Fiber',
+    ipAddress: '10.0.1.1',
+    macAddress: 'CC:DD:EE:FF:01:01',
     status: 'attack',
-    signalStrength: 82,
-    latency: 35,
+    signalStrength: 95,
+    latency: 8,
     lastHeartbeat: new Date(),
-    position: { x: 380, y: 120 },
-    connections: ['sc-002', 'sc-003'],
+    // Bottom-right - NOT central, just another node in mesh
+    position: { x: 380, y: 170 },
+    connections: ['sc-traffic', 'sc-light', 'sc-sensor'],
   },
 ];
 
@@ -175,6 +200,7 @@ export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => 
   return devices.map((device, index) => ({
     id: `twin-${device.id}`,
     physicalDeviceId: device.id,
+    deviceType: device.deviceType,
     modelType: (['physics-based', 'data-driven', 'hybrid'] as const)[index % 3],
     modelVersion: `1.${index}.0`,
     lastSyncTime: new Date(),

@@ -12,10 +12,13 @@ export type DeviceStatus = 'online' | 'offline' | 'warning' | 'attack';
 
 export type TwinModelType = 'physics-based' | 'data-driven' | 'hybrid';
 
+export type DeviceType = 'radar' | 'camera' | 'sensor' | 'gateway';
+
 export interface PhysicalDevice {
   id: string;
   name: string;
   type: string;
+  deviceType: DeviceType;
   manufacturer: string;
   model: string;
   firmwareVersion: string;
@@ -36,6 +39,7 @@ export interface PhysicalDevice {
 export interface DigitalTwin {
   id: string;
   physicalDeviceId: string;
+  deviceType: DeviceType;
   modelType: TwinModelType;
   modelVersion: string;
   lastSyncTime: Date;

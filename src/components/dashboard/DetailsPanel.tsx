@@ -5,11 +5,13 @@ import PhysicalDeviceDetails from './details/PhysicalDeviceDetails';
 import DigitalTwinDetails from './details/DigitalTwinDetails';
 import SyncDetails from './details/SyncDetails';
 import IntelligenceDetails from './details/IntelligenceDetails';
+import { getTheme } from '@/config/themes';
 
 // Global Attack Dashboard - Always visible when threats exist
 function AttackDashboard() {
   const { state } = useDashboard();
   const { alerts, metrics, devices } = state;
+  const theme = getTheme(state.useCase);
   
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.resolved);
   const mediumAlerts = alerts.filter(a => a.severity === 'medium' && !a.resolved);
@@ -24,25 +26,33 @@ function AttackDashboard() {
       {/* Header */}
       <div className="flex items-center gap-2 mb-3">
         <AlertTriangle className="w-4 h-4 text-destructive animate-pulse" />
-        <span className="text-sm font-semibold text-destructive">Active Threats</span>
+        <span className="text-sm font-semibold text-destructive">
+          {state.useCase === 'military' ? 'HOSTILE ACTIVITY DETECTED' : 'Active Alerts'}
+        </span>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-2 mb-3">
         <div className="bg-destructive/10 rounded-lg p-2 text-center">
           <span className="text-2xl font-bold text-destructive">{criticalAlerts.length}</span>
-          <p className="text-[10px] text-destructive/80 uppercase">Critical</p>
+          <p className="text-[10px] text-destructive/80 uppercase">
+            {state.useCase === 'military' ? 'Critical Threats' : 'Critical'}
+          </p>
         </div>
         <div className="bg-warning/10 rounded-lg p-2 text-center">
           <span className="text-2xl font-bold text-warning">{mediumAlerts.length}</span>
-          <p className="text-[10px] text-warning/80 uppercase">Medium</p>
+          <p className="text-[10px] text-warning/80 uppercase">
+            {state.useCase === 'military' ? 'Warnings' : 'Medium'}
+          </p>
         </div>
       </div>
 
       {/* Affected Devices */}
       {attackingDevices.length > 0 && (
         <div className="space-y-1">
-          <p className="text-[10px] text-muted-foreground uppercase font-semibold">Affected Devices</p>
+          <p className="text-[10px] text-muted-foreground uppercase font-semibold">
+            {state.useCase === 'military' ? 'Compromised Assets' : 'Affected Nodes'}
+          </p>
           {attackingDevices.map(device => (
             <div key={device.id} className="flex items-center gap-2 text-xs bg-destructive/10 rounded px-2 py-1">
               <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />
@@ -57,12 +67,16 @@ function AttackDashboard() {
       <div className="mt-3 pt-3 border-t border-destructive/20 grid grid-cols-2 gap-2 text-[10px]">
         <div className="flex items-center gap-1">
           <Shield className="w-3 h-3 text-destructive" />
-          <span className="text-muted-foreground">Attempts:</span>
+          <span className="text-muted-foreground">
+            {state.useCase === 'military' ? 'Intrusions:' : 'Attempts:'}
+          </span>
           <span className="text-foreground font-mono">{metrics.attackAttempts}</span>
         </div>
         <div className="flex items-center gap-1">
           <Activity className="w-3 h-3 text-destructive" />
-          <span className="text-muted-foreground">Traffic:</span>
+          <span className="text-muted-foreground">
+            {state.useCase === 'military' ? 'Hostile Traffic:' : 'Bad Traffic:'}
+          </span>
           <span className="text-foreground font-mono">{metrics.maliciousTraffic}MB</span>
         </div>
       </div>
