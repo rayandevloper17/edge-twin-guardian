@@ -7,34 +7,35 @@ import { getTheme } from '@/config/themes';
 
 interface StageMenuItem {
   id: SystemStage;
-  getLabel: (theme: ReturnType<typeof getTheme>) => string;
-  getDescription: (theme: ReturnType<typeof getTheme>) => string;
+  label: string;
+  description: string;
   icon: React.ElementType;
 }
 
+// UX Copy as per specification
 const stageItems: StageMenuItem[] = [
   { 
     id: 'network-discovery', 
-    getLabel: (t) => t.terminology.networkDiscovery,
-    getDescription: (t) => t.terminology.networkDiscoveryDesc,
+    label: 'Network Discovery',
+    description: 'Identify and map physical devices across the network',
     icon: Search,
   },
   { 
     id: 'digital-twin-creation', 
-    getLabel: (t) => t.terminology.twinCreation,
-    getDescription: (t) => t.terminology.twinCreationDesc,
+    label: 'Digital Twin Creation',
+    description: 'Create and manage virtual representations of physical assets',
     icon: Copy,
   },
   { 
     id: 'synchronization', 
-    getLabel: (t) => t.terminology.synchronization,
-    getDescription: (t) => t.terminology.synchronizationDesc,
+    label: 'Synchronization & Monitoring',
+    description: 'Connect, synchronize, and monitor devices for anomalies and attacks',
     icon: RefreshCw,
   },
   { 
     id: 'intelligence', 
-    getLabel: (t) => t.terminology.intelligence,
-    getDescription: (t) => t.terminology.intelligenceDesc,
+    label: 'System Intelligence & Logs',
+    description: 'Analyze system behavior, intelligence outputs, and event logs',
     icon: Brain,
   },
 ];
@@ -66,23 +67,23 @@ export default function LeftMenu() {
 
   // Theme-specific icon
   const ThemeIcon = state.useCase === 'military' ? Shield : Building2;
+  const useCaseLabel = state.useCase === 'military' 
+    ? 'Military and Critical National Infrastructure' 
+    : 'Smart Cities';
 
   return (
-    <aside className="w-64 bg-sidebar/50 backdrop-blur-sm border-r border-sidebar-border flex flex-col h-full">
+    <aside className="w-72 bg-sidebar/50 backdrop-blur-sm border-r border-sidebar-border flex flex-col h-full">
       {/* Header with theme identity */}
       <div className="p-5 border-b border-sidebar-border/50">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 mb-3">
           <div className={cn(
             "w-10 h-10 rounded-xl flex items-center justify-center",
             "bg-primary/10 text-primary"
           )}>
             <ThemeIcon className="w-5 h-5" />
           </div>
-          <div className="min-w-0">
-            <h2 className="text-sm font-bold text-sidebar-foreground truncate">{theme.name}</h2>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider truncate">
-              {state.useCase === 'military' ? 'TACTICAL MONITORING' : 'INFRASTRUCTURE MONITORING'}
-            </p>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-sm font-bold text-sidebar-foreground leading-tight">{useCaseLabel}</h2>
           </div>
         </div>
       </div>
@@ -94,7 +95,7 @@ export default function LeftMenu() {
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-sidebar-accent/50 text-sidebar-foreground transition-colors"
         >
           <Home className="w-4 h-4 text-muted-foreground" />
-          <span className="text-sm font-medium">Command Center</span>
+          <span className="text-sm font-medium">Home</span>
         </button>
       </div>
 
@@ -103,7 +104,7 @@ export default function LeftMenu() {
       {/* Stage Machine - Sequential Steps */}
       <nav className="flex-1 px-3 overflow-y-auto">
         <p className="px-3 mb-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          {theme.terminology.systemStatus}
+          System Lifecycle
         </p>
         <ul className="space-y-1">
           {stageItems.map((item) => {
@@ -118,7 +119,7 @@ export default function LeftMenu() {
                   onClick={() => handleStageClick(item.id)}
                   disabled={isLocked}
                   className={cn(
-                    'w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200',
+                    'w-full flex items-start gap-3 px-3 py-3 rounded-xl transition-all duration-200',
                     isActive && 'bg-primary/10 border border-primary/20',
                     isLocked && 'opacity-40 cursor-not-allowed',
                     !isActive && !isLocked && 'hover:bg-sidebar-accent/50'
@@ -126,7 +127,7 @@ export default function LeftMenu() {
                 >
                   {/* Stage number badge */}
                   <span className={cn(
-                    'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-all',
+                    'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-all mt-0.5',
                     isActive ? 'bg-primary text-primary-foreground shadow-md shadow-primary/30' : 
                     isComplete ? 'bg-success/20 text-success' :
                     'bg-muted text-muted-foreground'
@@ -141,20 +142,20 @@ export default function LeftMenu() {
                   {/* Label and description */}
                   <div className="flex-1 text-left min-w-0">
                     <span className={cn(
-                      'text-sm block truncate font-medium',
+                      'text-sm block font-medium leading-tight',
                       isActive ? 'text-primary' : 
                       isLocked ? 'text-muted-foreground' : 'text-sidebar-foreground'
                     )}>
-                      {item.getLabel(theme)}
+                      {item.label}
                     </span>
-                    <span className="text-[10px] text-muted-foreground truncate block">
-                      {item.getDescription(theme)}
+                    <span className="text-[10px] text-muted-foreground leading-snug block mt-1">
+                      {item.description}
                     </span>
                   </div>
 
                   {/* Lock indicator */}
                   {isLocked && (
-                    <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                    <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-1" />
                   )}
                 </button>
               </li>
@@ -165,30 +166,6 @@ export default function LeftMenu() {
 
       <div className="my-3 mx-4 border-t border-sidebar-border/50" />
 
-      {/* Device Summary */}
-      <div className="px-4 pb-3">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-          Network Assets
-        </p>
-        <div className="space-y-1">
-          {state.devices.map(device => (
-            <div 
-              key={device.id}
-              className="flex items-center gap-2 text-[11px] py-1.5 px-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent/50 transition-colors cursor-pointer"
-            >
-              <span className={cn(
-                'w-2 h-2 rounded-full shrink-0',
-                device.status === 'online' ? 'bg-success' :
-                device.status === 'attack' ? 'bg-destructive animate-pulse' :
-                device.status === 'warning' ? 'bg-warning' : 'bg-muted-foreground'
-              )} />
-              <span className="text-sidebar-foreground truncate flex-1">{device.name}</span>
-              <span className="text-muted-foreground font-mono text-[9px]">{device.ipAddress.split('.').slice(-1)}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* About link */}
       <div className="px-3 pb-3">
         <button
@@ -196,7 +173,7 @@ export default function LeftMenu() {
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-sidebar-accent/50 text-sidebar-foreground transition-colors"
         >
           <Info className="w-4 h-4 text-muted-foreground" />
-          <span className="text-sm">About System</span>
+          <span className="text-sm">About</span>
         </button>
       </div>
 
@@ -209,23 +186,23 @@ export default function LeftMenu() {
           )} />
           <span className="text-muted-foreground font-medium">
             {state.twinCreationComplete 
-              ? (state.useCase === 'military' ? 'OPERATIONAL' : 'System Active')
+              ? 'System Active'
               : 'Awaiting Twin Creation'
             }
           </span>
         </div>
         <div className="grid grid-cols-2 gap-2 text-[10px]">
           <div className="text-muted-foreground">
-            Physical: <span className="text-foreground font-mono font-medium">{state.devices.length}</span>
+            Physical Devices: <span className="text-foreground font-mono font-medium">{state.devices.length}</span>
           </div>
           <div className="text-muted-foreground">
-            Twins: <span className="text-foreground font-mono font-medium">{state.twins.length}</span>
+            Digital Twins: <span className="text-foreground font-mono font-medium">{state.twins.length}</span>
           </div>
         </div>
         {state.alerts.filter(a => !a.resolved && a.severity === 'critical').length > 0 && (
           <div className="mt-2 pt-2 border-t border-destructive/20 text-destructive text-[10px] font-semibold flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />
-            {state.alerts.filter(a => !a.resolved && a.severity === 'critical').length} Critical {theme.terminology.threatLabel}
+            {state.alerts.filter(a => !a.resolved && a.severity === 'critical').length} Critical Alerts
           </div>
         )}
       </div>

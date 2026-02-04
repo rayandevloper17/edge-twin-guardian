@@ -1,39 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Shield, Cpu, Network, Brain, Users, GraduationCap } from 'lucide-react';
+import { ArrowLeft, Shield, Building2, Network, Brain, Cpu, RefreshCw, ExternalLink, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function About() {
   const navigate = useNavigate();
-
-  const capabilities = [
-    {
-      icon: Network,
-      title: 'Network Discovery',
-      description: 'Automated discovery and profiling of all IoT devices within the network perimeter',
-    },
-    {
-      icon: Cpu,
-      title: 'Digital Twin Creation',
-      description: 'Dynamic creation of virtual replicas with physics-based and data-driven models',
-    },
-    {
-      icon: Shield,
-      title: 'Real-time Synchronization',
-      description: 'Continuous mirroring between physical devices and their digital counterparts',
-    },
-    {
-      icon: Brain,
-      title: 'AI-Powered Detection',
-      description: 'Machine learning algorithms for anomaly detection and threat classification',
-    },
-  ];
-
-  const inventors = [
-    'Dr. Abdullah Al-Malaise Al-Ghamdi',
-    'Dr. Mahmoud Ahmad Al-Khasawneh',
-    'Dr. Shailendra Mishra',
-    'Dr. Surbhi Bhatia Khan',
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,117 +18,161 @@ export default function About() {
           </Button>
           <div>
             <h1 className="font-semibold text-foreground">About</h1>
-            <p className="text-sm text-muted-foreground">System Documentation</p>
+            <p className="text-sm text-muted-foreground">Network Edge Digital Twin for IoT Attack Detection</p>
           </div>
         </div>
       </header>
 
       {/* Content */}
       <main className="container mx-auto px-4 py-12 relative z-10 max-w-4xl">
-        {/* Patent Info */}
+        {/* Introduction */}
         <section className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-4">
-            <span className="text-xs font-mono text-primary">US Patent</span>
-          </div>
-          <h2 className="text-3xl font-bold text-foreground mb-2">
-            Network Edge Digital Twin for IoT Attack Detection
-          </h2>
-          <p className="text-xl text-primary font-mono">
-            Patent Grant Number: US 12301597 B1
+          <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+            This website provides a technical demonstration of the U.S.-registered patent entitled{' '}
+            <span className="text-foreground font-semibold">"Network Edge Digital Twin for IoT Attack Detection"</span>{' '}
+            (Patent Grant Number: <span className="text-primary font-mono">US 12301597 B1</span>).
           </p>
-        </section>
-
-        {/* Purpose */}
-        <section className="mb-12">
-          <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-primary" />
-            System Purpose
-          </h3>
-          <div className="p-6 rounded-xl bg-card border border-border">
-            <p className="text-muted-foreground leading-relaxed">
-              This patented system provides a comprehensive cybersecurity framework for protecting 
-              IoT networks through the innovative use of Digital Twin technology. By creating and 
-              maintaining synchronized virtual replicas of physical IoT devices at the network edge, 
-              the system enables real-time monitoring, anomaly detection, and automated threat response 
-              without impacting the operation of actual devices.
-            </p>
-          </div>
+          <p className="text-muted-foreground leading-relaxed">
+            The platform illustrates how a network-edge digital twin architecture can be deployed within IoT 
+            environments to enable real-time cyberattack detection and analysis while preserving the functional 
+            integrity and performance of the physical IoT network. By offloading monitoring and security analytics 
+            to dynamically instantiated digital twins at the network edge, the proposed approach minimizes latency, 
+            reduces operational overhead, and avoids interference with mission-critical IoT services.
+          </p>
         </section>
 
         {/* Use Cases */}
         <section className="mb-12">
-          <h3 className="text-xl font-semibold text-foreground mb-4">Target Applications</h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-5 rounded-xl bg-card border border-border">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-primary" />
+          <h2 className="text-2xl font-bold text-foreground mb-6">Use Cases</h2>
+          <p className="text-muted-foreground mb-6">The website demonstrates two primary application scenarios:</p>
+          
+          <div className="space-y-6">
+            {/* Military Use Case */}
+            <div className="p-6 rounded-xl bg-card border border-border">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-primary" />
                 </div>
-                <h4 className="font-medium text-foreground">Military & Critical Infrastructure</h4>
+                <h3 className="text-xl font-semibold text-foreground">
+                  Military and Critical National Infrastructure Protection
+                </h3>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Defense installations, power grids, water systems, and national security networks 
-                requiring the highest levels of protection.
+              <p className="text-muted-foreground leading-relaxed">
+                In defense-oriented IoT deployments, the proposed digital twin framework supports the protection 
+                of critical national infrastructure by enabling early detection of cyber threats targeting 
+                distributed sensors, communication nodes, and edge devices. The isolation of security analysis 
+                within digital twins allows continuous monitoring without exposing operational systems to 
+                additional risk, making the approach suitable for high-assurance and mission-critical environments.
               </p>
             </div>
-            <div className="p-5 rounded-xl bg-card border border-border">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
-                  <Network className="w-5 h-5 text-accent" />
+
+            {/* Smart Cities Use Case */}
+            <div className="p-6 rounded-xl bg-card border border-border">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                  <Building2 className="w-6 h-6 text-accent" />
                 </div>
-                <h4 className="font-medium text-foreground">Smart Cities</h4>
+                <h3 className="text-xl font-semibold text-foreground">
+                  Smart Cities as Vision 2030 Initiatives
+                </h3>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Urban IoT deployments including traffic management, environmental monitoring, 
-                public safety systems, and utility networks.
+              <p className="text-muted-foreground leading-relaxed">
+                As Saudi Vision 2030 progressively advances the implementation of smart cities, large-scale IoT 
+                infrastructures play a central role in transportation, energy management, public safety, and urban 
+                services. The proposed solution addresses the growing need to secure smart city IoT ecosystems by 
+                providing scalable, edge-based attack detection that adapts to evolving urban deployments while 
+                maintaining service availability and resilience.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Capabilities */}
+        {/* System Capabilities */}
         <section className="mb-12">
-          <h3 className="text-xl font-semibold text-foreground mb-4">System Capabilities</h3>
+          <h2 className="text-2xl font-bold text-foreground mb-6">System Capabilities</h2>
+          <p className="text-muted-foreground leading-relaxed mb-6">
+            The website allows users to interact with a live physical IoT network and dynamically instantiate 
+            digital twins on demand. These digital twins replicate network behavior and traffic patterns, 
+            enabling continuous monitoring, anomaly detection, and cybersecurity evaluation without disrupting 
+            real-world IoT operations.
+          </p>
+          
           <div className="grid sm:grid-cols-2 gap-4">
-            {capabilities.map((cap, i) => (
-              <div key={i} className="p-5 rounded-xl bg-card border border-border">
-                <cap.icon className="w-8 h-8 text-primary mb-3" />
-                <h4 className="font-medium text-foreground mb-2">{cap.title}</h4>
-                <p className="text-sm text-muted-foreground">{cap.description}</p>
-              </div>
-            ))}
+            <div className="p-5 rounded-xl bg-card border border-border">
+              <Network className="w-8 h-8 text-primary mb-3" />
+              <h4 className="font-medium text-foreground mb-2">Network Discovery</h4>
+              <p className="text-sm text-muted-foreground">
+                Identify and map physical devices across the network with real-time visibility
+              </p>
+            </div>
+            <div className="p-5 rounded-xl bg-card border border-border">
+              <Cpu className="w-8 h-8 text-primary mb-3" />
+              <h4 className="font-medium text-foreground mb-2">Digital Twin Creation</h4>
+              <p className="text-sm text-muted-foreground">
+                Create and manage virtual representations of physical assets with model baselines
+              </p>
+            </div>
+            <div className="p-5 rounded-xl bg-card border border-border">
+              <RefreshCw className="w-8 h-8 text-primary mb-3" />
+              <h4 className="font-medium text-foreground mb-2">Synchronization & Monitoring</h4>
+              <p className="text-sm text-muted-foreground">
+                Connect, synchronize, and monitor devices for anomalies and cyber attacks
+              </p>
+            </div>
+            <div className="p-5 rounded-xl bg-card border border-border">
+              <Brain className="w-8 h-8 text-primary mb-3" />
+              <h4 className="font-medium text-foreground mb-2">System Intelligence</h4>
+              <p className="text-sm text-muted-foreground">
+                Analyze system behavior, AI-driven insights, and comprehensive event logs
+              </p>
+            </div>
           </div>
         </section>
 
         {/* Inventors */}
         <section className="mb-12">
-          <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Users className="w-5 h-5 text-primary" />
-            Inventors
-          </h3>
-          <div className="p-6 rounded-xl bg-card border border-border">
-            <ul className="space-y-2">
-              {inventors.map((name, i) => (
-                <li key={i} className="flex items-center gap-3 text-foreground">
-                  <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs text-primary font-medium">
-                    {i + 1}
-                  </span>
-                  {name}
-                </li>
-              ))}
-            </ul>
+          <h2 className="text-2xl font-bold text-foreground mb-6">Inventors</h2>
+          
+          <div className="space-y-4">
+            <div className="p-5 rounded-xl bg-card border border-border">
+              <h4 className="font-semibold text-foreground mb-2">Malak Alhazmi</h4>
+              <a 
+                href="mailto:malakalhazmi@gmail.com" 
+                className="inline-flex items-center gap-2 text-primary hover:underline text-sm"
+              >
+                <Mail className="w-4 h-4" />
+                malakalhazmi@gmail.com
+              </a>
+            </div>
+            
+            <div className="p-5 rounded-xl bg-card border border-border">
+              <h4 className="font-semibold text-foreground mb-2">Dr. Fatimah Alakeel</h4>
+              <a 
+                href="mailto:fyalakeel@ksu.edu.sa" 
+                className="inline-flex items-center gap-2 text-primary hover:underline text-sm"
+              >
+                <Mail className="w-4 h-4" />
+                fyalakeel@ksu.edu.sa
+              </a>
+            </div>
           </div>
         </section>
 
         {/* Affiliation */}
         <section>
-          <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-            <GraduationCap className="w-5 h-5 text-primary" />
-            Affiliation
-          </h3>
+          <h2 className="text-2xl font-bold text-foreground mb-6">Affiliation</h2>
           <div className="p-6 rounded-xl bg-gradient-to-br from-primary/10 to-accent/5 border border-primary/20">
-            <p className="text-lg font-medium text-foreground">King Saud University</p>
-            <p className="text-muted-foreground">Riyadh, Kingdom of Saudi Arabia</p>
+            <p className="text-xl font-semibold text-foreground mb-2">King Saud University</p>
+            <p className="text-muted-foreground mb-4">Riyadh, Saudi Arabia</p>
+            <a 
+              href="https://ksu.edu.sa/en" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-primary hover:underline"
+            >
+              <ExternalLink className="w-4 h-4" />
+              https://ksu.edu.sa/en
+            </a>
           </div>
         </section>
       </main>
