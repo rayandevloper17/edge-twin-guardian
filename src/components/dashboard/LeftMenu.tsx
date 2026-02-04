@@ -68,43 +68,41 @@ export default function LeftMenu() {
   const ThemeIcon = state.useCase === 'military' ? Shield : Building2;
 
   return (
-    <aside className="w-72 bg-sidebar border-r border-sidebar-border flex flex-col h-full">
+    <aside className="w-64 bg-sidebar/50 backdrop-blur-sm border-r border-sidebar-border flex flex-col h-full">
       {/* Header with theme identity */}
-      <div className="p-4 border-b border-sidebar-border">
-        <div className="flex items-center gap-3 mb-2">
+      <div className="p-5 border-b border-sidebar-border/50">
+        <div className="flex items-center gap-3">
           <div className={cn(
-            "w-10 h-10 rounded-lg flex items-center justify-center",
-            state.useCase === 'military' 
-              ? "bg-destructive/10 text-destructive" 
-              : "bg-primary/10 text-primary"
+            "w-10 h-10 rounded-xl flex items-center justify-center",
+            "bg-primary/10 text-primary"
           )}>
             <ThemeIcon className="w-5 h-5" />
           </div>
-          <div>
-            <h2 className="text-sm font-bold text-sidebar-foreground">{theme.name}</h2>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-              {theme.description}
+          <div className="min-w-0">
+            <h2 className="text-sm font-bold text-sidebar-foreground truncate">{theme.name}</h2>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider truncate">
+              {state.useCase === 'military' ? 'TACTICAL MONITORING' : 'INFRASTRUCTURE MONITORING'}
             </p>
           </div>
         </div>
       </div>
 
       {/* Home Navigation */}
-      <div className="px-2 pt-4">
+      <div className="px-3 pt-4">
         <button
           onClick={() => navigate('/')}
-          className="menu-item w-full hover:bg-sidebar-accent text-sidebar-foreground"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-sidebar-accent/50 text-sidebar-foreground transition-colors"
         >
-          <Home className="w-5 h-5 text-muted-foreground" />
-          <span className="text-sm">Command Center</span>
+          <Home className="w-4 h-4 text-muted-foreground" />
+          <span className="text-sm font-medium">Command Center</span>
         </button>
       </div>
 
-      <div className="my-3 mx-4 border-t border-sidebar-border" />
+      <div className="my-4 mx-4 border-t border-sidebar-border/50" />
 
-      {/* Stage Machine - Sequential Steps with theme terminology */}
-      <nav className="flex-1 px-2">
-        <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+      {/* Stage Machine - Sequential Steps */}
+      <nav className="flex-1 px-3 overflow-y-auto">
+        <p className="px-3 mb-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
           {theme.terminology.systemStatus}
         </p>
         <ul className="space-y-1">
@@ -112,6 +110,7 @@ export default function LeftMenu() {
             const isActive = item.id === state.currentStage;
             const isLocked = !canAccessStage(item.id);
             const isComplete = isStageComplete(item.id);
+            const Icon = item.icon;
 
             return (
               <li key={item.id}>
@@ -119,16 +118,16 @@ export default function LeftMenu() {
                   onClick={() => handleStageClick(item.id)}
                   disabled={isLocked}
                   className={cn(
-                    'menu-item w-full relative',
-                    isActive && 'menu-item-active bg-primary/10',
-                    isLocked && 'menu-item-disabled opacity-50 cursor-not-allowed',
-                    !isActive && !isLocked && 'hover:bg-sidebar-accent'
+                    'w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200',
+                    isActive && 'bg-primary/10 border border-primary/20',
+                    isLocked && 'opacity-40 cursor-not-allowed',
+                    !isActive && !isLocked && 'hover:bg-sidebar-accent/50'
                   )}
                 >
                   {/* Stage number badge */}
                   <span className={cn(
-                    'w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0',
-                    isActive ? 'bg-primary text-primary-foreground' : 
+                    'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-all',
+                    isActive ? 'bg-primary text-primary-foreground shadow-md shadow-primary/30' : 
                     isComplete ? 'bg-success/20 text-success' :
                     'bg-muted text-muted-foreground'
                   )}>
@@ -139,11 +138,11 @@ export default function LeftMenu() {
                     )}
                   </span>
                   
-                  {/* Label and description - theme-specific */}
+                  {/* Label and description */}
                   <div className="flex-1 text-left min-w-0">
                     <span className={cn(
-                      'text-sm block truncate',
-                      isActive ? 'text-primary font-medium' : 
+                      'text-sm block truncate font-medium',
+                      isActive ? 'text-primary' : 
                       isLocked ? 'text-muted-foreground' : 'text-sidebar-foreground'
                     )}>
                       {item.getLabel(theme)}
@@ -155,7 +154,7 @@ export default function LeftMenu() {
 
                   {/* Lock indicator */}
                   {isLocked && (
-                    <Lock className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                   )}
                 </button>
               </li>
@@ -164,21 +163,21 @@ export default function LeftMenu() {
         </ul>
       </nav>
 
-      <div className="my-3 mx-4 border-t border-sidebar-border" />
+      <div className="my-3 mx-4 border-t border-sidebar-border/50" />
 
-      {/* Device Summary - theme aware */}
+      {/* Device Summary */}
       <div className="px-4 pb-3">
         <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
           Network Assets
         </p>
-        <div className="space-y-1.5">
+        <div className="space-y-1">
           {state.devices.map(device => (
             <div 
               key={device.id}
-              className="flex items-center gap-2 text-[11px] py-1 px-2 rounded bg-sidebar-accent/30"
+              className="flex items-center gap-2 text-[11px] py-1.5 px-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent/50 transition-colors cursor-pointer"
             >
               <span className={cn(
-                'w-1.5 h-1.5 rounded-full',
+                'w-2 h-2 rounded-full shrink-0',
                 device.status === 'online' ? 'bg-success' :
                 device.status === 'attack' ? 'bg-destructive animate-pulse' :
                 device.status === 'warning' ? 'bg-warning' : 'bg-muted-foreground'
@@ -191,43 +190,44 @@ export default function LeftMenu() {
       </div>
 
       {/* About link */}
-      <div className="px-2 pb-2">
+      <div className="px-3 pb-3">
         <button
           onClick={() => navigate('/about')}
-          className="menu-item w-full hover:bg-sidebar-accent text-sidebar-foreground"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-sidebar-accent/50 text-sidebar-foreground transition-colors"
         >
-          <Info className="w-5 h-5 text-muted-foreground" />
+          <Info className="w-4 h-4 text-muted-foreground" />
           <span className="text-sm">About System</span>
         </button>
       </div>
 
-      {/* System Status */}
-      <div className="p-4 border-t border-sidebar-border bg-sidebar-accent/30">
-        <div className="flex items-center gap-2 text-xs">
+      {/* System Status Footer */}
+      <div className="p-4 border-t border-sidebar-border/50 bg-sidebar-accent/20">
+        <div className="flex items-center gap-2 text-xs mb-2">
           <span className={cn(
             'w-2 h-2 rounded-full',
             state.twinCreationComplete ? 'bg-success animate-pulse' : 'bg-warning'
           )} />
-          <span className="text-muted-foreground">
+          <span className="text-muted-foreground font-medium">
             {state.twinCreationComplete 
               ? (state.useCase === 'military' ? 'OPERATIONAL' : 'System Active')
               : 'Awaiting Twin Creation'
             }
           </span>
         </div>
-        <div className="mt-2 grid grid-cols-2 gap-2 text-[10px]">
+        <div className="grid grid-cols-2 gap-2 text-[10px]">
           <div className="text-muted-foreground">
-            Physical: <span className="text-foreground font-mono">{state.devices.length}</span>
+            Physical: <span className="text-foreground font-mono font-medium">{state.devices.length}</span>
           </div>
           <div className="text-muted-foreground">
-            Twins: <span className="text-foreground font-mono">{state.twins.length}</span>
+            Twins: <span className="text-foreground font-mono font-medium">{state.twins.length}</span>
           </div>
-          {state.alerts.filter(a => !a.resolved && a.severity === 'critical').length > 0 && (
-            <div className="col-span-2 text-destructive font-semibold">
-              ⚠ {state.alerts.filter(a => !a.resolved && a.severity === 'critical').length} Critical {theme.terminology.threatLabel}
-            </div>
-          )}
         </div>
+        {state.alerts.filter(a => !a.resolved && a.severity === 'critical').length > 0 && (
+          <div className="mt-2 pt-2 border-t border-destructive/20 text-destructive text-[10px] font-semibold flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />
+            {state.alerts.filter(a => !a.resolved && a.severity === 'critical').length} Critical {theme.terminology.threatLabel}
+          </div>
+        )}
       </div>
     </aside>
   );

@@ -1,6 +1,6 @@
 import { useDashboard } from '@/context/DashboardContext';
 import { cn } from '@/lib/utils';
-import { AlertTriangle, Activity, Shield, Clock } from 'lucide-react';
+import { AlertTriangle, Activity, Shield, Zap, Radio, Camera, Wifi, Server } from 'lucide-react';
 import PhysicalDeviceDetails from './details/PhysicalDeviceDetails';
 import DigitalTwinDetails from './details/DigitalTwinDetails';
 import SyncDetails from './details/SyncDetails';
@@ -22,62 +22,56 @@ function AttackDashboard() {
   }
 
   return (
-    <div className="p-4 border-b border-destructive/30 bg-destructive/5">
+    <div className="p-4 border-b border-destructive/20 bg-gradient-to-b from-destructive/10 to-transparent">
       {/* Header */}
-      <div className="flex items-center gap-2 mb-3">
-        <AlertTriangle className="w-4 h-4 text-destructive animate-pulse" />
-        <span className="text-sm font-semibold text-destructive">
-          {state.useCase === 'military' ? 'HOSTILE ACTIVITY DETECTED' : 'Active Alerts'}
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-8 h-8 rounded-lg bg-destructive/20 flex items-center justify-center">
+          <AlertTriangle className="w-4 h-4 text-destructive" />
+        </div>
+        <span className="text-sm font-bold text-destructive">
+          {state.useCase === 'military' ? 'Active Alerts' : 'Active Alerts'}
         </span>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 gap-2 mb-3">
-        <div className="bg-destructive/10 rounded-lg p-2 text-center">
+      <div className="grid grid-cols-2 gap-2 mb-4">
+        <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-3 text-center">
           <span className="text-2xl font-bold text-destructive">{criticalAlerts.length}</span>
-          <p className="text-[10px] text-destructive/80 uppercase">
-            {state.useCase === 'military' ? 'Critical Threats' : 'Critical'}
-          </p>
+          <p className="text-[10px] text-destructive/70 uppercase font-medium mt-0.5">Critical</p>
         </div>
-        <div className="bg-warning/10 rounded-lg p-2 text-center">
+        <div className="bg-warning/10 border border-warning/20 rounded-xl p-3 text-center">
           <span className="text-2xl font-bold text-warning">{mediumAlerts.length}</span>
-          <p className="text-[10px] text-warning/80 uppercase">
-            {state.useCase === 'military' ? 'Warnings' : 'Medium'}
-          </p>
+          <p className="text-[10px] text-warning/70 uppercase font-medium mt-0.5">Medium</p>
         </div>
       </div>
 
       {/* Affected Devices */}
       {attackingDevices.length > 0 && (
-        <div className="space-y-1">
-          <p className="text-[10px] text-muted-foreground uppercase font-semibold">
-            {state.useCase === 'military' ? 'Compromised Assets' : 'Affected Nodes'}
+        <div className="space-y-1.5">
+          <p className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wide">
+            Affected Nodes
           </p>
           {attackingDevices.map(device => (
-            <div key={device.id} className="flex items-center gap-2 text-xs bg-destructive/10 rounded px-2 py-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />
-              <span className="text-foreground font-medium">{device.name}</span>
-              <span className="text-muted-foreground font-mono ml-auto">{device.ipAddress}</span>
+            <div key={device.id} className="flex items-center gap-2 text-xs bg-destructive/5 border border-destructive/10 rounded-lg px-3 py-2">
+              <span className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+              <span className="text-foreground font-medium flex-1">{device.name}</span>
+              <span className="text-muted-foreground font-mono text-[10px]">{device.ipAddress}</span>
             </div>
           ))}
         </div>
       )}
 
       {/* Metrics */}
-      <div className="mt-3 pt-3 border-t border-destructive/20 grid grid-cols-2 gap-2 text-[10px]">
-        <div className="flex items-center gap-1">
-          <Shield className="w-3 h-3 text-destructive" />
-          <span className="text-muted-foreground">
-            {state.useCase === 'military' ? 'Intrusions:' : 'Attempts:'}
-          </span>
-          <span className="text-foreground font-mono">{metrics.attackAttempts}</span>
+      <div className="mt-4 pt-3 border-t border-destructive/10 grid grid-cols-2 gap-3 text-[10px]">
+        <div className="flex items-center gap-2">
+          <Zap className="w-3.5 h-3.5 text-destructive" />
+          <span className="text-muted-foreground">Attempts:</span>
+          <span className="text-foreground font-mono font-medium">{metrics.attackAttempts}</span>
         </div>
-        <div className="flex items-center gap-1">
-          <Activity className="w-3 h-3 text-destructive" />
-          <span className="text-muted-foreground">
-            {state.useCase === 'military' ? 'Hostile Traffic:' : 'Bad Traffic:'}
-          </span>
-          <span className="text-foreground font-mono">{metrics.maliciousTraffic}MB</span>
+        <div className="flex items-center gap-2">
+          <Activity className="w-3.5 h-3.5 text-destructive" />
+          <span className="text-muted-foreground">Bad Traffic:</span>
+          <span className="text-foreground font-mono font-medium">{metrics.maliciousTraffic}MB</span>
         </div>
       </div>
     </div>
@@ -86,31 +80,41 @@ function AttackDashboard() {
 
 // Stage-specific header
 function StageHeader({ stage }: { stage: string }) {
-  const stageInfo: Record<string, { title: string; subtitle: string }> = {
+  const { state } = useDashboard();
+  const theme = getTheme(state.useCase);
+  
+  const stageInfo: Record<string, { title: string; subtitle: string; icon: React.ElementType }> = {
     'network-discovery': {
       title: 'Physical Device Details',
       subtitle: 'Select a device to inspect',
+      icon: Radio,
     },
     'digital-twin-creation': {
       title: 'Digital Twin Details',
       subtitle: 'Twin model and baseline data',
+      icon: Camera,
     },
     'synchronization': {
       title: 'Sync & Security Status',
       subtitle: 'Real-time mirroring analysis',
+      icon: Activity,
     },
     'intelligence': {
-      title: 'System Intelligence',
-      subtitle: 'AI reasoning and forensics',
+      title: theme.terminology.intelligence,
+      subtitle: theme.terminology.intelligenceDesc,
+      icon: Shield,
     },
   };
 
-  const info = stageInfo[stage] || { title: 'Details', subtitle: '' };
+  const info = stageInfo[stage] || { title: 'Details', subtitle: '', icon: Activity };
+  const Icon = info.icon;
 
   return (
-    <div className="p-4 border-b border-border">
-      <div className="flex items-center gap-2">
-        <Clock className="w-4 h-4 text-muted-foreground" />
+    <div className="p-4 border-b border-border/50">
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+          <Icon className="w-4 h-4 text-primary" />
+        </div>
         <div>
           <h3 className="text-sm font-semibold text-foreground">{info.title}</h3>
           <p className="text-[10px] text-muted-foreground">{info.subtitle}</p>
@@ -168,7 +172,7 @@ export default function DetailsPanel() {
   };
 
   return (
-    <aside className="w-80 bg-card border-l border-border flex flex-col h-full overflow-hidden">
+    <aside className="w-72 bg-card/50 backdrop-blur-sm border-l border-border/50 flex flex-col h-full overflow-hidden">
       {/* Global Attack Dashboard */}
       <AttackDashboard />
       
@@ -187,10 +191,10 @@ function EmptyState({ message }: { message: string }) {
   return (
     <div className="flex-1 flex items-center justify-center p-6 min-h-[200px]">
       <div className="text-center">
-        <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-3">
+        <div className="w-14 h-14 rounded-2xl bg-muted/30 flex items-center justify-center mx-auto mb-4">
           <Activity className="w-6 h-6 text-muted-foreground" />
         </div>
-        <p className="text-sm text-muted-foreground max-w-[200px]">{message}</p>
+        <p className="text-sm text-muted-foreground max-w-[180px] leading-relaxed">{message}</p>
       </div>
     </div>
   );
