@@ -1,6 +1,8 @@
 import { PhysicalDevice, DigitalTwin, Alert, SystemMetrics } from '@/types/dashboard';
 
-// Military and Critical National Infrastructure Devices
+// Physical Network Layer - TOP (y: 60-140)
+// True network topology with device-to-device connections
+
 export const militaryDevices: PhysicalDevice[] = [
   {
     id: 'mil-001',
@@ -19,7 +21,7 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 98,
     latency: 5,
     lastHeartbeat: new Date(),
-    position: { x: 120, y: 120 },
+    position: { x: 100, y: 80 },
     connections: ['mil-002', 'mil-003'],
   },
   {
@@ -39,7 +41,7 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 92,
     latency: 12,
     lastHeartbeat: new Date(),
-    position: { x: 340, y: 100 },
+    position: { x: 280, y: 60 },
     connections: ['mil-001', 'mil-004'],
   },
   {
@@ -59,7 +61,7 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 85,
     latency: 25,
     lastHeartbeat: new Date(),
-    position: { x: 220, y: 280 },
+    position: { x: 200, y: 140 },
     connections: ['mil-001', 'mil-004'],
   },
   {
@@ -79,12 +81,11 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 100,
     latency: 3,
     lastHeartbeat: new Date(),
-    position: { x: 440, y: 260 },
+    position: { x: 380, y: 120 },
     connections: ['mil-002', 'mil-003'],
   },
 ];
 
-// Smart City Devices
 export const smartCityDevices: PhysicalDevice[] = [
   {
     id: 'sc-001',
@@ -103,7 +104,7 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 94,
     latency: 15,
     lastHeartbeat: new Date(),
-    position: { x: 120, y: 120 },
+    position: { x: 100, y: 80 },
     connections: ['sc-002', 'sc-003'],
   },
   {
@@ -123,7 +124,7 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 78,
     latency: 45,
     lastHeartbeat: new Date(Date.now() - 30000),
-    position: { x: 340, y: 100 },
+    position: { x: 280, y: 60 },
     connections: ['sc-001', 'sc-004'],
   },
   {
@@ -143,7 +144,7 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 88,
     latency: 80,
     lastHeartbeat: new Date(),
-    position: { x: 220, y: 280 },
+    position: { x: 200, y: 140 },
     connections: ['sc-001', 'sc-004'],
   },
   {
@@ -163,11 +164,13 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 82,
     latency: 35,
     lastHeartbeat: new Date(),
-    position: { x: 440, y: 260 },
+    position: { x: 380, y: 120 },
     connections: ['sc-002', 'sc-003'],
   },
 ];
 
+// Digital Twin Layer - BOTTOM (y: 280-360)
+// Mirrors physical topology but in separate spatial layer
 export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => {
   return devices.map((device, index) => ({
     id: `twin-${device.id}`,
@@ -196,7 +199,8 @@ export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => 
     contextInputs: ['Network topology', 'Historical patterns', 'Threat intelligence feeds'],
     driftIndicator: device.status === 'attack' ? 85 : device.status === 'warning' ? 45 : Math.random() * 15,
     status: device.status,
-    position: { x: device.position.x + 50, y: device.position.y + 180 },
+    // Digital layer positioned BELOW physical layer
+    position: { x: device.position.x, y: device.position.y + 220 },
   }));
 };
 
@@ -209,7 +213,7 @@ export const generateAlerts = (devices: PhysicalDevice[]): Alert[] => {
   attackDevices.forEach((device, i) => {
     alerts.push({
       id: `alert-${i + 1}`,
-      timestamp: new Date(Date.now() - 60000), // 1 min ago
+      timestamp: new Date(Date.now() - 60000),
       severity: 'critical',
       type: 'DOS attack detected',
       deviceId: device.id,
@@ -220,10 +224,9 @@ export const generateAlerts = (devices: PhysicalDevice[]): Alert[] => {
       resolved: false,
     });
     
-    // Add additional critical alerts
     alerts.push({
       id: `alert-${i + 2}`,
-      timestamp: new Date(Date.now() - 120000), // 2 min ago
+      timestamp: new Date(Date.now() - 120000),
       severity: 'critical',
       type: 'DOS attack detected',
       deviceId: device.id,
