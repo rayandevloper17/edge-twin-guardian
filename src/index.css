@@ -4,11 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Network Edge Digital Twin Dashboard - Command Center Theme */
+/* Network Edge Digital Twin Dashboard - Multi-Domain Command System */
 
 @layer base {
-  :root {
-    /* Core dark theme - command center aesthetic */
+  /* ============================================
+     MILITARY THEME - Tactical Defense
+     Deep navy, red threats, cyan operational
+     ============================================ */
+  :root,
+  [data-theme="military"] {
+    /* Core dark theme - tactical command aesthetic */
     --background: 222 47% 6%;
     --foreground: 210 40% 96%;
 
@@ -18,7 +23,7 @@
     --popover: 222 47% 10%;
     --popover-foreground: 210 40% 96%;
 
-    /* Primary - Cyan/Teal for digital elements */
+    /* Primary - Cyan tactical */
     --primary: 186 100% 50%;
     --primary-foreground: 222 47% 6%;
 
@@ -33,7 +38,7 @@
     --accent: 199 89% 48%;
     --accent-foreground: 222 47% 6%;
 
-    /* Status colors */
+    /* Status colors - Military: Red = Hostile */
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
     
@@ -65,11 +70,86 @@
     --sidebar-border: 217 33% 15%;
     --sidebar-ring: 186 100% 50%;
 
-    /* Digital Twin specific */
-    --physical-device: 199 89% 48%;
-    --digital-twin: 280 80% 60%;
-    --sync-active: 142 71% 45%;
+    /* Digital Twin layers */
+    --physical: 199 89% 48%;
+    --twin: 280 80% 60%;
+    --sync: 142 71% 45%;
     --attack-state: 0 84% 60%;
+
+    /* Grid style */
+    --grid-color: 199 89% 48%;
+    --grid-opacity: 0.08;
+  }
+
+  /* ============================================
+     SMART CITY THEME - Urban Operations
+     Teal primary, orange alerts, violet digital
+     ============================================ */
+  [data-theme="smart-cities"] {
+    /* Core - Urban dark blue-gray */
+    --background: 220 40% 8%;
+    --foreground: 210 40% 96%;
+
+    --card: 220 40% 11%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 220 40% 13%;
+    --popover-foreground: 210 40% 96%;
+
+    /* Primary - Teal urban */
+    --primary: 174 84% 45%;
+    --primary-foreground: 220 40% 8%;
+
+    /* Secondary - Blue-gray */
+    --secondary: 220 30% 18%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 220 30% 14%;
+    --muted-foreground: 210 20% 50%;
+
+    /* Accent - Sky blue */
+    --accent: 199 89% 55%;
+    --accent-foreground: 220 40% 8%;
+
+    /* Status colors - Smart City: Orange = Alert (not hostile) */
+    --destructive: 25 95% 53%;
+    --destructive-foreground: 220 40% 98%;
+    
+    --warning: 45 93% 47%;
+    --warning-foreground: 220 40% 8%;
+    
+    --success: 158 64% 52%;
+    --success-foreground: 220 40% 8%;
+
+    --border: 220 30% 22%;
+    --input: 220 30% 18%;
+    --ring: 174 84% 45%;
+
+    /* Custom glow effects */
+    --glow-primary: 174 84% 45%;
+    --glow-attack: 25 95% 53%;
+    --glow-warning: 45 93% 47%;
+    --glow-success: 158 64% 52%;
+
+    /* Sidebar */
+    --sidebar-background: 220 40% 6%;
+    --sidebar-foreground: 210 40% 80%;
+    --sidebar-primary: 174 84% 45%;
+    --sidebar-primary-foreground: 220 40% 8%;
+    --sidebar-accent: 220 30% 16%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 220 30% 18%;
+    --sidebar-ring: 174 84% 45%;
+
+    /* Digital Twin layers */
+    --physical: 199 89% 55%;
+    --twin: 262 83% 58%;
+    --sync: 174 84% 45%;
+    --attack-state: 25 95% 53%;
+
+    /* Grid style */
+    --grid-color: 174 84% 45%;
+    --grid-opacity: 0.06;
   }
 }
 
@@ -204,6 +284,43 @@
 
   .border-glow {
     box-shadow: inset 0 0 20px hsl(var(--primary) / 0.1);
+  }
+
+  /* SVG color utilities for theme variables */
+  .fill-physical {
+    fill: hsl(var(--physical));
+  }
+  
+  .fill-twin {
+    fill: hsl(var(--twin));
+  }
+  
+  .fill-sync {
+    fill: hsl(var(--sync));
+  }
+
+  .stroke-physical {
+    stroke: hsl(var(--physical));
+  }
+  
+  .stroke-twin {
+    stroke: hsl(var(--twin));
+  }
+  
+  .stroke-sync {
+    stroke: hsl(var(--sync));
+  }
+
+  .text-physical {
+    color: hsl(var(--physical));
+  }
+
+  .text-twin {
+    color: hsl(var(--twin));
+  }
+
+  .text-sync {
+    color: hsl(var(--sync));
   }
 }
 
