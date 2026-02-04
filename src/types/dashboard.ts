@@ -90,6 +90,8 @@ export interface SystemMetrics {
   avgSyncLatency: number;
   mttd: number; // Mean Time To Detect (seconds)
   overallRiskScore: number; // 0-100
+  attackAttempts: number;
+  maliciousTraffic: number; // in MB
   incidentsTrend: { date: Date; count: number }[];
 }
 

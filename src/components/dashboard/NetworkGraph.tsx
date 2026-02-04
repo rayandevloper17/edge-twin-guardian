@@ -3,78 +3,129 @@ import { useDashboard } from '@/context/DashboardContext';
 import { PhysicalDevice, DigitalTwin } from '@/types/dashboard';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Plus, ArrowRight, Check } from 'lucide-react';
+import { Plus, ArrowRight } from 'lucide-react';
 
-interface DeviceNodeProps {
+// Device node for physical layer
+function PhysicalDeviceNode({ 
+  device, 
+  isSelected, 
+  onClick, 
+  onHover 
+}: {
   device: PhysicalDevice;
   isSelected: boolean;
-  isHovered: boolean;
   onClick: () => void;
   onHover: (hover: boolean) => void;
-}
+}) {
+  const isAttack = device.status === 'attack';
+  const isWarning = device.status === 'warning';
 
-function PhysicalDeviceNode({ device, isSelected, isHovered, onClick, onHover }: DeviceNodeProps) {
   return (
     <g
-      className="network-node cursor-pointer"
+      className="cursor-pointer"
       transform={`translate(${device.position.x}, ${device.position.y})`}
       onClick={onClick}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
     >
-      {/* Outer glow for attack state */}
-      {device.status === 'attack' && (
-        <rect
-          x="-35"
-          y="-25"
-          width="70"
-          height="50"
-          rx="8"
-          className="fill-destructive/20 attack-pulse"
-        />
+      {/* Glow effect for attack state */}
+      {isAttack && (
+        <>
+          <rect
+            x="-50"
+            y="-35"
+            width="100"
+            height="70"
+            rx="8"
+            className="fill-destructive/20 attack-pulse"
+          />
+          <rect
+            x="-45"
+            y="-30"
+            width="90"
+            height="60"
+            rx="6"
+            className="fill-destructive/10"
+          />
+        </>
       )}
       
-      {/* Main shape - Rectangle for physical */}
-      <rect
-        x="-30"
-        y="-20"
-        width="60"
-        height="40"
-        rx="6"
-        className={cn(
-          'transition-all duration-300',
-          device.status === 'attack' 
-            ? 'fill-destructive/30 stroke-destructive stroke-2' 
-            : device.status === 'warning'
-            ? 'fill-warning/20 stroke-warning stroke-2'
-            : 'fill-physical/10 stroke-physical stroke-2',
-          isSelected && 'stroke-[3]',
-          isHovered && 'brightness-125'
-        )}
-      />
-      
-      {/* Selection checkmark */}
-      {isSelected && (
-        <g transform="translate(20, -15)">
-          <circle r="8" className="fill-primary" />
-          <Check className="text-primary-foreground" x="-4" y="-4" width="8" height="8" />
+      {/* URGENT badge for attack state */}
+      {isAttack && (
+        <g transform="translate(-15, -55)">
+          <rect
+            x="-25"
+            y="-10"
+            width="80"
+            height="20"
+            rx="4"
+            className="fill-destructive"
+          />
+          <text
+            x="15"
+            y="4"
+            textAnchor="middle"
+            className="fill-white text-[10px] font-bold uppercase"
+          >
+            URGENT
+          </text>
         </g>
       )}
       
-      {/* Device label */}
+      {/* Main device rectangle */}
+      <rect
+        x="-40"
+        y="-25"
+        width="80"
+        height="50"
+        rx="6"
+        className={cn(
+          'transition-all duration-300 stroke-2',
+          isAttack 
+            ? 'fill-destructive/20 stroke-destructive' 
+            : isWarning
+            ? 'fill-warning/10 stroke-warning'
+            : 'fill-physical/10 stroke-physical',
+          isSelected && 'stroke-[3] stroke-primary'
+        )}
+      />
+      
+      {/* Device icon placeholder */}
+      <rect
+        x="-25"
+        y="-15"
+        width="50"
+        height="30"
+        rx="3"
+        className={cn(
+          "fill-none stroke-1",
+          isAttack ? "stroke-destructive/50" : "stroke-physical/30"
+        )}
+      />
+      
+      {/* Device name */}
       <text
-        y="35"
+        y="40"
         textAnchor="middle"
-        className="fill-foreground text-[10px] font-medium"
+        className="fill-foreground text-[11px] font-medium"
       >
-        {device.name.length > 15 ? device.name.slice(0, 15) + '...' : device.name}
+        {device.name}
+      </text>
+      
+      {/* IP Address */}
+      <text
+        y="52"
+        textAnchor="middle"
+        className="fill-muted-foreground text-[9px] font-mono"
+      >
+        IP: {device.ipAddress}
       </text>
       
       {/* Status indicator */}
       <circle
-        cx="25"
-        cy="15"
-        r="4"
+        cx="32"
+        cy="-17"
+        r="5"
         className={cn(
           device.status === 'online' ? 'fill-success' :
           device.status === 'attack' ? 'fill-destructive animate-pulse' :
@@ -85,56 +136,69 @@ function PhysicalDeviceNode({ device, isSelected, isHovered, onClick, onHover }:
   );
 }
 
-interface TwinNodeProps {
+// Digital twin node
+function DigitalTwinNode({ 
+  twin, 
+  physicalDevice,
+  isSelected, 
+  onClick, 
+  onHover 
+}: {
   twin: DigitalTwin;
+  physicalDevice: PhysicalDevice;
   isSelected: boolean;
-  isHovered: boolean;
   onClick: () => void;
   onHover: (hover: boolean) => void;
-}
+}) {
+  const isAttack = twin.status === 'attack';
 
-function DigitalTwinNode({ twin, isSelected, isHovered, onClick, onHover }: TwinNodeProps) {
   return (
     <g
-      className="network-node cursor-pointer"
+      className="cursor-pointer"
       transform={`translate(${twin.position.x}, ${twin.position.y})`}
       onClick={onClick}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
     >
-      {/* Outer glow for attack state */}
-      {twin.status === 'attack' && (
-        <circle
-          r="28"
-          className="fill-destructive/20 attack-pulse"
+      {/* Glow effect for attack state */}
+      {isAttack && (
+        <rect
+          x="-45"
+          y="-30"
+          width="90"
+          height="60"
+          rx="6"
+          className="fill-destructive/15 attack-pulse"
         />
       )}
       
-      {/* Main shape - Circle for digital twin */}
-      <circle
-        r="22"
+      {/* Main twin rectangle - dashed border for digital */}
+      <rect
+        x="-40"
+        y="-25"
+        width="80"
+        height="50"
+        rx="6"
+        strokeDasharray="4 2"
         className={cn(
-          'transition-all duration-300',
-          twin.status === 'attack' 
-            ? 'fill-destructive/30 stroke-destructive stroke-2' 
-            : twin.status === 'warning'
-            ? 'fill-warning/20 stroke-warning stroke-2'
-            : 'fill-twin/10 stroke-twin stroke-2',
-          isSelected && 'stroke-[3]',
-          isHovered && 'brightness-125'
+          'transition-all duration-300 stroke-2',
+          isAttack 
+            ? 'fill-destructive/10 stroke-destructive' 
+            : 'fill-twin/10 stroke-twin',
+          isSelected && 'stroke-[3] stroke-primary'
         )}
       />
       
-      {/* Inner pattern - digital look */}
-      <circle r="12" className="fill-none stroke-twin/30 stroke-1" strokeDasharray="4 2" />
-      
-      {/* Selection indicator */}
-      {isSelected && (
-        <g transform="translate(15, -15)">
-          <circle r="8" className="fill-twin" />
-          <Check className="text-primary-foreground" x="-4" y="-4" width="8" height="8" />
-        </g>
-      )}
+      {/* Digital pattern */}
+      <rect
+        x="-25"
+        y="-15"
+        width="50"
+        height="30"
+        rx="3"
+        strokeDasharray="3 1"
+        className="fill-none stroke-twin/30 stroke-1"
+      />
       
       {/* Twin label */}
       <text
@@ -142,21 +206,46 @@ function DigitalTwinNode({ twin, isSelected, isHovered, onClick, onHover }: Twin
         textAnchor="middle"
         className="fill-foreground text-[10px] font-medium"
       >
-        Twin
+        Digital Twin - {physicalDevice.name.split(' ')[0]}
       </text>
       
-      {/* Status indicator */}
-      <circle
-        cx="18"
-        cy="18"
-        r="4"
-        className={cn(
-          twin.status === 'online' ? 'fill-success' :
-          twin.status === 'attack' ? 'fill-destructive animate-pulse' :
-          twin.status === 'warning' ? 'fill-warning' : 'fill-muted-foreground'
-        )}
-      />
+      {/* IP Address */}
+      <text
+        y="52"
+        textAnchor="middle"
+        className="fill-muted-foreground text-[9px] font-mono"
+      >
+        IP: {physicalDevice.ipAddress}
+      </text>
     </g>
+  );
+}
+
+// Stage indicator component
+function StageIndicator({ currentStage }: { currentStage: string }) {
+  const stages = [
+    { id: 'network-discovery', label: 'Discovery', color: 'text-cyan-400' },
+    { id: 'digital-twin-creation', label: 'Mirroring', color: 'text-cyan-400' },
+    { id: 'synchronization', label: 'Threat', color: 'text-destructive' },
+    { id: 'intelligence', label: 'Mitigation', color: 'text-success' },
+  ];
+
+  return (
+    <div className="flex items-center justify-center gap-4 py-3">
+      {stages.map((stage, index) => (
+        <div key={stage.id} className="flex items-center gap-2">
+          <span className={cn(
+            "text-xs font-medium transition-colors",
+            currentStage === stage.id ? stage.color : "text-muted-foreground/50"
+          )}>
+            {stage.label}
+          </span>
+          {index < stages.length - 1 && (
+            <span className="text-muted-foreground/30">—</span>
+          )}
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -164,11 +253,11 @@ export default function NetworkGraph() {
   const { state, selectDevice, selectTwin, hoverDevice, createTwins } = useDashboard();
   const { devices, twins, currentStage, selectedDeviceId, selectedTwinId, hoveredDeviceId } = state;
 
-  const showPhysical = currentStage !== 'digital-twin-creation' || !state.twinCreationComplete;
+  const showPhysical = true;
   const showTwins = currentStage !== 'network-discovery' && state.twinCreationComplete;
-  const showSyncLines = (currentStage === 'synchronization' || currentStage === 'intelligence') && state.twinCreationComplete;
+  const showSyncLines = showTwins;
 
-  // Calculate connection lines between physical devices
+  // Connection lines between physical devices
   const physicalConnections = useMemo(() => {
     const lines: { x1: number; y1: number; x2: number; y2: number; key: string }[] = [];
     const processed = new Set<string>();
@@ -195,7 +284,7 @@ export default function NetworkGraph() {
     return lines;
   }, [devices]);
 
-  // Calculate sync lines between physical and digital twins
+  // Sync lines between physical and digital twins
   const syncConnections = useMemo(() => {
     if (!showSyncLines) return [];
     
@@ -213,52 +302,80 @@ export default function NetworkGraph() {
     }).filter(Boolean);
   }, [twins, devices, showSyncLines]);
 
-  const getHeaderText = () => {
-    switch (currentStage) {
-      case 'network-discovery':
-        return 'Select the physical IoT device';
-      case 'digital-twin-creation':
-        return state.twinCreationComplete 
-          ? 'Digital twins created successfully' 
-          : 'Select the digital IoT device';
-      case 'synchronization':
-        return 'Monitoring synchronization status';
-      case 'intelligence':
-        return 'System intelligence active';
-      default:
-        return '';
-    }
-  };
-
   const handleCreateTwins = () => {
     createTwins();
   };
 
   return (
     <div className="flex-1 flex flex-col bg-background relative overflow-hidden">
-      {/* Grid overlay */}
-      <div className="absolute inset-0 grid-overlay opacity-30" />
+      {/* Grid background */}
+      <div className="absolute inset-0 grid-overlay opacity-20" />
       
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-border bg-card/50 backdrop-blur-sm relative z-10">
-        <p className="text-sm text-muted-foreground font-medium">{getHeaderText()}</p>
+      {/* Perspective grid effect */}
+      <div className="absolute inset-0" style={{
+        background: `
+          linear-gradient(180deg, transparent 0%, hsl(var(--background)) 95%),
+          linear-gradient(90deg, hsl(var(--primary) / 0.03) 1px, transparent 1px),
+          linear-gradient(hsl(var(--primary) / 0.03) 1px, transparent 1px)
+        `,
+        backgroundSize: '100% 100%, 40px 40px, 40px 40px',
+      }} />
+      
+      {/* Headers */}
+      <div className="flex justify-between px-6 py-4 relative z-10">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-physical animate-pulse" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-physical">
+            Physical Devices
+          </span>
+        </div>
+        {showTwins && (
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-twin animate-pulse" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-twin">
+              Digital Twins
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Network visualization */}
       <div className="flex-1 relative">
-        <svg className="w-full h-full" viewBox="0 0 700 600">
+        <svg className="w-full h-full" viewBox="0 0 600 500" preserveAspectRatio="xMidYMid meet">
+          {/* Grid lines for 3D effect */}
+          <defs>
+            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.1" />
+              <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.1" />
+            </linearGradient>
+            <linearGradient id="attackGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity="0.3" />
+              <stop offset="50%" stopColor="hsl(var(--destructive))" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity="0.3" />
+            </linearGradient>
+          </defs>
+
           {/* Physical device connections */}
-          {showPhysical && physicalConnections.map(line => (
-            <line
-              key={line.key}
-              x1={line.x1}
-              y1={line.y1}
-              x2={line.x2}
-              y2={line.y2}
-              className="stroke-physical/30 stroke-1"
-              strokeDasharray="4 4"
-            />
-          ))}
+          {showPhysical && physicalConnections.map(line => {
+            const device1 = devices.find(d => d.position.x === line.x1 && d.position.y === line.y1);
+            const device2 = devices.find(d => d.position.x === line.x2 && d.position.y === line.y2);
+            const isAttackLine = device1?.status === 'attack' || device2?.status === 'attack';
+            
+            return (
+              <line
+                key={line.key}
+                x1={line.x1}
+                y1={line.y1}
+                x2={line.x2}
+                y2={line.y2}
+                stroke={isAttackLine ? "url(#attackGradient)" : "url(#lineGradient)"}
+                strokeWidth={isAttackLine ? 2 : 1.5}
+                strokeDasharray={isAttackLine ? "none" : "8 4"}
+                className={isAttackLine ? "animate-pulse" : ""}
+              />
+            );
+          })}
 
           {/* Sync lines between physical and twins */}
           {syncConnections.map(line => line && (
@@ -270,8 +387,7 @@ export default function NetworkGraph() {
               y2={line.y2}
               className={cn(
                 'stroke-2',
-                line.status === 'attack' ? 'stroke-destructive' :
-                line.status === 'warning' ? 'stroke-warning' : 'stroke-sync/50'
+                line.status === 'attack' ? 'stroke-destructive' : 'stroke-sync/40'
               )}
               strokeDasharray="6 3"
               style={{
@@ -286,44 +402,40 @@ export default function NetworkGraph() {
               key={device.id}
               device={device}
               isSelected={selectedDeviceId === device.id}
-              isHovered={hoveredDeviceId === device.id}
               onClick={() => selectDevice(device.id)}
               onHover={(hover) => hoverDevice(hover ? device.id : null)}
             />
           ))}
 
           {/* Digital twins */}
-          {showTwins && twins.map(twin => (
-            <DigitalTwinNode
-              key={twin.id}
-              twin={twin}
-              isSelected={selectedTwinId === twin.id}
-              isHovered={hoveredDeviceId === twin.physicalDeviceId}
-              onClick={() => selectTwin(twin.id)}
-              onHover={(hover) => hoverDevice(hover ? twin.physicalDeviceId : null)}
-            />
-          ))}
-
-          {/* Label for sections */}
-          {showPhysical && (
-            <text x="50" y="30" className="fill-physical text-xs font-medium uppercase tracking-wider">
-              Physical Network
-            </text>
-          )}
-          {showTwins && (
-            <text x="50" y="260" className="fill-twin text-xs font-medium uppercase tracking-wider">
-              Digital Twin Network
-            </text>
-          )}
+          {showTwins && twins.map(twin => {
+            const physicalDevice = devices.find(d => d.id === twin.physicalDeviceId);
+            if (!physicalDevice) return null;
+            return (
+              <DigitalTwinNode
+                key={twin.id}
+                twin={twin}
+                physicalDevice={physicalDevice}
+                isSelected={selectedTwinId === twin.id}
+                onClick={() => selectTwin(twin.id)}
+                onHover={(hover) => hoverDevice(hover ? twin.physicalDeviceId : null)}
+              />
+            );
+          })}
         </svg>
       </div>
 
-      {/* Bottom action bar */}
+      {/* Stage indicator at bottom */}
+      <div className="border-t border-border/50 bg-card/30 backdrop-blur-sm relative z-10">
+        <StageIndicator currentStage={currentStage} />
+      </div>
+
+      {/* Action button */}
       {(currentStage === 'network-discovery' || (currentStage === 'digital-twin-creation' && !state.twinCreationComplete)) && (
-        <div className="px-6 py-4 border-t border-border bg-card/50 backdrop-blur-sm relative z-10">
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20">
           <Button 
             onClick={handleCreateTwins}
-            className="gap-2"
+            className="gap-2 bg-primary/90 hover:bg-primary shadow-lg"
             disabled={!selectedDeviceId && currentStage === 'network-discovery'}
           >
             {currentStage === 'network-discovery' ? (
@@ -363,11 +475,11 @@ function HoverTooltip({ deviceId }: { deviceId: string }) {
     <div
       className="absolute pointer-events-none z-50 animate-fade-in"
       style={{
-        left: position.x + 80,
+        left: Math.min(position.x + 100, 450),
         top: position.y - 20,
       }}
     >
-      <div className="bg-popover border border-border rounded-lg shadow-xl p-3 min-w-48">
+      <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-lg shadow-xl p-3 min-w-48">
         <div className="flex items-center gap-2 mb-2">
           <span className={cn(
             'w-2 h-2 rounded-full',
@@ -384,6 +496,10 @@ function HoverTooltip({ deviceId }: { deviceId: string }) {
             <span className="text-foreground font-mono">
               {displayData.status === 'attack' ? 'Critical' : displayData.status === 'warning' ? 'Degraded' : 'Good'}
             </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Latency:</span>
+            <span className="text-foreground font-mono">{device.latency}ms</span>
           </div>
           {displayData.status === 'attack' && (
             <div className="flex justify-between">

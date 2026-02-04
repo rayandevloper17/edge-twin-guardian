@@ -41,6 +41,8 @@ const initialState: DashboardState = {
     avgSyncLatency: 0,
     mttd: 0,
     overallRiskScore: 0,
+    attackAttempts: 0,
+    maliciousTraffic: 0,
     incidentsTrend: [],
   },
   twinCreationComplete: false,
