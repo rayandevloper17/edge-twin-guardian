@@ -50,14 +50,14 @@ export const militaryTheme: ThemeConfig = {
   name: 'Tactical Defense',
   description: 'Military-grade network monitoring',
   colors: {
-    primary: '186 100% 50%',      // Cyan tactical
-    accent: '142 71% 45%',        // Green operational
-    physical: '199 89% 48%',      // Blue physical
-    twin: '280 80% 60%',          // Purple digital
-    sync: '142 71% 45%',          // Green sync
+    primary: '142 71% 45%',       // Military green
+    accent: '142 76% 36%',        // Tactical green
+    physical: '142 71% 45%',      // Green physical
+    twin: '160 60% 45%',          // Teal digital
+    sync: '120 60% 50%',          // Bright green sync
     threat: '0 84% 60%',          // Red hostile
-    background: '222 47% 6%',     // Deep navy
-    surface: '222 47% 10%',       // Navy surface
+    background: '120 10% 4%',     // Deep black-green
+    surface: '120 10% 7%',        // Dark surface
   },
   deviceNames: {
     radar: 'Site Radar',
@@ -89,14 +89,14 @@ export const smartCityTheme: ThemeConfig = {
   name: 'Urban Operations',
   description: 'Smart city infrastructure monitoring',
   colors: {
-    primary: '174 84% 45%',       // Teal primary
-    accent: '199 89% 48%',        // Blue accent
+    primary: '199 89% 48%',       // Cyan blue
+    accent: '210 100% 50%',       // Electric blue
     physical: '199 89% 55%',      // Light blue physical
     twin: '262 83% 58%',          // Violet digital
-    sync: '174 84% 45%',          // Teal sync
+    sync: '199 89% 48%',          // Cyan sync
     threat: '25 95% 53%',         // Orange warning
-    background: '220 40% 8%',     // Dark blue-gray
-    surface: '220 40% 12%',       // Blue-gray surface
+    background: '220 50% 6%',     // Deep blue
+    surface: '220 50% 9%',        // Blue surface
   },
   deviceNames: {
     radar: 'Traffic Controller',

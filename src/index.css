@@ -9,147 +9,147 @@
 @layer base {
   /* ============================================
      MILITARY THEME - Tactical Defense
-     Deep navy, red threats, cyan operational
+     Deep black/green, military command center
      ============================================ */
   :root,
   [data-theme="military"] {
     /* Core dark theme - tactical command aesthetic */
-    --background: 222 47% 6%;
-    --foreground: 210 40% 96%;
+    --background: 120 10% 4%;
+    --foreground: 120 20% 90%;
 
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 96%;
+    --card: 120 10% 7%;
+    --card-foreground: 120 20% 90%;
 
-    --popover: 222 47% 10%;
-    --popover-foreground: 210 40% 96%;
+    --popover: 120 10% 9%;
+    --popover-foreground: 120 20% 90%;
 
-    /* Primary - Cyan tactical */
-    --primary: 186 100% 50%;
-    --primary-foreground: 222 47% 6%;
+    /* Primary - Military Green */
+    --primary: 142 71% 45%;
+    --primary-foreground: 120 10% 4%;
 
-    /* Secondary - Slate blue */
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 96%;
+    /* Secondary - Dark olive */
+    --secondary: 120 15% 12%;
+    --secondary-foreground: 120 20% 90%;
 
-    --muted: 217 33% 12%;
-    --muted-foreground: 215 20% 55%;
+    --muted: 120 10% 10%;
+    --muted-foreground: 120 10% 50%;
 
-    /* Accent - Electric blue */
-    --accent: 199 89% 48%;
-    --accent-foreground: 222 47% 6%;
+    /* Accent - Bright tactical green */
+    --accent: 142 76% 36%;
+    --accent-foreground: 120 10% 4%;
 
     /* Status colors - Military: Red = Hostile */
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 120 20% 98%;
     
-    --warning: 38 92% 50%;
-    --warning-foreground: 222 47% 6%;
+    --warning: 45 93% 47%;
+    --warning-foreground: 120 10% 4%;
     
     --success: 142 71% 45%;
-    --success-foreground: 222 47% 6%;
+    --success-foreground: 120 10% 4%;
 
-    --border: 217 33% 20%;
-    --input: 217 33% 17%;
-    --ring: 186 100% 50%;
+    --border: 120 15% 15%;
+    --input: 120 15% 12%;
+    --ring: 142 71% 45%;
 
     --radius: 0.5rem;
 
     /* Custom glow effects */
-    --glow-primary: 186 100% 50%;
+    --glow-primary: 142 71% 45%;
     --glow-attack: 0 84% 60%;
-    --glow-warning: 38 92% 50%;
+    --glow-warning: 45 93% 47%;
     --glow-success: 142 71% 45%;
 
     /* Sidebar */
-    --sidebar-background: 222 47% 5%;
-    --sidebar-foreground: 210 40% 80%;
-    --sidebar-primary: 186 100% 50%;
-    --sidebar-primary-foreground: 222 47% 6%;
-    --sidebar-accent: 217 33% 15%;
-    --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 217 33% 15%;
-    --sidebar-ring: 186 100% 50%;
+    --sidebar-background: 120 10% 3%;
+    --sidebar-foreground: 120 20% 75%;
+    --sidebar-primary: 142 71% 45%;
+    --sidebar-primary-foreground: 120 10% 4%;
+    --sidebar-accent: 120 15% 10%;
+    --sidebar-accent-foreground: 120 20% 90%;
+    --sidebar-border: 120 15% 12%;
+    --sidebar-ring: 142 71% 45%;
 
     /* Digital Twin layers */
-    --physical: 199 89% 48%;
-    --twin: 280 80% 60%;
-    --sync: 142 71% 45%;
+    --physical: 142 71% 45%;
+    --twin: 160 60% 45%;
+    --sync: 120 60% 50%;
     --attack-state: 0 84% 60%;
 
     /* Grid style */
-    --grid-color: 199 89% 48%;
-    --grid-opacity: 0.08;
+    --grid-color: 142 71% 45%;
+    --grid-opacity: 0.06;
   }
 
   /* ============================================
      SMART CITY THEME - Urban Operations
-     Teal primary, orange alerts, violet digital
+     Deep blue, cyan accents, modern urban feel
      ============================================ */
   [data-theme="smart-cities"] {
-    /* Core - Urban dark blue-gray */
-    --background: 220 40% 8%;
+    /* Core - Deep blue urban */
+    --background: 220 50% 6%;
     --foreground: 210 40% 96%;
 
-    --card: 220 40% 11%;
+    --card: 220 50% 9%;
     --card-foreground: 210 40% 96%;
 
-    --popover: 220 40% 13%;
+    --popover: 220 50% 11%;
     --popover-foreground: 210 40% 96%;
 
-    /* Primary - Teal urban */
-    --primary: 174 84% 45%;
-    --primary-foreground: 220 40% 8%;
+    /* Primary - Bright cyan blue */
+    --primary: 199 89% 48%;
+    --primary-foreground: 220 50% 6%;
 
-    /* Secondary - Blue-gray */
-    --secondary: 220 30% 18%;
+    /* Secondary - Slate blue */
+    --secondary: 220 40% 14%;
     --secondary-foreground: 210 40% 96%;
 
-    --muted: 220 30% 14%;
+    --muted: 220 40% 12%;
     --muted-foreground: 210 20% 50%;
 
-    /* Accent - Sky blue */
-    --accent: 199 89% 55%;
-    --accent-foreground: 220 40% 8%;
+    /* Accent - Electric blue */
+    --accent: 210 100% 50%;
+    --accent-foreground: 220 50% 6%;
 
-    /* Status colors - Smart City: Orange = Alert (not hostile) */
+    /* Status colors - Smart City: Orange = Alert */
     --destructive: 25 95% 53%;
-    --destructive-foreground: 220 40% 98%;
+    --destructive-foreground: 220 50% 98%;
     
     --warning: 45 93% 47%;
-    --warning-foreground: 220 40% 8%;
+    --warning-foreground: 220 50% 6%;
     
-    --success: 158 64% 52%;
-    --success-foreground: 220 40% 8%;
+    --success: 199 89% 48%;
+    --success-foreground: 220 50% 6%;
 
-    --border: 220 30% 22%;
-    --input: 220 30% 18%;
-    --ring: 174 84% 45%;
+    --border: 220 40% 18%;
+    --input: 220 40% 14%;
+    --ring: 199 89% 48%;
 
     /* Custom glow effects */
-    --glow-primary: 174 84% 45%;
+    --glow-primary: 199 89% 48%;
     --glow-attack: 25 95% 53%;
     --glow-warning: 45 93% 47%;
-    --glow-success: 158 64% 52%;
+    --glow-success: 199 89% 48%;
 
     /* Sidebar */
-    --sidebar-background: 220 40% 6%;
-    --sidebar-foreground: 210 40% 80%;
-    --sidebar-primary: 174 84% 45%;
-    --sidebar-primary-foreground: 220 40% 8%;
-    --sidebar-accent: 220 30% 16%;
+    --sidebar-background: 220 50% 4%;
+    --sidebar-foreground: 210 40% 75%;
+    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary-foreground: 220 50% 6%;
+    --sidebar-accent: 220 40% 12%;
     --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 220 30% 18%;
-    --sidebar-ring: 174 84% 45%;
+    --sidebar-border: 220 40% 14%;
+    --sidebar-ring: 199 89% 48%;
 
     /* Digital Twin layers */
     --physical: 199 89% 55%;
     --twin: 262 83% 58%;
-    --sync: 174 84% 45%;
+    --sync: 199 89% 48%;
     --attack-state: 25 95% 53%;
 
     /* Grid style */
-    --grid-color: 174 84% 45%;
-    --grid-opacity: 0.06;
+    --grid-color: 199 89% 48%;
+    --grid-opacity: 0.05;
   }
 }
 
