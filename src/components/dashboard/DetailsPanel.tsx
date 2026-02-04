@@ -1,17 +1,23 @@
 import { useDashboard } from '@/context/DashboardContext';
 import { cn } from '@/lib/utils';
-import { AlertTriangle, Activity, Shield, Zap, Radio, Camera, Wifi, Server } from 'lucide-react';
-import PhysicalDeviceDetails from './details/PhysicalDeviceDetails';
-import DigitalTwinDetails from './details/DigitalTwinDetails';
-import SyncDetails from './details/SyncDetails';
-import IntelligenceDetails from './details/IntelligenceDetails';
-import { getTheme } from '@/config/themes';
+import { AlertTriangle, Activity, Zap } from 'lucide-react';
+
+// Level 1 Content Components
+import DiscoveryLevel1 from './content/DiscoveryLevel1';
+import TwinCreationLevel1 from './content/TwinCreationLevel1';
+import SyncLevel1 from './content/SyncLevel1';
+import IntelligenceLevel1 from './content/IntelligenceLevel1';
+
+// Level 2 Content Components
+import DiscoveryLevel2 from './content/DiscoveryLevel2';
+import TwinCreationLevel2 from './content/TwinCreationLevel2';
+import SyncLevel2 from './content/SyncLevel2';
+import IntelligenceLevel2 from './content/IntelligenceLevel2';
 
 // Global Attack Dashboard - Always visible when threats exist
 function AttackDashboard() {
   const { state } = useDashboard();
   const { alerts, metrics, devices } = state;
-  const theme = getTheme(state.useCase);
   
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.resolved);
   const mediumAlerts = alerts.filter(a => a.severity === 'medium' && !a.resolved);
@@ -29,7 +35,7 @@ function AttackDashboard() {
           <AlertTriangle className="w-4 h-4 text-destructive" />
         </div>
         <span className="text-sm font-bold text-destructive">
-          {state.useCase === 'military' ? 'Active Alerts' : 'Active Alerts'}
+          Active Threats
         </span>
       </div>
 
@@ -51,7 +57,7 @@ function AttackDashboard() {
           <p className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wide">
             Affected Nodes
           </p>
-          {attackingDevices.map(device => (
+          {attackingDevices.slice(0, 3).map(device => (
             <div key={device.id} className="flex items-center gap-2 text-xs bg-destructive/5 border border-destructive/10 rounded-lg px-3 py-2">
               <span className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
               <span className="text-foreground font-medium flex-1">{device.name}</span>
@@ -78,53 +84,31 @@ function AttackDashboard() {
   );
 }
 
-// Stage-specific header
-function StageHeader({ stage }: { stage: string }) {
-  const { state } = useDashboard();
-  const theme = getTheme(state.useCase);
-  
-  const stageInfo: Record<string, { title: string; subtitle: string; icon: React.ElementType }> = {
-    'network-discovery': {
-      title: 'Physical Device Details',
-      subtitle: 'Select a device to inspect',
-      icon: Radio,
-    },
-    'digital-twin-creation': {
-      title: 'Digital Twin Details',
-      subtitle: 'Twin model and baseline data',
-      icon: Camera,
-    },
-    'synchronization': {
-      title: 'Sync & Security Status',
-      subtitle: 'Real-time mirroring analysis',
-      icon: Activity,
-    },
-    'intelligence': {
-      title: theme.terminology.intelligence,
-      subtitle: theme.terminology.intelligenceDesc,
-      icon: Shield,
-    },
-  };
-
-  const info = stageInfo[stage] || { title: 'Details', subtitle: '', icon: Activity };
-  const Icon = info.icon;
-
-  return (
-    <div className="p-4 border-b border-border/50">
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Icon className="w-4 h-4 text-primary" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-foreground">{info.title}</h3>
-          <p className="text-[10px] text-muted-foreground">{info.subtitle}</p>
-        </div>
-      </div>
-    </div>
-  );
+interface ContentAreaProps {
+  level: 1 | 2;
 }
 
-export default function DetailsPanel() {
+// Content Area 1 - Level 1: High-level KPIs and summaries
+function ContentArea1() {
+  const { state } = useDashboard();
+  const { currentStage } = state;
+
+  switch (currentStage) {
+    case 'network-discovery':
+      return <DiscoveryLevel1 />;
+    case 'digital-twin-creation':
+      return <TwinCreationLevel1 />;
+    case 'synchronization':
+      return <SyncLevel1 />;
+    case 'intelligence':
+      return <IntelligenceLevel1 />;
+    default:
+      return <EmptyState message="Select a stage from the system controller" />;
+  }
+}
+
+// Content Area 2 - Level 2: Detailed views based on selection
+function ContentArea2() {
   const { state } = useDashboard();
   const { currentStage, selectedDeviceId, selectedTwinId, devices, twins } = state;
 
@@ -138,52 +122,70 @@ export default function DetailsPanel() {
     ? twins.find(t => t.physicalDeviceId === selectedDevice.id)
     : null;
 
-  const renderContent = () => {
-    switch (currentStage) {
-      case 'network-discovery':
-        return selectedDevice 
-          ? <PhysicalDeviceDetails device={selectedDevice} />
-          : <EmptyState message="Select a physical device from the network to view its specifications" />;
-      
-      case 'digital-twin-creation':
-        if (!state.twinCreationComplete) {
-          return <EmptyState message="Create digital twins to view model details and behavioral baselines" />;
+  switch (currentStage) {
+    case 'network-discovery':
+      return selectedDevice 
+        ? <DiscoveryLevel2 device={selectedDevice} />
+        : <EmptyState message="Select a physical device from the network to view its specifications" />;
+    
+    case 'digital-twin-creation':
+      if (!state.twinCreationComplete) {
+        return <EmptyState message="Create digital twins to view model details and behavioral baselines" />;
+      }
+      if (selectedTwin) {
+        const device = devices.find(d => d.id === selectedTwin.physicalDeviceId);
+        return device ? <TwinCreationLevel2 twin={selectedTwin} device={device} /> : null;
+      }
+      return <EmptyState message="Select a digital twin to view its model configuration" />;
+    
+    case 'synchronization':
+      if (selectedDevice || selectedTwin) {
+        const device = selectedDevice || devices.find(d => d.id === selectedTwin?.physicalDeviceId);
+        const twin = selectedTwin || twins.find(t => t.physicalDeviceId === selectedDevice?.id);
+        if (device && twin) {
+          return <SyncLevel2 device={device} twin={twin} />;
         }
-        return selectedTwin 
-          ? <DigitalTwinDetails twin={selectedTwin} device={devices.find(d => d.id === selectedTwin.physicalDeviceId)!} />
-          : <EmptyState message="Select a digital twin to view its model configuration" />;
-      
-      case 'synchronization':
-        if (selectedDevice || selectedTwin) {
-          const device = selectedDevice || devices.find(d => d.id === selectedTwin?.physicalDeviceId);
-          const twin = selectedTwin || twins.find(t => t.physicalDeviceId === selectedDevice?.id);
-          if (device && twin) {
-            return <SyncDetails device={device} twin={twin} />;
-          }
-        }
-        return <EmptyState message="Select a device or twin to view synchronization health and threat status" />;
-      
-      case 'intelligence':
-        return <IntelligenceDetails />;
-      
-      default:
-        return <EmptyState message="Select a stage from the system controller" />;
-    }
-  };
+      }
+      return <EmptyState message="Select a device or twin to view synchronization health and threat status" />;
+    
+    case 'intelligence':
+      return <IntelligenceLevel2 />;
+    
+    default:
+      return <EmptyState message="Select a stage from the system controller" />;
+  }
+}
 
+export default function DetailsPanel() {
   return (
-    <aside className="w-72 bg-card/50 backdrop-blur-sm border-l border-border/50 flex flex-col h-full overflow-hidden">
-      {/* Global Attack Dashboard */}
-      <AttackDashboard />
-      
-      {/* Stage-specific header */}
-      <StageHeader stage={currentStage} />
-      
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto">
-        {renderContent()}
-      </div>
-    </aside>
+    <div className="w-[600px] flex h-full overflow-hidden border-l border-border/50">
+      {/* Content Area 1 - Level 1: KPIs */}
+      <aside className="w-[300px] bg-card/30 backdrop-blur-sm border-r border-border/30 flex flex-col h-full overflow-hidden">
+        <div className="px-4 py-3 border-b border-border/50 bg-muted/20">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+            Content Area 1 — Overview
+          </span>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <ContentArea1 />
+        </div>
+      </aside>
+
+      {/* Content Area 2 - Level 2: Details */}
+      <aside className="w-[300px] bg-card/50 backdrop-blur-sm flex flex-col h-full overflow-hidden">
+        {/* Global Attack Dashboard */}
+        <AttackDashboard />
+        
+        <div className="px-4 py-3 border-b border-border/50 bg-muted/20">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+            Content Area 2 — Details
+          </span>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <ContentArea2 />
+        </div>
+      </aside>
+    </div>
   );
 }
 

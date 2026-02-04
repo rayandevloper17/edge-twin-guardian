@@ -24,22 +24,17 @@ export default function Home() {
         
         {/* Title section */}
         <div className="text-center mb-16 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-sm font-mono text-primary">Patent Grant US 12301597 B1</span>
-          </div>
-          
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tight">
             Network Edge Digital Twin
           </h1>
           <h2 className="text-2xl md:text-3xl font-light text-primary text-glow">
             for IoT Attack Detection
           </h2>
-          
-          <p className="mt-6 text-muted-foreground max-w-2xl mx-auto text-lg">
-            Advanced cybersecurity monitoring through real-time digital twin synchronization 
-            and AI-powered threat detection
-          </p>
+        </div>
+
+        {/* Use Case Label */}
+        <div className="mb-8">
+          <p className="text-lg text-muted-foreground font-medium">Select Use Case</p>
         </div>
 
         {/* Use case selection */}
@@ -58,10 +53,10 @@ export default function Home() {
               </div>
               
               <h3 className="text-xl font-semibold text-foreground mb-2">
-                Military & Critical Infrastructure
+                Military and Critical National Infrastructure
               </h3>
               <p className="text-muted-foreground mb-4">
-                Secure defense installations, power grids, and national security systems
+                Defense installations, power grids, water systems, and national security networks
               </p>
               
               <div className="flex items-center text-primary font-medium">
@@ -88,7 +83,7 @@ export default function Home() {
                 Smart Cities
               </h3>
               <p className="text-muted-foreground mb-4">
-                Urban IoT networks, traffic systems, environmental monitoring
+                Urban IoT networks, traffic systems, environmental monitoring, and public safety
               </p>
               
               <div className="flex items-center text-accent font-medium">
@@ -106,7 +101,7 @@ export default function Home() {
           className="gap-2"
         >
           <Info className="w-4 h-4" />
-          About This System
+          About
         </Button>
       </main>
 
