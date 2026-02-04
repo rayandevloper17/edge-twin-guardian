@@ -25,7 +25,7 @@ export const militaryDevices: PhysicalDevice[] = [
     latency: 2,
     lastHeartbeat: new Date(),
     // Central top position - command node
-    position: { x: 250, y: 70 },
+    position: { x: 400, y: 100 },
     // Gateway connects to ALL field devices (star topology from command)
     connections: ['mil-radar', 'mil-camera', 'mil-sensor'],
   },
@@ -47,8 +47,8 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 98,
     latency: 5,
     lastHeartbeat: new Date(),
-    // Left subordinate position
-    position: { x: 100, y: 140 },
+    // Left position
+    position: { x: 200, y: 160 },
     connections: ['mil-gateway', 'mil-sensor'],
   },
   {
@@ -69,8 +69,8 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 92,
     latency: 12,
     lastHeartbeat: new Date(),
-    // Right subordinate position
-    position: { x: 400, y: 140 },
+    // Right position
+    position: { x: 600, y: 160 },
     connections: ['mil-gateway', 'mil-sensor'],
   },
   {
@@ -91,8 +91,8 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 85,
     latency: 25,
     lastHeartbeat: new Date(),
-    // Bottom center - field level
-    position: { x: 250, y: 170 },
+    // Bottom center
+    position: { x: 400, y: 190 },
     connections: ['mil-radar', 'mil-camera'],
   },
 ];
@@ -121,14 +121,13 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 94,
     latency: 15,
     lastHeartbeat: new Date(),
-    // Top-left - distributed position
-    position: { x: 120, y: 80 },
-    // Mesh: connects to multiple peers
+    // Top-left
+    position: { x: 220, y: 100 },
     connections: ['sc-light', 'sc-sensor', 'sc-gateway'],
   },
   {
     id: 'sc-light',
-    name: 'Smart Lighting Node',
+    name: 'Smart Lighting',
     type: 'Lighting Controller',
     deviceType: 'camera',
     manufacturer: 'LumiCity',
@@ -145,7 +144,7 @@ export const smartCityDevices: PhysicalDevice[] = [
     latency: 45,
     lastHeartbeat: new Date(Date.now() - 30000),
     // Top-right
-    position: { x: 380, y: 80 },
+    position: { x: 580, y: 100 },
     connections: ['sc-traffic', 'sc-gateway'],
   },
   {
@@ -167,7 +166,7 @@ export const smartCityDevices: PhysicalDevice[] = [
     latency: 80,
     lastHeartbeat: new Date(),
     // Bottom-left
-    position: { x: 120, y: 170 },
+    position: { x: 220, y: 190 },
     connections: ['sc-traffic', 'sc-gateway'],
   },
   {
@@ -188,14 +187,14 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 95,
     latency: 8,
     lastHeartbeat: new Date(),
-    // Bottom-right - NOT central, just another node in mesh
-    position: { x: 380, y: 170 },
+    // Bottom-right
+    position: { x: 580, y: 190 },
     connections: ['sc-traffic', 'sc-light', 'sc-sensor'],
   },
 ];
 
-// Digital Twin Layer - BOTTOM (y: 280-360)
-// Mirrors physical topology but in separate spatial layer
+// Digital Twin Layer - BOTTOM
+// Mirrors physical topology but in separate spatial layer (below mirror boundary at y=250)
 export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => {
   return devices.map((device, index) => ({
     id: `twin-${device.id}`,
@@ -225,8 +224,8 @@ export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => 
     contextInputs: ['Network topology', 'Historical patterns', 'Threat intelligence feeds'],
     driftIndicator: device.status === 'attack' ? 85 : device.status === 'warning' ? 45 : Math.random() * 15,
     status: device.status,
-    // Digital layer positioned BELOW physical layer
-    position: { x: device.position.x, y: device.position.y + 220 },
+    // Digital layer positioned BELOW mirror boundary (y=250)
+    position: { x: device.position.x, y: device.position.y + 200 },
   }));
 };
 
