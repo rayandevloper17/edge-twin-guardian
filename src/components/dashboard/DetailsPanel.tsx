@@ -18,7 +18,7 @@ import IntelligenceLevel2 from './content/IntelligenceLevel2';
 function AttackDashboard() {
   const { state } = useDashboard();
   const { alerts, metrics, devices } = state;
-  
+
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.resolved);
   const mediumAlerts = alerts.filter(a => a.severity === 'medium' && !a.resolved);
   const attackingDevices = devices.filter(d => d.status === 'attack');
@@ -96,7 +96,7 @@ function ContentArea1() {
   switch (currentStage) {
     case 'network-discovery':
       return <DiscoveryLevel1 />;
-    case 'digital-twin-creation':
+    case 'Digital -twin-creation':
       return <TwinCreationLevel1 />;
     case 'synchronization':
       return <SyncLevel1 />;
@@ -112,32 +112,32 @@ function ContentArea2() {
   const { state } = useDashboard();
   const { currentStage, selectedDeviceId, selectedTwinId, devices, twins } = state;
 
-  const selectedDevice = selectedDeviceId 
-    ? devices.find(d => d.id === selectedDeviceId) 
+  const selectedDevice = selectedDeviceId
+    ? devices.find(d => d.id === selectedDeviceId)
     : null;
-  
-  const selectedTwin = selectedTwinId 
+
+  const selectedTwin = selectedTwinId
     ? twins.find(t => t.id === selectedTwinId)
-    : selectedDevice 
-    ? twins.find(t => t.physicalDeviceId === selectedDevice.id)
-    : null;
+    : selectedDevice
+      ? twins.find(t => t.physicalDeviceId === selectedDevice.id)
+      : null;
 
   switch (currentStage) {
     case 'network-discovery':
-      return selectedDevice 
+      return selectedDevice
         ? <DiscoveryLevel2 device={selectedDevice} />
         : <EmptyState message="Select a physical device from the network to view its specifications" />;
-    
-    case 'digital-twin-creation':
+
+    case 'Digital -twin-creation':
       if (!state.twinCreationComplete) {
-        return <EmptyState message="Create digital twins to view model details and behavioral baselines" />;
+        return <EmptyState message="Create Digital  twins to view model details and behavioral baselines" />;
       }
       if (selectedTwin) {
         const device = devices.find(d => d.id === selectedTwin.physicalDeviceId);
         return device ? <TwinCreationLevel2 twin={selectedTwin} device={device} /> : null;
       }
-      return <EmptyState message="Select a digital twin to view its model configuration" />;
-    
+      return <EmptyState message="Select a Digital  twin to view its model configuration" />;
+
     case 'synchronization':
       if (selectedDevice || selectedTwin) {
         const device = selectedDevice || devices.find(d => d.id === selectedTwin?.physicalDeviceId);
@@ -147,10 +147,10 @@ function ContentArea2() {
         }
       }
       return <EmptyState message="Select a device or twin to view synchronization health and threat status" />;
-    
+
     case 'intelligence':
       return <IntelligenceLevel2 />;
-    
+
     default:
       return <EmptyState message="Select a stage from the system controller" />;
   }
@@ -175,7 +175,7 @@ export default function DetailsPanel() {
       <aside className="w-[300px] bg-card/50 backdrop-blur-sm flex flex-col h-full overflow-hidden">
         {/* Global Attack Dashboard */}
         <AttackDashboard />
-        
+
         <div className="px-4 py-3 border-b border-border/50 bg-muted/20">
           <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
             Content Area 2 — Details

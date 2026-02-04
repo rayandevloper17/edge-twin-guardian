@@ -1,4 +1,4 @@
-// Multi-domain theme configuration for the Digital Twin Command System
+// Multi-domain theme configuration for the Digital  Twin Command System
 
 import { UseCase } from '@/types/dashboard';
 
@@ -53,7 +53,7 @@ export const militaryTheme: ThemeConfig = {
     primary: '142 71% 45%',       // Military green
     accent: '142 76% 36%',        // Tactical green
     physical: '142 71% 45%',      // Green physical
-    twin: '160 60% 45%',          // Teal digital
+    twin: '160 60% 45%',          // Teal Digital 
     sync: '120 60% 50%',          // Bright green sync
     threat: '0 84% 60%',          // Red hostile
     background: '120 10% 4%',     // Deep black-green
@@ -68,7 +68,7 @@ export const militaryTheme: ThemeConfig = {
   terminology: {
     networkDiscovery: 'Asset Discovery',
     networkDiscoveryDesc: 'Scan perimeter IoT assets',
-    twinCreation: 'Digital Replication',
+    twinCreation: 'Digital  Replication',
     twinCreationDesc: 'Deploy virtual mirrors',
     synchronization: 'Real-Time Surveillance',
     synchronizationDesc: 'Active threat monitoring',
@@ -92,7 +92,7 @@ export const smartCityTheme: ThemeConfig = {
     primary: '199 89% 48%',       // Cyan blue
     accent: '210 100% 50%',       // Electric blue
     physical: '199 89% 55%',      // Light blue physical
-    twin: '262 83% 58%',          // Violet digital
+    twin: '262 83% 58%',          // Violet Digital 
     sync: '199 89% 48%',          // Cyan sync
     threat: '25 95% 53%',         // Orange warning
     background: '220 50% 6%',     // Deep blue
@@ -108,7 +108,7 @@ export const smartCityTheme: ThemeConfig = {
     networkDiscovery: 'Infrastructure Scan',
     networkDiscoveryDesc: 'Discover city IoT nodes',
     twinCreation: 'Virtual Modeling',
-    twinCreationDesc: 'Create digital replicas',
+    twinCreationDesc: 'Create Digital  replicas',
     synchronization: 'Continuous Monitoring',
     synchronizationDesc: 'Real-time sync & alerts',
     intelligence: 'Urban Risk Analysis',

@@ -37,7 +37,7 @@ export default function Home() {
       </div>
 
       {/* Subtle grid pattern */}
-      <div 
+      <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage: `
@@ -47,7 +47,7 @@ export default function Home() {
           backgroundSize: '60px 60px'
         }}
       />
-      
+
       {/* Main content */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 relative z-10">
         {/* Floating tech icons */}
@@ -62,11 +62,11 @@ export default function Home() {
         <div className="text-center mb-16 animate-fade-in">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/50 border border-border mb-6">
             <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-sm font-medium text-muted-foreground">Digital Twin Technology</span>
+            <span className="text-sm font-medium text-muted-foreground">Digital  Twin Technology</span>
           </div>
-          
+
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tight">
-            Network Edge Digital Twin
+            Network Edge Digital  Twin
           </h1>
           <h2 className="text-2xl md:text-3xl font-light bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             for IoT Attack Detection
@@ -87,18 +87,18 @@ export default function Home() {
           >
             {/* Card background - transforms to green on hover */}
             <div className="absolute inset-0 bg-card border border-border rounded-2xl transition-all duration-500 group-hover:border-[hsl(142,71%,45%)]/50 group-hover:bg-[hsl(120,10%,5%)]" />
-            
+
             {/* Military theme preview gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-[hsl(142,71%,45%)]/0 via-[hsl(142,71%,45%)]/0 to-[hsl(142,71%,45%)]/0 group-hover:from-[hsl(142,71%,45%)]/10 group-hover:via-transparent group-hover:to-[hsl(142,71%,45%)]/5 transition-all duration-500 rounded-2xl" />
-            
+
             {/* Glowing orb - green on hover */}
             <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl transition-all duration-500 group-hover:bg-[hsl(142,71%,45%)]/20 group-hover:w-48 group-hover:h-48" />
-            
+
             {/* Scan line effect */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden rounded-2xl">
               <div className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[hsl(142,71%,45%)]/50 to-transparent animate-scan-line" />
             </div>
-            
+
             {/* Corner accent */}
             <div className="absolute top-0 left-0 w-24 h-24 overflow-hidden">
               <div className="absolute -top-12 -left-12 w-24 h-24 bg-[hsl(142,71%,45%)]/0 group-hover:bg-[hsl(142,71%,45%)]/10 rotate-45 transition-all duration-500" />
@@ -114,14 +114,14 @@ export default function Home() {
                 {/* Glow effect */}
                 <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 shadow-[0_0_30px_hsl(142,71%,45%,0.4)]" />
               </div>
-              
+
               <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-[hsl(142,71%,45%)] transition-colors duration-500">
                 Military and Critical National Infrastructure
               </h3>
               <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
                 Defense installations, power grids, water systems, and national security networks
               </p>
-              
+
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-6">
                 <span className="px-3 py-1 text-xs rounded-full bg-secondary/50 text-muted-foreground group-hover:bg-[hsl(142,71%,45%)]/10 group-hover:text-[hsl(142,71%,45%)] transition-all duration-500">
@@ -131,7 +131,7 @@ export default function Home() {
                   High Security
                 </span>
               </div>
-              
+
               <div className="flex items-center text-primary group-hover:text-[hsl(142,71%,45%)] font-medium transition-colors duration-500">
                 <span>Enter Tactical Dashboard</span>
                 <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
@@ -146,19 +146,19 @@ export default function Home() {
           >
             {/* Card background - transforms to blue on hover */}
             <div className="absolute inset-0 bg-card border border-border rounded-2xl transition-all duration-500 group-hover:border-[hsl(199,89%,48%)]/50 group-hover:bg-[hsl(220,50%,6%)]" />
-            
+
             {/* Smart City theme preview gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-[hsl(199,89%,48%)]/0 via-[hsl(199,89%,48%)]/0 to-[hsl(199,89%,48%)]/0 group-hover:from-[hsl(199,89%,48%)]/10 group-hover:via-transparent group-hover:to-[hsl(199,89%,48%)]/5 transition-all duration-500 rounded-2xl" />
-            
+
             {/* Glowing orb - cyan on hover */}
             <div className="absolute -top-20 -right-20 w-40 h-40 bg-accent/5 rounded-full blur-3xl transition-all duration-500 group-hover:bg-[hsl(199,89%,48%)]/20 group-hover:w-48 group-hover:h-48" />
-            
+
             {/* Data stream effect */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden rounded-2xl">
               <div className="absolute inset-y-0 w-[1px] left-8 bg-gradient-to-b from-transparent via-[hsl(199,89%,48%)]/30 to-transparent" />
               <div className="absolute inset-y-0 w-[1px] right-8 bg-gradient-to-b from-transparent via-[hsl(199,89%,48%)]/20 to-transparent" />
             </div>
-            
+
             {/* Corner accent */}
             <div className="absolute bottom-0 right-0 w-32 h-32 overflow-hidden">
               <div className="absolute -bottom-16 -right-16 w-32 h-32 bg-[hsl(199,89%,48%)]/0 group-hover:bg-[hsl(199,89%,48%)]/10 rounded-full transition-all duration-500" />
@@ -175,14 +175,14 @@ export default function Home() {
                 {/* Glow effect */}
                 <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 shadow-[0_0_30px_hsl(199,89%,48%,0.4)]" />
               </div>
-              
+
               <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-[hsl(199,89%,48%)] transition-colors duration-500">
                 Smart Cities
               </h3>
               <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
                 Urban IoT networks, traffic systems, environmental monitoring, and public safety
               </p>
-              
+
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-6">
                 <span className="px-3 py-1 text-xs rounded-full bg-secondary/50 text-muted-foreground group-hover:bg-[hsl(199,89%,48%)]/10 group-hover:text-[hsl(199,89%,48%)] transition-all duration-500">
@@ -192,7 +192,7 @@ export default function Home() {
                   Vision 2030
                 </span>
               </div>
-              
+
               <div className="flex items-center text-accent group-hover:text-[hsl(199,89%,48%)] font-medium transition-colors duration-500">
                 <span>Enter Urban Dashboard</span>
                 <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform duration-300" />

@@ -14,26 +14,26 @@ interface StageMenuItem {
 
 // UX Copy as per specification
 const stageItems: StageMenuItem[] = [
-  { 
-    id: 'network-discovery', 
+  {
+    id: 'network-discovery',
     label: 'Network Discovery',
     description: 'Identify and map physical devices across the network',
     icon: Search,
   },
-  { 
-    id: 'digital-twin-creation', 
-    label: 'Digital Twin Creation',
+  {
+    id: 'Digital -twin-creation',
+    label: 'Digital  Twin Creation',
     description: 'Create and manage virtual representations of physical assets',
     icon: Copy,
   },
-  { 
-    id: 'synchronization', 
+  {
+    id: 'synchronization',
     label: 'Synchronization & Monitoring',
     description: 'Connect, synchronize, and monitor devices for anomalies and attacks',
     icon: RefreshCw,
   },
-  { 
-    id: 'intelligence', 
+  {
+    id: 'intelligence',
     label: 'System Intelligence & Logs',
     description: 'Analyze system behavior, intelligence outputs, and event logs',
     icon: Brain,
@@ -56,19 +56,19 @@ export default function LeftMenu() {
   };
 
   const isStageComplete = (stage: SystemStage): boolean => {
-    const stageOrder: SystemStage[] = ['network-discovery', 'digital-twin-creation', 'synchronization', 'intelligence'];
+    const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'intelligence'];
     const currentIndex = stageOrder.indexOf(state.currentStage);
     const targetIndex = stageOrder.indexOf(stage);
-    
+
     if (stage === 'network-discovery') return state.twinCreationComplete;
-    if (stage === 'digital-twin-creation') return state.twinCreationComplete;
+    if (stage === 'Digital -twin-creation') return state.twinCreationComplete;
     return targetIndex < currentIndex;
   };
 
   // Theme-specific icon
   const ThemeIcon = state.useCase === 'military' ? Shield : Building2;
-  const useCaseLabel = state.useCase === 'military' 
-    ? 'Military and Critical National Infrastructure' 
+  const useCaseLabel = state.useCase === 'military'
+    ? 'Military and Critical National Infrastructure'
     : 'Smart Cities';
 
   return (
@@ -128,9 +128,9 @@ export default function LeftMenu() {
                   {/* Stage number badge */}
                   <span className={cn(
                     'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-all mt-0.5',
-                    isActive ? 'bg-primary text-primary-foreground shadow-md shadow-primary/30' : 
-                    isComplete ? 'bg-success/20 text-success' :
-                    'bg-muted text-muted-foreground'
+                    isActive ? 'bg-primary text-primary-foreground shadow-md shadow-primary/30' :
+                      isComplete ? 'bg-success/20 text-success' :
+                        'bg-muted text-muted-foreground'
                   )}>
                     {isComplete && !isActive ? (
                       <CheckCircle className="w-4 h-4" />
@@ -138,13 +138,13 @@ export default function LeftMenu() {
                       getStageNumber(item.id)
                     )}
                   </span>
-                  
+
                   {/* Label and description */}
                   <div className="flex-1 text-left min-w-0">
                     <span className={cn(
                       'text-sm block font-medium leading-tight',
-                      isActive ? 'text-primary' : 
-                      isLocked ? 'text-muted-foreground' : 'text-sidebar-foreground'
+                      isActive ? 'text-primary' :
+                        isLocked ? 'text-muted-foreground' : 'text-sidebar-foreground'
                     )}>
                       {item.label}
                     </span>
@@ -185,7 +185,7 @@ export default function LeftMenu() {
             state.twinCreationComplete ? 'bg-success animate-pulse' : 'bg-warning'
           )} />
           <span className="text-muted-foreground font-medium">
-            {state.twinCreationComplete 
+            {state.twinCreationComplete
               ? 'System Active'
               : 'Awaiting Twin Creation'
             }
@@ -196,7 +196,7 @@ export default function LeftMenu() {
             Physical Devices: <span className="text-foreground font-mono font-medium">{state.devices.length}</span>
           </div>
           <div className="text-muted-foreground">
-            Digital Twins: <span className="text-foreground font-mono font-medium">{state.twins.length}</span>
+            Digital  Twins: <span className="text-foreground font-mono font-medium">{state.twins.length}</span>
           </div>
         </div>
         {state.alerts.filter(a => !a.resolved && a.severity === 'critical').length > 0 && (

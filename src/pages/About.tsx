@@ -15,7 +15,7 @@ export default function About() {
     <div className="min-h-screen bg-background">
       {/* Background */}
       <div className="absolute inset-0 grid-overlay opacity-20" />
-      
+
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
         <div className="container mx-auto px-4 py-4 flex items-center gap-4">
@@ -24,7 +24,7 @@ export default function About() {
           </Button>
           <div>
             <h1 className="font-semibold text-foreground">About</h1>
-            <p className="text-sm text-muted-foreground">Network Edge Digital Twin for IoT Attack Detection</p>
+            <p className="text-sm text-muted-foreground">Network Edge Digital  Twin for IoT Attack Detection</p>
           </div>
         </div>
       </header>
@@ -35,14 +35,14 @@ export default function About() {
         <section className="mb-12">
           <p className="text-lg text-muted-foreground leading-relaxed mb-6">
             This website provides a technical demonstration of the U.S.-registered patent entitled{' '}
-            <span className="text-foreground font-semibold">"Network Edge Digital Twin for IoT Attack Detection"</span>{' '}
+            <span className="text-foreground font-semibold">"Network Edge Digital  Twin for IoT Attack Detection"</span>{' '}
             (Patent Grant Number: <span className="text-primary font-mono">US 12301597 B1</span>).
           </p>
           <p className="text-muted-foreground leading-relaxed">
-            The platform illustrates how a network-edge digital twin architecture can be deployed within IoT 
-            environments to enable real-time cyberattack detection and analysis while preserving the functional 
-            integrity and performance of the physical IoT network. By offloading monitoring and security analytics 
-            to dynamically instantiated digital twins at the network edge, the proposed approach minimizes latency, 
+            The platform illustrates how a network-edge Digital  twin architecture can be deployed within IoT
+            environments to enable real-time cyberattack detection and analysis while preserving the functional
+            integrity and performance of the physical IoT network. By offloading monitoring and security analytics
+            to dynamically instantiated Digital  twins at the network edge, the proposed approach minimizes latency,
             reduces operational overhead, and avoids interference with mission-critical IoT services.
           </p>
         </section>
@@ -51,7 +51,7 @@ export default function About() {
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-foreground mb-6">Use Cases</h2>
           <p className="text-muted-foreground mb-6">The website demonstrates two primary application scenarios:</p>
-          
+
           <div className="space-y-6">
             {/* Military Use Case */}
             <div className="p-6 rounded-xl bg-card border border-border">
@@ -64,10 +64,10 @@ export default function About() {
                 </h3>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                In defense-oriented IoT deployments, the proposed digital twin framework supports the protection 
-                of critical national infrastructure by enabling early detection of cyber threats targeting 
-                distributed sensors, communication nodes, and edge devices. The isolation of security analysis 
-                within digital twins allows continuous monitoring without exposing operational systems to 
+                In defense-oriented IoT deployments, the proposed Digital  twin framework supports the protection
+                of critical national infrastructure by enabling early detection of cyber threats targeting
+                distributed sensors, communication nodes, and edge devices. The isolation of security analysis
+                within Digital  twins allows continuous monitoring without exposing operational systems to
                 additional risk, making the approach suitable for high-assurance and mission-critical environments.
               </p>
             </div>
@@ -83,10 +83,10 @@ export default function About() {
                 </h3>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                As Saudi Vision 2030 progressively advances the implementation of smart cities, large-scale IoT 
-                infrastructures play a central role in transportation, energy management, public safety, and urban 
-                services. The proposed solution addresses the growing need to secure smart city IoT ecosystems by 
-                providing scalable, edge-based attack detection that adapts to evolving urban deployments while 
+                As Saudi Vision 2030 progressively advances the implementation of smart cities, large-scale IoT
+                infrastructures play a central role in transportation, energy management, public safety, and urban
+                services. The proposed solution addresses the growing need to secure smart city IoT ecosystems by
+                providing scalable, edge-based attack detection that adapts to evolving urban deployments while
                 maintaining service availability and resilience.
               </p>
             </div>
@@ -97,12 +97,12 @@ export default function About() {
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-foreground mb-6">System Capabilities</h2>
           <p className="text-muted-foreground leading-relaxed mb-6">
-            The website allows users to interact with a live physical IoT network and dynamically instantiate 
-            digital twins on demand. These digital twins replicate network behavior and traffic patterns, 
-            enabling continuous monitoring, anomaly detection, and cybersecurity evaluation without disrupting 
+            The website allows users to interact with a live physical IoT network and dynamically instantiate
+            Digital  twins on demand. These Digital  twins replicate network behavior and traffic patterns,
+            enabling continuous monitoring, anomaly detection, and cybersecurity evaluation without disrupting
             real-world IoT operations.
           </p>
-          
+
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="p-5 rounded-xl bg-card border border-border">
               <Network className="w-8 h-8 text-primary mb-3" />
@@ -113,7 +113,7 @@ export default function About() {
             </div>
             <div className="p-5 rounded-xl bg-card border border-border">
               <Cpu className="w-8 h-8 text-primary mb-3" />
-              <h4 className="font-medium text-foreground mb-2">Digital Twin Creation</h4>
+              <h4 className="font-medium text-foreground mb-2">Digital  Twin Creation</h4>
               <p className="text-sm text-muted-foreground">
                 Create and manage virtual representations of physical assets with model baselines
               </p>
@@ -138,23 +138,23 @@ export default function About() {
         {/* Inventors */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-foreground mb-6">Inventors</h2>
-          
+
           <div className="space-y-4">
             <div className="p-5 rounded-xl bg-card border border-border">
               <h4 className="font-semibold text-foreground mb-2">Malak Alhazmi</h4>
-              <a 
-                href="mailto:malakalhazmi@gmail.com" 
+              <a
+                href="mailto:malakalhazmi@gmail.com"
                 className="inline-flex items-center gap-2 text-primary hover:underline text-sm"
               >
                 <Mail className="w-4 h-4" />
                 malakalhazmi@gmail.com
               </a>
             </div>
-            
+
             <div className="p-5 rounded-xl bg-card border border-border">
               <h4 className="font-semibold text-foreground mb-2">Dr. Fatimah Alakeel</h4>
-              <a 
-                href="mailto:fyalakeel@ksu.edu.sa" 
+              <a
+                href="mailto:fyalakeel@ksu.edu.sa"
                 className="inline-flex items-center gap-2 text-primary hover:underline text-sm"
               >
                 <Mail className="w-4 h-4" />
@@ -170,9 +170,9 @@ export default function About() {
           <div className="p-6 rounded-xl bg-gradient-to-br from-primary/10 to-accent/5 border border-primary/20">
             <p className="text-xl font-semibold text-foreground mb-2">King Saud University</p>
             <p className="text-muted-foreground mb-4">Riyadh, Saudi Arabia</p>
-            <a 
-              href="https://ksu.edu.sa/en" 
-              target="_blank" 
+            <a
+              href="https://ksu.edu.sa/en"
+              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-primary hover:underline"
             >

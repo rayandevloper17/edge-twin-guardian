@@ -1,19 +1,19 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { 
-  DashboardState, 
-  UseCase, 
-  SystemStage, 
-  PhysicalDevice, 
-  DigitalTwin, 
+import {
+  DashboardState,
+  UseCase,
+  SystemStage,
+  PhysicalDevice,
+  DigitalTwin,
   Alert,
-  SystemMetrics 
+  SystemMetrics
 } from '@/types/dashboard';
-import { 
-  militaryDevices, 
-  smartCityDevices, 
-  createDigitalTwins, 
+import {
+  militaryDevices,
+  smartCityDevices,
+  createDigitalTwins,
   generateAlerts,
-  generateMetrics 
+  generateMetrics
 } from '@/data/mockData';
 
 type DashboardAction =
@@ -66,15 +66,15 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
     }
     case 'SET_STAGE':
       // Enforce lifecycle order
-      const stageOrder: SystemStage[] = ['network-discovery', 'digital-twin-creation', 'synchronization', 'intelligence'];
+      const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'intelligence'];
       const currentIndex = stageOrder.indexOf(state.currentStage);
       const newIndex = stageOrder.indexOf(action.payload);
-      
+
       // Can only go forward if twins are created (for sync and intelligence stages)
       if (newIndex > 1 && !state.twinCreationComplete) {
         return state;
       }
-      
+
       return {
         ...state,
         currentStage: action.payload,
@@ -142,12 +142,12 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const createTwins = () => dispatch({ type: 'CREATE_TWINS' });
 
   const canAccessStage = (stage: SystemStage): boolean => {
-    const stageOrder: SystemStage[] = ['network-discovery', 'digital-twin-creation', 'synchronization', 'intelligence'];
+    const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'intelligence'];
     const targetIndex = stageOrder.indexOf(stage);
-    
+
     // Can always access first two stages
     if (targetIndex <= 1) return true;
-    
+
     // Need twins created for sync and intelligence
     return state.twinCreationComplete;
   };

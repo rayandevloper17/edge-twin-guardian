@@ -1,7 +1,7 @@
 import { useDashboard } from '@/context/DashboardContext';
 import { cn } from '@/lib/utils';
-import { 
-  FileText, 
+import {
+  FileText,
   Brain,
   Link2,
   Clock,
@@ -39,22 +39,22 @@ export default function IntelligenceLevel2() {
       <Section title="Event Logs" icon={FileText}>
         <div className="space-y-2 max-h-48 overflow-y-auto">
           {recentAlerts.map((alert) => (
-            <div 
-              key={alert.id} 
+            <div
+              key={alert.id}
               className={cn(
                 'p-3 rounded-lg border',
-                alert.severity === 'critical' 
-                  ? 'bg-destructive/10 border-destructive/30' 
+                alert.severity === 'critical'
+                  ? 'bg-destructive/10 border-destructive/30'
                   : alert.severity === 'medium'
-                  ? 'bg-warning/10 border-warning/30'
-                  : 'bg-muted/30 border-border/50'
+                    ? 'bg-warning/10 border-warning/30'
+                    : 'bg-muted/30 border-border/50'
               )}
             >
               <div className="flex items-start justify-between mb-1">
                 <span className={cn(
                   'text-xs font-semibold uppercase',
                   alert.severity === 'critical' ? 'text-destructive' :
-                  alert.severity === 'medium' ? 'text-warning' : 'text-primary'
+                    alert.severity === 'medium' ? 'text-warning' : 'text-primary'
                 )}>
                   {alert.type.replace('-', ' ')}
                 </span>
@@ -80,12 +80,12 @@ export default function IntelligenceLevel2() {
             <span className="text-xs text-muted-foreground block mb-2">Detected Attack Patterns</span>
             <div className="flex flex-wrap gap-2">
               {['DDoS Attempt', 'Port Scanning', 'Data Exfiltration'].map((pattern, i) => (
-                <span 
+                <span
                   key={i}
                   className={cn(
                     'px-2 py-1 rounded text-[10px] font-medium',
                     i === 0 ? 'bg-destructive/20 text-destructive' :
-                    i === 1 ? 'bg-warning/20 text-warning' : 'bg-primary/20 text-primary'
+                      i === 1 ? 'bg-warning/20 text-warning' : 'bg-primary/20 text-primary'
                   )}
                 >
                   {pattern}
@@ -144,7 +144,7 @@ export default function IntelligenceLevel2() {
           </div>
 
           <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
-            <span className="text-xs text-muted-foreground block mb-2">Associated Digital Twins</span>
+            <span className="text-xs text-muted-foreground block mb-2">Associated Digital  Twins</span>
             <div className="flex flex-wrap gap-1">
               {twins.filter(t => t.status === 'attack' || t.status === 'warning').slice(0, 3).map(twin => (
                 <span key={twin.id} className="px-2 py-1 rounded text-[10px] bg-warning/10 text-warning">
@@ -176,19 +176,19 @@ export default function IntelligenceLevel2() {
       {/* Audit & Compliance */}
       <Section title="Audit & Compliance" icon={FileText}>
         <div className="space-y-2">
-          <AuditRow 
+          <AuditRow
             icon={User}
-            label="User Actions" 
+            label="User Actions"
             value={`${Math.floor(Math.random() * 20) + 5} today`}
           />
-          <AuditRow 
+          <AuditRow
             icon={Server}
-            label="System Decisions" 
+            label="System Decisions"
             value={`${alerts.length} automated`}
           />
-          <AuditRow 
+          <AuditRow
             icon={FileText}
-            label="Historical Records" 
+            label="Historical Records"
             value="30 days retained"
           />
         </div>
@@ -197,12 +197,12 @@ export default function IntelligenceLevel2() {
   );
 }
 
-function Section({ 
-  title, 
-  icon: Icon, 
-  children 
-}: { 
-  title: string; 
+function Section({
+  title,
+  icon: Icon,
+  children
+}: {
+  title: string;
   icon: React.ElementType;
   children: React.ReactNode;
 }) {
@@ -219,13 +219,13 @@ function Section({
   );
 }
 
-function AuditRow({ 
-  icon: Icon, 
-  label, 
-  value 
-}: { 
-  icon: React.ElementType; 
-  label: string; 
+function AuditRow({
+  icon: Icon,
+  label,
+  value
+}: {
+  icon: React.ElementType;
+  label: string;
   value: string;
 }) {
   return (

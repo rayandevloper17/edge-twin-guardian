@@ -193,7 +193,7 @@ export const smartCityDevices: PhysicalDevice[] = [
   },
 ];
 
-// Digital Twin Layer - BOTTOM
+// Digital  Twin Layer - BOTTOM
 // Mirrors physical topology but in separate spatial layer (below mirror boundary at y=250)
 export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => {
   return devices.map((device, index) => ({
@@ -224,7 +224,7 @@ export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => 
     contextInputs: ['Network topology', 'Historical patterns', 'Threat intelligence feeds'],
     driftIndicator: device.status === 'attack' ? 85 : device.status === 'warning' ? 45 : Math.random() * 15,
     status: device.status,
-    // Digital layer positioned BELOW mirror boundary (y=250)
+    // Digital  layer positioned BELOW mirror boundary (y=250)
     position: { x: device.position.x, y: device.position.y + 200 },
   }));
 };
@@ -232,9 +232,9 @@ export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => 
 export const generateAlerts = (devices: PhysicalDevice[]): Alert[] => {
   const attackDevices = devices.filter(d => d.status === 'attack');
   const warningDevices = devices.filter(d => d.status === 'warning');
-  
+
   const alerts: Alert[] = [];
-  
+
   attackDevices.forEach((device, i) => {
     alerts.push({
       id: `alert-${i + 1}`,
@@ -248,7 +248,7 @@ export const generateAlerts = (devices: PhysicalDevice[]): Alert[] => {
       actionsTaken: ['In Quarantine', 'Traffic isolated', 'Incident reported to SOC'],
       resolved: false,
     });
-    
+
     alerts.push({
       id: `alert-${i + 2}`,
       timestamp: new Date(Date.now() - 120000),
@@ -262,7 +262,7 @@ export const generateAlerts = (devices: PhysicalDevice[]): Alert[] => {
       resolved: false,
     });
   });
-  
+
   warningDevices.forEach((device, i) => {
     alerts.push({
       id: `alert-warning-${i + 1}`,
@@ -276,7 +276,7 @@ export const generateAlerts = (devices: PhysicalDevice[]): Alert[] => {
       resolved: false,
     });
   });
-  
+
   return alerts;
 };
 

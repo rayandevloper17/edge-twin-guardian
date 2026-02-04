@@ -4,9 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Network Edge Digital Twin Dashboard - Multi-Domain Command System */
+/* Network Edge Digital  Twin Dashboard - Multi-Domain Command System */
 
 @layer base {
+
   /* ============================================
      NEUTRAL THEME - Default Landing Page
      Deep purple/violet, sophisticated tech feel
@@ -40,10 +41,10 @@
     /* Status colors */
     --destructive: 0 84% 60%;
     --destructive-foreground: 250 10% 98%;
-    
+
     --warning: 45 93% 47%;
     --warning-foreground: 250 25% 6%;
-    
+
     --success: 160 60% 45%;
     --success-foreground: 250 25% 6%;
 
@@ -69,7 +70,7 @@
     --sidebar-border: 260 15% 14%;
     --sidebar-ring: 270 60% 60%;
 
-    /* Digital Twin layers */
+    /* Digital  Twin layers */
     --physical: 270 60% 60%;
     --twin: 280 70% 55%;
     --sync: 270 50% 65%;
@@ -113,10 +114,10 @@
     /* Status colors - Military: Red = Hostile */
     --destructive: 0 84% 60%;
     --destructive-foreground: 120 20% 98%;
-    
+
     --warning: 45 93% 47%;
     --warning-foreground: 120 10% 4%;
-    
+
     --success: 142 71% 45%;
     --success-foreground: 120 10% 4%;
 
@@ -140,7 +141,7 @@
     --sidebar-border: 120 15% 12%;
     --sidebar-ring: 142 71% 45%;
 
-    /* Digital Twin layers */
+    /* Digital  Twin layers */
     --physical: 142 71% 45%;
     --twin: 160 60% 45%;
     --sync: 120 60% 50%;
@@ -184,10 +185,10 @@
     /* Status colors - Smart City: Orange = Alert */
     --destructive: 25 95% 53%;
     --destructive-foreground: 220 50% 98%;
-    
+
     --warning: 45 93% 47%;
     --warning-foreground: 220 50% 6%;
-    
+
     --success: 199 89% 48%;
     --success-foreground: 220 50% 6%;
 
@@ -211,7 +212,7 @@
     --sidebar-border: 220 40% 14%;
     --sidebar-ring: 199 89% 48%;
 
-    /* Digital Twin layers */
+    /* Digital  Twin layers */
     --physical: 199 89% 55%;
     --twin: 262 83% 58%;
     --sync: 199 89% 48%;
@@ -233,21 +234,23 @@
     font-family: 'Inter', system-ui, sans-serif;
   }
 
-  code, .mono {
+  code,
+  .mono {
     font-family: 'JetBrains Mono', monospace;
   }
 }
 
 @layer components {
+
   /* Glowing effects */
   .glow-primary {
     box-shadow: 0 0 20px hsl(var(--glow-primary) / 0.3),
-                0 0 40px hsl(var(--glow-primary) / 0.1);
+      0 0 40px hsl(var(--glow-primary) / 0.1);
   }
 
   .glow-attack {
     box-shadow: 0 0 20px hsl(var(--glow-attack) / 0.5),
-                0 0 40px hsl(var(--glow-attack) / 0.2);
+      0 0 40px hsl(var(--glow-attack) / 0.2);
   }
 
   .glow-success {
@@ -270,11 +273,11 @@
     background: hsl(var(--physical-device) / 0.1);
   }
 
-  /* Digital twin styling */
+  /* Digital  twin styling */
   .device-twin {
     @apply border-2 rounded-full;
-    border-color: hsl(var(--digital-twin));
-    background: hsl(var(--digital-twin) / 0.1);
+    border-color: hsl(var(--Digital -twin));
+    background: hsl(var(--Digital -twin) / 0.1);
   }
 
   /* Attack pulse animation */
@@ -340,7 +343,7 @@
 
   /* Grid overlay effect */
   .grid-overlay {
-    background-image: 
+    background-image:
       linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
       linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
     background-size: 40px 40px;
@@ -360,11 +363,11 @@
   .fill-physical {
     fill: hsl(var(--physical));
   }
-  
+
   .fill-twin {
     fill: hsl(var(--twin));
   }
-  
+
   .fill-sync {
     fill: hsl(var(--sync));
   }
@@ -372,11 +375,11 @@
   .stroke-physical {
     stroke: hsl(var(--physical));
   }
-  
+
   .stroke-twin {
     stroke: hsl(var(--twin));
   }
-  
+
   .stroke-sync {
     stroke: hsl(var(--sync));
   }
@@ -396,20 +399,26 @@
 
 /* Keyframe animations */
 @keyframes attackPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 5px hsl(var(--attack-state) / 0.5),
-                0 0 20px hsl(var(--attack-state) / 0.3);
+      0 0 20px hsl(var(--attack-state) / 0.3);
   }
+
   50% {
     box-shadow: 0 0 20px hsl(var(--attack-state) / 0.8),
-                0 0 40px hsl(var(--attack-state) / 0.5);
+      0 0 40px hsl(var(--attack-state) / 0.5);
   }
 }
 
 @keyframes syncPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.6;
   }
@@ -419,6 +428,7 @@
   0% {
     stroke-dashoffset: 20;
   }
+
   100% {
     stroke-dashoffset: 0;
   }
@@ -429,6 +439,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -436,9 +447,12 @@
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg);
   }
+
   50% {
     transform: translateY(-20px) rotate(5deg);
   }
@@ -448,6 +462,7 @@
   0% {
     transform: translateY(-100%);
   }
+
   100% {
     transform: translateY(500%);
   }

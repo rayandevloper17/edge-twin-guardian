@@ -7,10 +7,10 @@ import { ArrowRight, Wifi, Radio, Camera, Cpu, Server } from 'lucide-react';
 import { getTheme } from '@/config/themes';
 
 // Modern device node component
-function DeviceNode({ 
-  device, 
-  isSelected, 
-  onClick, 
+function DeviceNode({
+  device,
+  isSelected,
+  onClick,
   onHover,
   variant = 'physical'
 }: {
@@ -31,7 +31,7 @@ function DeviceNode({
       "w-6 h-6",
       isTwin ? "stroke-[1.5]" : "stroke-2"
     );
-    
+
     switch (device.deviceType) {
       case 'radar': return <Radio className={iconClass} />;
       case 'camera': return <Camera className={iconClass} />;
@@ -140,13 +140,13 @@ function DeviceNode({
       {/* Alert badge */}
       {isAttack && (
         <g transform="translate(0, -46)">
-          <rect 
-            x="-24" y="-10" width="48" height="20" rx="10" 
+          <rect
+            x="-24" y="-10" width="48" height="20" rx="10"
             className="fill-destructive shadow-lg"
           />
-          <text 
-            x="0" y="4" 
-            textAnchor="middle" 
+          <text
+            x="0" y="4"
+            textAnchor="middle"
             className="fill-white text-[9px] font-bold tracking-wide"
           >
             {theme.terminology.threatLabel}
@@ -155,18 +155,18 @@ function DeviceNode({
       )}
 
       {/* Device name */}
-      <text 
-        y="52" 
-        textAnchor="middle" 
+      <text
+        y="52"
+        textAnchor="middle"
         className="fill-foreground text-[11px] font-semibold"
       >
         {isTwin ? `DT-${device.name.split(' ')[0]}` : device.name}
       </text>
-      
+
       {/* IP Address */}
-      <text 
-        y="66" 
-        textAnchor="middle" 
+      <text
+        y="66"
+        textAnchor="middle"
         className="fill-muted-foreground text-[9px] font-mono"
       >
         {device.ipAddress}
@@ -176,19 +176,19 @@ function DeviceNode({
 }
 
 // Connection line component
-function ConnectionLine({ 
-  x1, y1, x2, y2, 
-  isAttack = false, 
+function ConnectionLine({
+  x1, y1, x2, y2,
+  isAttack = false,
   isDashed = false,
-  showFlow = false 
-}: { 
+  showFlow = false
+}: {
   x1: number; y1: number; x2: number; y2: number;
   isAttack?: boolean;
   isDashed?: boolean;
   showFlow?: boolean;
 }) {
   const pathId = `path-${x1}-${y1}-${x2}-${y2}`;
-  
+
   return (
     <g>
       {/* Main line */}
@@ -202,7 +202,7 @@ function ConnectionLine({
         strokeDasharray={isDashed ? "8 6" : "none"}
         strokeLinecap="round"
       />
-      
+
       {/* Connection dots at ends */}
       <circle cx={x1} cy={y1} r="4" className={cn(
         isAttack ? "fill-destructive" : isDashed ? "fill-twin" : "fill-physical"
@@ -215,8 +215,8 @@ function ConnectionLine({
       {showFlow && (
         <>
           <path id={pathId} d={`M${x1},${y1} L${x2},${y2}`} fill="none" />
-          <circle 
-            r="3" 
+          <circle
+            r="3"
             className={cn(isAttack ? "fill-destructive" : "fill-sync")}
           >
             <animateMotion dur="2s" repeatCount="indefinite">
@@ -230,11 +230,11 @@ function ConnectionLine({
 }
 
 // Mirroring link with latency indicator
-function MirrorLink({ 
-  x1, y1, x2, y2, 
-  latency, 
-  isAttack = false 
-}: { 
+function MirrorLink({
+  x1, y1, x2, y2,
+  latency,
+  isAttack = false
+}: {
   x1: number; y1: number; x2: number; y2: number;
   latency: number;
   isAttack?: boolean;
@@ -258,17 +258,17 @@ function MirrorLink({
       />
 
       {/* Top connection point */}
-      <circle 
-        cx={x1} cy={y1 + 35} r="5" 
+      <circle
+        cx={x1} cy={y1 + 35} r="5"
         className={cn(
           isAttack ? "fill-destructive" : "fill-sync",
           "transition-colors"
         )}
       />
-      
+
       {/* Bottom connection point */}
-      <circle 
-        cx={x2} cy={y2 - 35} r="5" 
+      <circle
+        cx={x2} cy={y2 - 35} r="5"
         className={cn(
           isAttack ? "fill-destructive" : "fill-sync",
           "transition-colors"
@@ -277,8 +277,8 @@ function MirrorLink({
 
       {/* Animated sync pulse */}
       <path id={pathId} d={`M${x1},${y1 + 35} L${x2},${y2 - 35}`} fill="none" />
-      <circle 
-        r="4" 
+      <circle
+        r="4"
         className={cn(
           isAttack ? "fill-destructive" : "fill-sync",
           isAttack && "animate-pulse"
@@ -292,9 +292,9 @@ function MirrorLink({
       {/* Latency badge */}
       <g transform={`translate(${midX + 16}, ${midY})`}>
         <rect x="-12" y="-8" width="36" height="16" rx="4" className="fill-background/90 stroke-border" strokeWidth="1" />
-        <text 
-          x="6" y="4" 
-          textAnchor="middle" 
+        <text
+          x="6" y="4"
+          textAnchor="middle"
           className={cn(
             "text-[9px] font-mono font-medium",
             isAttack ? "fill-destructive" : latency > 50 ? "fill-warning" : "fill-sync"
@@ -311,7 +311,7 @@ function MirrorLink({
 function LayerLabel({ x, y, label, color }: { x: number; y: number; label: string; color: string }) {
   return (
     <g transform={`translate(${x}, ${y})`}>
-      <text 
+      <text
         className={cn("text-[13px] font-bold uppercase tracking-[0.2em]", color)}
         style={{ letterSpacing: '0.15em' }}
       >
@@ -368,10 +368,10 @@ export default function NetworkGraph() {
     return lines;
   }, [devices]);
 
-  // Digital twin connections
+  // Digital  twin connections
   const twinConnections = useMemo(() => {
     if (!showDigitalLayer) return [];
-    
+
     const lines: { x1: number; y1: number; x2: number; y2: number; key: string; isAttackPath: boolean }[] = [];
     const processed = new Set<string>();
 
@@ -405,7 +405,7 @@ export default function NetworkGraph() {
   // Mirroring links
   const mirroringLinks = useMemo(() => {
     if (!showMirroringLinks) return [];
-    
+
     return twins.map(twin => {
       const physical = devices.find(d => d.id === twin.physicalDeviceId);
       if (!physical) return null;
@@ -429,7 +429,7 @@ export default function NetworkGraph() {
       hasActiveAttack && currentStage === 'synchronization' && "bg-destructive/[0.02]"
     )}>
       {/* Grid background */}
-      <div 
+      <div
         className="absolute inset-0"
         style={{
           backgroundImage: `
@@ -439,9 +439,9 @@ export default function NetworkGraph() {
           backgroundSize: '60px 60px',
         }}
       />
-      
+
       {/* Radial gradient overlay */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
@@ -453,9 +453,9 @@ export default function NetworkGraph() {
       {/* Main visualization container - centered */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="relative w-full max-w-4xl aspect-[16/10]">
-          <svg 
-            className="w-full h-full" 
-            viewBox="0 0 800 500" 
+          <svg
+            className="w-full h-full"
+            viewBox="0 0 800 500"
             preserveAspectRatio="xMidYMid meet"
           >
             {/* ===== PHYSICAL NETWORK LAYER (TOP) ===== */}
@@ -499,9 +499,9 @@ export default function NetworkGraph() {
                   strokeDasharray="12 8"
                 />
                 <rect x="330" y="238" width="140" height="24" rx="12" className="fill-background stroke-border/50" strokeWidth="1" />
-                <text 
-                  x="400" y="254" 
-                  textAnchor="middle" 
+                <text
+                  x="400" y="254"
+                  textAnchor="middle"
                   className="fill-muted-foreground text-[10px] uppercase tracking-[0.15em] font-medium"
                 >
                   Mirror Boundary
@@ -522,11 +522,11 @@ export default function NetworkGraph() {
               />
             ))}
 
-            {/* ===== DIGITAL TWIN LAYER (BOTTOM) ===== */}
+            {/* ===== Digital  TWIN LAYER (BOTTOM) ===== */}
             {showDigitalLayer && (
               <g className={cn(isIntelligenceFocus && "opacity-50 transition-opacity")}>
                 {/* Layer label */}
-                <LayerLabel x={50} y={295} label="Digital Twin Network" color="fill-twin" />
+                <LayerLabel x={50} y={295} label="Digital  Twin Network" color="fill-twin" />
 
                 {/* Twin connections */}
                 {twinConnections.map(line => (
@@ -542,11 +542,11 @@ export default function NetworkGraph() {
                   />
                 ))}
 
-                {/* Digital twins */}
+                {/* Digital  twins */}
                 {twins.map(twin => {
                   const physicalDevice = devices.find(d => d.id === twin.physicalDeviceId);
                   if (!physicalDevice) return null;
-                  
+
                   // Create a device-like object for the twin
                   const twinAsDevice = {
                     ...physicalDevice,
@@ -554,7 +554,7 @@ export default function NetworkGraph() {
                     position: twin.position,
                     status: twin.status,
                   };
-                  
+
                   return (
                     <DeviceNode
                       key={twin.id}
@@ -578,7 +578,7 @@ export default function NetworkGraph() {
           <div className="flex items-center justify-between gap-4">
             {[
               { id: 'network-discovery', label: 'Discovery' },
-              { id: 'digital-twin-creation', label: 'Twin Creation' },
+              { id: 'Digital -twin-creation', label: 'Twin Creation' },
               { id: 'synchronization', label: 'Synchronization' },
               { id: 'intelligence', label: 'Intelligence' },
             ].map((stage, index, arr) => (
@@ -586,8 +586,8 @@ export default function NetworkGraph() {
                 <div className="flex items-center gap-2 flex-1">
                   <div className={cn(
                     "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
-                    currentStage === stage.id 
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30" 
+                    currentStage === stage.id
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
                       : "bg-muted text-muted-foreground"
                   )}>
                     {index + 1}
@@ -611,20 +611,20 @@ export default function NetworkGraph() {
       {/* Action buttons */}
       {currentStage === 'network-discovery' && (
         <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20">
-          <Button 
+          <Button
             onClick={() => createTwins()}
             size="lg"
             className="gap-2 shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-shadow"
           >
             <ArrowRight className="w-4 h-4" />
-            Create Digital Twins
+            Create Digital  Twins
           </Button>
         </div>
       )}
 
-      {currentStage === 'digital-twin-creation' && state.twinCreationComplete && (
+      {currentStage === 'Digital -twin-creation' && state.twinCreationComplete && (
         <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20">
-          <Button 
+          <Button
             onClick={() => setStage('synchronization')}
             size="lg"
             className="gap-2 shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-shadow"
@@ -664,24 +664,24 @@ function HoverTooltip({ deviceId }: { deviceId: string }) {
             device.status === 'attack' ? "bg-destructive/20 text-destructive" : "bg-primary/20 text-primary"
           )}>
             {device.deviceType === 'gateway' ? <Server className="w-5 h-5" /> :
-             device.deviceType === 'camera' ? <Camera className="w-5 h-5" /> :
-             device.deviceType === 'sensor' ? <Wifi className="w-5 h-5" /> :
-             <Radio className="w-5 h-5" />}
+              device.deviceType === 'camera' ? <Camera className="w-5 h-5" /> :
+                device.deviceType === 'sensor' ? <Wifi className="w-5 h-5" /> :
+                  <Radio className="w-5 h-5" />}
           </div>
           <div>
             <h4 className="text-sm font-semibold text-foreground">{device.name}</h4>
             <p className="text-[10px] text-muted-foreground font-mono">{device.ipAddress}</p>
           </div>
         </div>
-        
+
         <div className="space-y-2 text-xs">
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Status</span>
             <span className={cn(
               "px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase",
               device.status === 'online' ? "bg-success/20 text-success" :
-              device.status === 'attack' ? "bg-destructive/20 text-destructive" :
-              "bg-warning/20 text-warning"
+                device.status === 'attack' ? "bg-destructive/20 text-destructive" :
+                  "bg-warning/20 text-warning"
             )}>
               {device.status === 'attack' ? theme.terminology.threatLabel : device.status}
             </span>

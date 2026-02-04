@@ -1,7 +1,7 @@
 import { DigitalTwin, PhysicalDevice } from '@/types/dashboard';
 import { cn } from '@/lib/utils';
-import { 
-  Link2, 
+import {
+  Link2,
   TrendingUp,
   Settings,
   Play,
@@ -31,7 +31,7 @@ export default function TwinCreationLevel2({ twin, device }: Props) {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h4 className="font-semibold text-foreground text-lg">Digital Twin</h4>
+          <h4 className="font-semibold text-foreground text-lg">Digital  Twin</h4>
           <p className="text-xs text-muted-foreground font-mono mt-1">{twin.id}</p>
         </div>
         <StatusBadge status={twin.status} />
@@ -58,7 +58,7 @@ export default function TwinCreationLevel2({ twin, device }: Props) {
         <InfoRow label="Model Type" value={twin.modelType} capitalize />
         <InfoRow label="Model Version" value={twin.modelVersion} mono />
         <InfoRow label="Last Synchronization" value={formatDate(twin.lastSyncTime)} />
-        
+
         <div className="mt-3">
           <p className="text-xs text-muted-foreground mb-2">State Variables</p>
           <div className="grid grid-cols-2 gap-2">
@@ -85,17 +85,17 @@ export default function TwinCreationLevel2({ twin, device }: Props) {
       {/* Model Parameters */}
       <Section title="Baseline Configuration" icon={TrendingUp}>
         <div className="space-y-3">
-          <BaselineRow 
-            label="Avg Response Time" 
-            value={`${twin.historicalBaseline.avgResponseTime}ms`} 
+          <BaselineRow
+            label="Avg Response Time"
+            value={`${twin.historicalBaseline.avgResponseTime}ms`}
           />
-          <BaselineRow 
-            label="Avg Packet Loss" 
-            value={`${twin.historicalBaseline.avgPacketLoss.toFixed(2)}%`} 
+          <BaselineRow
+            label="Avg Packet Loss"
+            value={`${twin.historicalBaseline.avgPacketLoss.toFixed(2)}%`}
           />
-          <BaselineRow 
-            label="Avg Uptime" 
-            value={`${twin.historicalBaseline.avgUptime.toFixed(2)}%`} 
+          <BaselineRow
+            label="Avg Uptime"
+            value={`${twin.historicalBaseline.avgUptime.toFixed(2)}%`}
           />
         </div>
       </Section>
@@ -135,12 +135,12 @@ export default function TwinCreationLevel2({ twin, device }: Props) {
   );
 }
 
-function Section({ 
-  title, 
-  icon: Icon, 
-  children 
-}: { 
-  title: string; 
+function Section({
+  title,
+  icon: Icon,
+  children
+}: {
+  title: string;
   icon: React.ElementType;
   children: React.ReactNode;
 }) {
@@ -157,13 +157,13 @@ function Section({
   );
 }
 
-function InfoRow({ 
-  label, 
-  value, 
+function InfoRow({
+  label,
+  value,
   mono,
-  capitalize 
-}: { 
-  label: string; 
+  capitalize
+}: {
+  label: string;
   value: string;
   mono?: boolean;
   capitalize?: boolean;

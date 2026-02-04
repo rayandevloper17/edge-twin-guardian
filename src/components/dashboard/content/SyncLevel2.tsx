@@ -1,7 +1,7 @@
 import { DigitalTwin, PhysicalDevice } from '@/types/dashboard';
 import { cn } from '@/lib/utils';
-import { 
-  RefreshCw, 
+import {
+  RefreshCw,
   Clock,
   Activity,
   AlertTriangle,
@@ -36,32 +36,32 @@ export default function SyncLevel2({ twin, device }: Props) {
       {/* Data Alignment */}
       <Section title="Data Alignment" icon={ArrowUpDown}>
         <div className="space-y-3">
-          <AlignmentRow 
-            label="CPU Usage" 
+          <AlignmentRow
+            label="CPU Usage"
             physical={`${Math.round(twin.currentValues.cpuUsage * 0.95)}%`}
-            digital={`${twin.currentValues.cpuUsage}%`}
+            Lovable={`${twin.currentValues.cpuUsage}%`}
             diff={twin.currentValues.cpuUsage * 0.05}
           />
-          <AlignmentRow 
-            label="Memory Usage" 
+          <AlignmentRow
+            label="Memory Usage"
             physical={`${Math.round(twin.currentValues.memoryUsage * 0.98)}%`}
-            digital={`${twin.currentValues.memoryUsage}%`}
+            Lovable={`${twin.currentValues.memoryUsage}%`}
             diff={twin.currentValues.memoryUsage * 0.02}
           />
-          <AlignmentRow 
-            label="Network Traffic" 
+          <AlignmentRow
+            label="Network Traffic"
             physical={`${Math.round(twin.currentValues.networkTraffic * 1.02)} KB/s`}
-            digital={`${twin.currentValues.networkTraffic} KB/s`}
+            Lovable={`${twin.currentValues.networkTraffic} KB/s`}
             diff={twin.currentValues.networkTraffic * 0.02}
           />
-          <AlignmentRow 
-            label="Temperature" 
+          <AlignmentRow
+            label="Temperature"
             physical={`${Math.round(twin.currentValues.temperature + 0.5)}°C`}
-            digital={`${twin.currentValues.temperature}°C`}
+            Lovable={`${twin.currentValues.temperature}°C`}
             diff={0.5}
           />
         </div>
-        
+
         <div className="mt-3 flex items-center justify-between p-2 rounded bg-muted/30">
           <div className="flex items-center gap-2">
             <Clock className="w-3 h-3 text-muted-foreground" />
@@ -69,8 +69,8 @@ export default function SyncLevel2({ twin, device }: Props) {
           </div>
           <span className={cn(
             'text-xs font-mono',
-            twin.syncLatency < 30 ? 'text-success' : 
-            twin.syncLatency < 60 ? 'text-warning' : 'text-destructive'
+            twin.syncLatency < 30 ? 'text-success' :
+              twin.syncLatency < 60 ? 'text-warning' : 'text-destructive'
           )}>
             {twin.syncLatency}ms
           </span>
@@ -85,12 +85,12 @@ export default function SyncLevel2({ twin, device }: Props) {
             <span className={cn(
               'text-xs font-medium',
               twin.driftIndicator < 30 ? 'text-success' :
-              twin.driftIndicator < 60 ? 'text-warning' : 'text-destructive'
+                twin.driftIndicator < 60 ? 'text-warning' : 'text-destructive'
             )}>
               {twin.driftIndicator < 30 ? 'None Detected' : `${twin.driftIndicator.toFixed(1)}% Drift`}
             </span>
           </div>
-          
+
           <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
             <span className="text-xs text-muted-foreground">Threat Likelihood</span>
             <span className={cn(
@@ -107,8 +107,8 @@ export default function SyncLevel2({ twin, device }: Props) {
       <Section title="Security Monitoring" icon={Shield}>
         <div className={cn(
           'p-4 rounded-xl border',
-          isUnderAttack 
-            ? 'bg-destructive/10 border-destructive/30' 
+          isUnderAttack
+            ? 'bg-destructive/10 border-destructive/30'
             : 'bg-muted/20 border-border/50'
         )}>
           {isUnderAttack ? (
@@ -150,9 +150,9 @@ export default function SyncLevel2({ twin, device }: Props) {
             <RefreshCw className="w-4 h-4" />
             Trigger Re-synchronization
           </Button>
-          <Button 
-            variant={isUnderAttack ? "destructive" : "outline"} 
-            size="sm" 
+          <Button
+            variant={isUnderAttack ? "destructive" : "outline"}
+            size="sm"
             className="gap-2 justify-start"
           >
             <Ban className="w-4 h-4" />
@@ -168,12 +168,12 @@ export default function SyncLevel2({ twin, device }: Props) {
   );
 }
 
-function Section({ 
-  title, 
-  icon: Icon, 
-  children 
-}: { 
-  title: string; 
+function Section({
+  title,
+  icon: Icon,
+  children
+}: {
+  title: string;
   icon: React.ElementType;
   children: React.ReactNode;
 }) {
@@ -190,19 +190,19 @@ function Section({
   );
 }
 
-function AlignmentRow({ 
-  label, 
-  physical, 
-  digital,
-  diff 
-}: { 
-  label: string; 
+function AlignmentRow({
+  label,
+  physical,
+  Lovable,
+  diff
+}: {
+  label: string;
   physical: string;
-  digital: string;
+  Lovable: string;
   diff: number;
 }) {
   const isAligned = diff < 5;
-  
+
   return (
     <div className="grid grid-cols-3 gap-2 p-2 rounded bg-muted/30 text-xs">
       <span className="text-muted-foreground">{label}</span>
@@ -211,11 +211,11 @@ function AlignmentRow({
         <span className="font-mono text-foreground">{physical}</span>
       </div>
       <div className="text-center">
-        <span className="text-[10px] text-muted-foreground block">Digital</span>
+        <span className="text-[10px] text-muted-foreground block">Digital </span>
         <span className={cn(
           'font-mono',
           isAligned ? 'text-success' : 'text-warning'
-        )}>{digital}</span>
+        )}>{Lovable}</span>
       </div>
     </div>
   );

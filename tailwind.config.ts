@@ -69,7 +69,7 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Digital Twin specific colors
+        // Digital  Twin specific colors
         physical: "hsl(var(--physical))",
         twin: "hsl(var(--twin))",
         sync: "hsl(var(--sync))",

@@ -1,10 +1,10 @@
-// Types for the Network Edge Digital Twin Dashboard
+// Types for the Network Edge Digital  Twin Dashboard
 
 export type UseCase = 'military' | 'smart-cities';
 
-export type SystemStage = 
+export type SystemStage =
   | 'network-discovery'
-  | 'digital-twin-creation'
+  | 'Digital -twin-creation'
   | 'synchronization'
   | 'intelligence';
 

@@ -1,10 +1,10 @@
 import { useDashboard } from '@/context/DashboardContext';
 import { cn } from '@/lib/utils';
-import { 
-  RefreshCw, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Clock, 
+import {
+  RefreshCw,
+  CheckCircle2,
+  AlertTriangle,
+  Clock,
   Activity,
   Shield,
   TrendingUp
@@ -18,8 +18,8 @@ export default function SyncLevel1() {
   const delayedSync = twins.filter(t => t.driftIndicator >= 30 && t.driftIndicator < 60).length;
   const disconnectedSync = twins.filter(t => t.driftIndicator >= 60).length;
 
-  const avgLatency = twins.length > 0 
-    ? Math.round(twins.reduce((acc, t) => acc + t.syncLatency, 0) / twins.length) 
+  const avgLatency = twins.length > 0
+    ? Math.round(twins.reduce((acc, t) => acc + t.syncLatency, 0) / twins.length)
     : 0;
 
   const activeAlerts = alerts.filter(a => !a.resolved).length;
@@ -30,7 +30,7 @@ export default function SyncLevel1() {
       {/* Header */}
       <div>
         <h3 className="text-lg font-semibold text-foreground mb-1">Synchronization & Monitoring</h3>
-        <p className="text-sm text-muted-foreground">Maintain alignment between physical devices and digital twins</p>
+        <p className="text-sm text-muted-foreground">Maintain alignment between physical devices and Digital  twins</p>
       </div>
 
       {/* Sync Status Overview */}
@@ -42,14 +42,14 @@ export default function SyncLevel1() {
           </div>
           <span className={cn(
             'text-lg font-bold',
-            healthySync === twins.length ? 'text-success' : 
-            disconnectedSync > 0 ? 'text-destructive' : 'text-warning'
+            healthySync === twins.length ? 'text-success' :
+              disconnectedSync > 0 ? 'text-destructive' : 'text-warning'
           )}>
-            {healthySync === twins.length ? 'Healthy' : 
-             disconnectedSync > 0 ? 'Issues' : 'Delayed'}
+            {healthySync === twins.length ? 'Healthy' :
+              disconnectedSync > 0 ? 'Issues' : 'Delayed'}
           </span>
         </div>
-        
+
         <div className="p-4 rounded-xl bg-card border border-border">
           <div className="flex items-center gap-2 mb-2">
             <Clock className="w-4 h-4 text-primary" />
@@ -58,7 +58,7 @@ export default function SyncLevel1() {
           <span className={cn(
             'text-2xl font-bold',
             avgLatency < 30 ? 'text-success' :
-            avgLatency < 60 ? 'text-warning' : 'text-destructive'
+              avgLatency < 60 ? 'text-warning' : 'text-destructive'
           )}>
             {avgLatency}<span className="text-sm font-normal text-muted-foreground">ms</span>
           </span>
@@ -71,29 +71,29 @@ export default function SyncLevel1() {
           Data Freshness & Drift Detection
         </h4>
         <div className="space-y-2">
-          <SyncRow 
+          <SyncRow
             icon={CheckCircle2}
-            label="Healthy" 
-            count={healthySync} 
-            total={twins.length} 
+            label="Healthy"
+            count={healthySync}
+            total={twins.length}
             color="text-success"
-            bgColor="bg-success" 
+            bgColor="bg-success"
           />
-          <SyncRow 
+          <SyncRow
             icon={Clock}
-            label="Delayed" 
-            count={delayedSync} 
-            total={twins.length} 
+            label="Delayed"
+            count={delayedSync}
+            total={twins.length}
             color="text-warning"
-            bgColor="bg-warning" 
+            bgColor="bg-warning"
           />
-          <SyncRow 
+          <SyncRow
             icon={AlertTriangle}
-            label="Disconnected" 
-            count={disconnectedSync} 
-            total={twins.length} 
+            label="Disconnected"
+            count={disconnectedSync}
+            total={twins.length}
             color="text-destructive"
-            bgColor="bg-destructive" 
+            bgColor="bg-destructive"
           />
         </div>
       </div>
@@ -106,8 +106,8 @@ export default function SyncLevel1() {
         <div className="grid grid-cols-2 gap-3">
           <div className={cn(
             'p-4 rounded-xl border',
-            criticalAlerts > 0 
-              ? 'bg-destructive/10 border-destructive/20' 
+            criticalAlerts > 0
+              ? 'bg-destructive/10 border-destructive/20'
               : 'bg-success/10 border-success/20'
           )}>
             <Shield className={cn(
@@ -122,7 +122,7 @@ export default function SyncLevel1() {
             </span>
             <span className="text-xs text-muted-foreground">Active Alerts</span>
           </div>
-          
+
           <div className="p-4 rounded-xl bg-card border border-border">
             <TrendingUp className="w-6 h-6 text-primary mb-2" />
             <span className="text-2xl font-bold text-foreground block">
@@ -166,20 +166,20 @@ export default function SyncLevel1() {
   );
 }
 
-function SyncRow({ 
+function SyncRow({
   icon: Icon,
-  label, 
-  count, 
-  total, 
+  label,
+  count,
+  total,
   color,
-  bgColor 
-}: { 
+  bgColor
+}: {
   icon: React.ElementType;
-  label: string; 
-  count: number; 
-  total: number; 
+  label: string;
+  count: number;
+  total: number;
   color: string;
-  bgColor: string; 
+  bgColor: string;
 }) {
   const percentage = total > 0 ? (count / total) * 100 : 0;
 
@@ -188,9 +188,9 @@ function SyncRow({
       <Icon className={cn('w-4 h-4', color)} />
       <span className="text-sm text-foreground flex-1">{label}</span>
       <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
-        <div 
-          className={cn('h-full rounded-full transition-all', bgColor)} 
-          style={{ width: `${percentage}%` }} 
+        <div
+          className={cn('h-full rounded-full transition-all', bgColor)}
+          style={{ width: `${percentage}%` }}
         />
       </div>
       <span className="text-sm font-mono font-medium text-foreground w-8 text-right">{count}</span>

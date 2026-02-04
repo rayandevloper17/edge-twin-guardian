@@ -1,8 +1,8 @@
 import { DigitalTwin, PhysicalDevice } from '@/types/dashboard';
 import { cn } from '@/lib/utils';
-import { 
-  Link2, 
-  Cpu, 
+import {
+  Link2,
+  Cpu,
   Clock,
   Database,
   TrendingUp,
@@ -30,7 +30,7 @@ export default function DigitalTwinDetails({ twin, device }: Props) {
       {/* Header */}
       <div>
         <div className="flex items-start justify-between mb-2">
-          <h4 className="font-semibold text-foreground">Digital Twin</h4>
+          <h4 className="font-semibold text-foreground">Digital  Twin</h4>
           <StatusBadge status={twin.status} />
         </div>
         <p className="text-xs text-muted-foreground font-mono">{twin.id}</p>
@@ -47,17 +47,17 @@ export default function DigitalTwinDetails({ twin, device }: Props) {
       {/* Historical Baselines */}
       <Section title="Historical Baselines">
         <div className="space-y-3">
-          <BaselineRow 
-            label="Avg Response Time" 
-            value={`${twin.historicalBaseline.avgResponseTime}ms`} 
+          <BaselineRow
+            label="Avg Response Time"
+            value={`${twin.historicalBaseline.avgResponseTime}ms`}
           />
-          <BaselineRow 
-            label="Avg Packet Loss" 
-            value={`${twin.historicalBaseline.avgPacketLoss.toFixed(2)}%`} 
+          <BaselineRow
+            label="Avg Packet Loss"
+            value={`${twin.historicalBaseline.avgPacketLoss.toFixed(2)}%`}
           />
-          <BaselineRow 
-            label="Avg Uptime" 
-            value={`${twin.historicalBaseline.avgUptime.toFixed(2)}%`} 
+          <BaselineRow
+            label="Avg Uptime"
+            value={`${twin.historicalBaseline.avgUptime.toFixed(2)}%`}
           />
         </div>
       </Section>
@@ -65,29 +65,29 @@ export default function DigitalTwinDetails({ twin, device }: Props) {
       {/* Normal Behavior Profile */}
       <Section title="Normal Behavior Profile">
         <div className="space-y-3">
-          <BehaviorRange 
-            label="CPU Usage" 
+          <BehaviorRange
+            label="CPU Usage"
             min={twin.normalBehaviorProfile.cpuUsage.min}
             max={twin.normalBehaviorProfile.cpuUsage.max}
             current={twin.currentValues.cpuUsage}
             unit="%"
           />
-          <BehaviorRange 
-            label="Memory Usage" 
+          <BehaviorRange
+            label="Memory Usage"
             min={twin.normalBehaviorProfile.memoryUsage.min}
             max={twin.normalBehaviorProfile.memoryUsage.max}
             current={twin.currentValues.memoryUsage}
             unit="%"
           />
-          <BehaviorRange 
-            label="Network Traffic" 
+          <BehaviorRange
+            label="Network Traffic"
             min={twin.normalBehaviorProfile.networkTraffic.min}
             max={twin.normalBehaviorProfile.networkTraffic.max}
             current={twin.currentValues.networkTraffic}
             unit=" KB/s"
           />
-          <BehaviorRange 
-            label="Temperature" 
+          <BehaviorRange
+            label="Temperature"
             min={twin.normalBehaviorProfile.temperature.min}
             max={twin.normalBehaviorProfile.temperature.max}
             current={twin.currentValues.temperature}
@@ -122,15 +122,15 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function InfoRow({ 
-  icon: Icon, 
-  label, 
-  value, 
+function InfoRow({
+  icon: Icon,
+  label,
+  value,
   mono,
-  capitalize 
-}: { 
-  icon?: React.ElementType; 
-  label: string; 
+  capitalize
+}: {
+  icon?: React.ElementType;
+  label: string;
   value: string;
   mono?: boolean;
   capitalize?: boolean;
@@ -161,16 +161,16 @@ function BaselineRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function BehaviorRange({ 
-  label, 
-  min, 
-  max, 
+function BehaviorRange({
+  label,
+  min,
+  max,
   current,
-  unit 
-}: { 
-  label: string; 
-  min: number; 
-  max: number; 
+  unit
+}: {
+  label: string;
+  min: number;
+  max: number;
   current: number;
   unit: string;
 }) {
@@ -190,15 +190,15 @@ function BehaviorRange({
       </div>
       <div className="relative h-1.5 bg-muted rounded-full overflow-hidden">
         {/* Normal range indicator */}
-        <div 
+        <div
           className="absolute h-full bg-success/20"
-          style={{ 
+          style={{
             left: '0%',
             width: '100%'
           }}
         />
         {/* Current value indicator */}
-        <div 
+        <div
           className={cn(
             'absolute h-full rounded-full transition-all',
             isInRange ? 'bg-success' : 'bg-destructive'

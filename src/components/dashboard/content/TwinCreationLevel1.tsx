@@ -1,9 +1,9 @@
 import { useDashboard } from '@/context/DashboardContext';
 import { cn } from '@/lib/utils';
-import { 
-  Copy, 
-  CheckCircle2, 
-  Clock, 
+import {
+  Copy,
+  CheckCircle2,
+  Clock,
   Cpu,
   Database,
   Layers,
@@ -24,8 +24,8 @@ export default function TwinCreationLevel1() {
     <div className="p-4 space-y-6">
       {/* Header */}
       <div>
-        <h3 className="text-lg font-semibold text-foreground mb-1">Digital Twin Creation</h3>
-        <p className="text-sm text-muted-foreground">Build and manage digital representations of physical assets</p>
+        <h3 className="text-lg font-semibold text-foreground mb-1">Digital  Twin Creation</h3>
+        <p className="text-sm text-muted-foreground">Build and manage Digital  representations of physical assets</p>
       </div>
 
       {/* Summary Cards */}
@@ -33,11 +33,11 @@ export default function TwinCreationLevel1() {
         <div className="p-4 rounded-xl bg-card border border-border">
           <div className="flex items-center gap-2 mb-2">
             <Copy className="w-4 h-4 text-twin" />
-            <span className="text-xs text-muted-foreground uppercase font-medium">Active Digital Twins</span>
+            <span className="text-xs text-muted-foreground uppercase font-medium">Active Digital  Twins</span>
           </div>
           <span className="text-3xl font-bold text-twin">{twins.length}</span>
         </div>
-        
+
         <div className="p-4 rounded-xl bg-card border border-border">
           <div className="flex items-center gap-2 mb-2">
             {twinCreationComplete ? (
@@ -63,18 +63,18 @@ export default function TwinCreationLevel1() {
             <AlertCircle className="w-5 h-5 text-warning mt-0.5" />
             <div className="flex-1">
               <p className="text-sm font-medium text-foreground mb-2">
-                Digital twins have not been created yet
+                Digital  twins have not been created yet
               </p>
               <p className="text-xs text-muted-foreground mb-4">
                 {devices.length} physical devices detected and ready for twin creation
               </p>
-              <Button 
+              <Button
                 onClick={createTwins}
                 size="sm"
                 className="gap-2"
               >
                 <Copy className="w-4 h-4" />
-                Create Digital Twin Network
+                Create Digital  Twin Network
               </Button>
             </div>
           </div>
@@ -89,8 +89,8 @@ export default function TwinCreationLevel1() {
           </h4>
           <div className="space-y-2">
             {Object.entries(modelTypes).map(([type, count]) => (
-              <div 
-                key={type} 
+              <div
+                key={type}
                 className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50"
               >
                 <div className="flex items-center gap-2">
@@ -128,12 +128,12 @@ export default function TwinCreationLevel1() {
       {/* Instruction */}
       <div className="text-center pt-4 border-t border-border/50">
         <p className="text-sm text-twin font-medium">
-          {twinCreationComplete ? 'Select a digital twin' : 'Create twins to continue'}
+          {twinCreationComplete ? 'Select a Digital  twin' : 'Create twins to continue'}
         </p>
         <p className="text-xs text-muted-foreground mt-1">
-          {twinCreationComplete 
+          {twinCreationComplete
             ? 'Click a twin on the network graph to view configuration'
-            : 'Digital twins must be created before synchronization'
+            : 'Digital  twins must be created before synchronization'
           }
         </p>
       </div>

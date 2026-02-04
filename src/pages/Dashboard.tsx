@@ -20,12 +20,12 @@ export default function Dashboard() {
 
   // Update page title based on use case
   useEffect(() => {
-    const baseTitle = 'Network Edge Digital Twin for IoT Attack Detection';
-    const useCaseTitle = state.useCase === 'military' 
+    const baseTitle = 'Network Edge Digital  Twin for IoT Attack Detection';
+    const useCaseTitle = state.useCase === 'military'
       ? 'Military and Critical National Infrastructure'
       : 'Smart Cities';
-    
-    document.title = state.useCase 
+
+    document.title = state.useCase
       ? `${baseTitle} | ${useCaseTitle}`
       : baseTitle;
   }, [state.useCase]);
