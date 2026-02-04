@@ -1,9 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Shield, Building2, Network, Brain, Cpu, RefreshCw, ExternalLink, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useEffect } from 'react';
 
 export default function About() {
   const navigate = useNavigate();
+
+  // Use neutral theme on About page
+  useEffect(() => {
+    document.documentElement.removeAttribute('data-theme');
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
