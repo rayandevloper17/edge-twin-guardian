@@ -9,10 +9,12 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { state } = useDashboard();
 
-  // Redirect to home if no use case selected
+  // Redirect to home if no use case selected, otherwise apply theme
   useEffect(() => {
     if (!state.useCase) {
       navigate('/');
+    } else {
+      document.documentElement.setAttribute('data-theme', state.useCase);
     }
   }, [state.useCase, navigate]);
 
