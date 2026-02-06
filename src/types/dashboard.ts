@@ -8,7 +8,16 @@ export type SystemStage =
   | 'synchronization'
   | 'intelligence';
 
-export type DeviceStatus = 'online' | 'offline' | 'warning' | 'attack';
+export type DeviceStatus = 'benign' | 'suspicious' | 'compromised';
+
+// Helper to get display label for device security status
+export function getStatusLabel(status: DeviceStatus, threatLabel?: string): string {
+  switch (status) {
+    case 'benign': return 'Benign';
+    case 'suspicious': return 'Suspicious';
+    case 'compromised': return threatLabel || 'Compromised';
+  }
+}
 
 export type TwinModelType = 'physics-based' | 'data-driven' | 'hybrid';
 

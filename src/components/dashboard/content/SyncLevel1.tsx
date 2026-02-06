@@ -16,7 +16,7 @@ export default function SyncLevel1() {
 
   const healthySync = twins.filter(t => t.driftIndicator < 30).length;
   const delayedSync = twins.filter(t => t.driftIndicator >= 30 && t.driftIndicator < 60).length;
-  const disconnectedSync = twins.filter(t => t.driftIndicator >= 60).length;
+  const driftedSync = twins.filter(t => t.driftIndicator >= 60).length;
 
   const avgLatency = twins.length > 0
     ? Math.round(twins.reduce((acc, t) => acc + t.syncLatency, 0) / twins.length)
@@ -43,10 +43,10 @@ export default function SyncLevel1() {
           <span className={cn(
             'text-lg font-bold',
             healthySync === twins.length ? 'text-success' :
-              disconnectedSync > 0 ? 'text-destructive' : 'text-warning'
+              driftedSync > 0 ? 'text-destructive' : 'text-warning'
           )}>
             {healthySync === twins.length ? 'Healthy' :
-              disconnectedSync > 0 ? 'Issues' : 'Delayed'}
+              driftedSync > 0 ? 'Issues' : 'Delayed'}
           </span>
         </div>
 
@@ -89,8 +89,8 @@ export default function SyncLevel1() {
           />
           <SyncRow
             icon={AlertTriangle}
-            label="Disconnected"
-            count={disconnectedSync}
+            label="Drifted"
+            count={driftedSync}
             total={twins.length}
             color="text-destructive"
             bgColor="bg-destructive"

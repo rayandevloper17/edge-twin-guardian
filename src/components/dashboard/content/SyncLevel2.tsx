@@ -19,7 +19,7 @@ interface Props {
 
 export default function SyncLevel2({ twin, device }: Props) {
 
-  const isUnderAttack = device.status === 'attack' || twin.status === 'attack';
+  const isUnderAttack = device.status === 'compromised' || twin.status === 'compromised';
   const hasDrift = twin.driftIndicator > 30;
 
   return (

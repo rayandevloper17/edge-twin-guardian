@@ -21,7 +21,7 @@ function AttackDashboard() {
 
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.resolved);
   const mediumAlerts = alerts.filter(a => a.severity === 'medium' && !a.resolved);
-  const attackingDevices = devices.filter(d => d.status === 'attack');
+  const attackingDevices = devices.filter(d => d.status === 'compromised');
 
   if (criticalAlerts.length === 0 && mediumAlerts.length === 0) {
     return null;

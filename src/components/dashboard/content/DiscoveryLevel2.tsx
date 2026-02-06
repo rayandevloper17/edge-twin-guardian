@@ -1,4 +1,4 @@
-import { PhysicalDevice } from '@/types/dashboard';
+import { PhysicalDevice, getStatusLabel } from '@/types/dashboard';
 import { cn } from '@/lib/utils';
 import { 
   Cpu, 
@@ -11,12 +11,17 @@ import {
   Signal,
   Power
 } from 'lucide-react';
+import { useDashboard } from '@/context/DashboardContext';
+import { getTheme } from '@/config/themes';
 
 interface Props {
   device: PhysicalDevice;
 }
 
 export default function DiscoveryLevel2({ device }: Props) {
+  const { state } = useDashboard();
+  const theme = getTheme(state.useCase);
+
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
@@ -51,15 +56,15 @@ export default function DiscoveryLevel2({ device }: Props) {
       {/* Connectivity & Network Status */}
       <Section title="Connectivity & Network Status" icon={Wifi}>
         <div className="flex items-center justify-between py-2">
-          <span className="text-xs text-muted-foreground">Online / Offline Status</span>
+          <span className="text-xs text-muted-foreground">Security Status</span>
           <span className={cn(
             'px-2 py-0.5 rounded-full text-xs font-medium uppercase',
-            device.status === 'online' ? 'bg-success/20 text-success' :
-            device.status === 'attack' ? 'bg-destructive/20 text-destructive' :
-            device.status === 'warning' ? 'bg-warning/20 text-warning' :
+            device.status === 'benign' ? 'bg-success/20 text-success' :
+            device.status === 'compromised' ? 'bg-destructive/20 text-destructive' :
+            device.status === 'suspicious' ? 'bg-warning/20 text-warning' :
             'bg-muted text-muted-foreground'
           )}>
-            {device.status}
+            {getStatusLabel(device.status, theme.terminology.threatLabel)}
           </span>
         </div>
         <InfoRow label="Last Heartbeat" value={formatDate(device.lastHeartbeat)} icon={Clock} />
@@ -140,9 +145,11 @@ export default function DiscoveryLevel2({ device }: Props) {
             <span className="text-muted-foreground">Suspicious Behavior</span>
             <span className={cn(
               'font-medium',
-              device.status === 'attack' ? 'text-destructive' : 'text-success'
+              device.status === 'compromised' ? 'text-destructive' :
+              device.status === 'suspicious' ? 'text-warning' : 'text-success'
             )}>
-              {device.status === 'attack' ? '⚠ Detected' : 'None'}
+              {device.status === 'compromised' ? '⚠ Compromised' :
+               device.status === 'suspicious' ? '⚠ Suspicious Activity' : 'None'}
             </span>
           </div>
         </div>
@@ -204,15 +211,17 @@ function InfoRow({
 }
 
 function StatusBadge({ status }: { status: PhysicalDevice['status'] }) {
+  const { state } = useDashboard();
+  const theme = getTheme(state.useCase);
+
   return (
     <span className={cn(
       'px-3 py-1 rounded-full text-xs font-semibold uppercase',
-      status === 'online' && 'bg-success/20 text-success',
-      status === 'offline' && 'bg-muted text-muted-foreground',
-      status === 'attack' && 'bg-destructive/20 text-destructive animate-pulse',
-      status === 'warning' && 'bg-warning/20 text-warning'
+      status === 'benign' && 'bg-success/20 text-success',
+      status === 'compromised' && 'bg-destructive/20 text-destructive animate-pulse',
+      status === 'suspicious' && 'bg-warning/20 text-warning'
     )}>
-      {status}
+      {getStatusLabel(status, theme.terminology.threatLabel)}
     </span>
   );
 }

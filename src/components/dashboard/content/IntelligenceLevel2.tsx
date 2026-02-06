@@ -132,12 +132,12 @@ export default function IntelligenceLevel2() {
           <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
             <span className="text-xs text-muted-foreground block mb-2">Related Devices</span>
             <div className="flex flex-wrap gap-1">
-              {devices.filter(d => d.status === 'attack' || d.status === 'warning').slice(0, 3).map(device => (
+              {devices.filter(d => d.status === 'compromised' || d.status === 'suspicious').slice(0, 3).map(device => (
                 <span key={device.id} className="px-2 py-1 rounded text-[10px] bg-destructive/10 text-destructive">
                   {device.name}
                 </span>
               ))}
-              {devices.filter(d => d.status === 'attack' || d.status === 'warning').length === 0 && (
+              {devices.filter(d => d.status === 'compromised' || d.status === 'suspicious').length === 0 && (
                 <span className="text-xs text-muted-foreground">No affected devices</span>
               )}
             </div>
@@ -146,12 +146,12 @@ export default function IntelligenceLevel2() {
           <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
             <span className="text-xs text-muted-foreground block mb-2">Associated Digital  Twins</span>
             <div className="flex flex-wrap gap-1">
-              {twins.filter(t => t.status === 'attack' || t.status === 'warning').slice(0, 3).map(twin => (
+              {twins.filter(t => t.status === 'compromised' || t.status === 'suspicious').slice(0, 3).map(twin => (
                 <span key={twin.id} className="px-2 py-1 rounded text-[10px] bg-warning/10 text-warning">
                   DT-{twin.id.split('-')[1]}
                 </span>
               ))}
-              {twins.filter(t => t.status === 'attack' || t.status === 'warning').length === 0 && (
+              {twins.filter(t => t.status === 'compromised' || t.status === 'suspicious').length === 0 && (
                 <span className="text-xs text-muted-foreground">No affected twins</span>
               )}
             </div>
