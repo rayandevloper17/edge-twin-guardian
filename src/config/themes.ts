@@ -74,7 +74,7 @@ export const militaryTheme: ThemeConfig = {
     synchronizationDesc: 'Active threat monitoring',
     intelligence: 'Threat Intelligence',
     intelligenceDesc: 'AI forensics & analysis',
-    threatLabel: 'HOSTILE',
+    threatLabel: 'COMPROMISED',
     systemStatus: 'DEFCON Status',
   },
   visualStyle: {
@@ -113,7 +113,7 @@ export const smartCityTheme: ThemeConfig = {
     synchronizationDesc: 'Real-time sync & alerts',
     intelligence: 'Urban Risk Analysis',
     intelligenceDesc: 'Predictive analytics',
-    threatLabel: 'ALERT',
+    threatLabel: 'COMPROMISED',
     systemStatus: 'City Status',
   },
   visualStyle: {

@@ -24,8 +24,8 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 100,
     latency: 2,
     lastHeartbeat: new Date(),
-    // Central top position - command node
-    position: { x: 400, y: 100 },
+    // Top center - command node
+    position: { x: 400, y: 80 },
     // Gateway connects to ALL field devices (star topology from command)
     connections: ['mil-radar', 'mil-camera', 'mil-sensor'],
   },
@@ -47,8 +47,8 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 98,
     latency: 5,
     lastHeartbeat: new Date(),
-    // Left position
-    position: { x: 200, y: 160 },
+    // Far left position - well separated
+    position: { x: 140, y: 170 },
     connections: ['mil-gateway', 'mil-sensor'],
   },
   {
@@ -69,8 +69,8 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 92,
     latency: 12,
     lastHeartbeat: new Date(),
-    // Right position
-    position: { x: 600, y: 160 },
+    // Far right position - well separated
+    position: { x: 660, y: 170 },
     connections: ['mil-gateway', 'mil-sensor'],
   },
   {
@@ -91,8 +91,8 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 85,
     latency: 25,
     lastHeartbeat: new Date(),
-    // Bottom center
-    position: { x: 400, y: 190 },
+    // Bottom center - below gateway with good spacing
+    position: { x: 400, y: 200 },
     connections: ['mil-radar', 'mil-camera'],
   },
 ];
@@ -121,8 +121,8 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 94,
     latency: 15,
     lastHeartbeat: new Date(),
-    // Top-left
-    position: { x: 220, y: 100 },
+    // Top-left - well separated
+    position: { x: 160, y: 80 },
     connections: ['sc-light', 'sc-sensor', 'sc-gateway'],
   },
   {
@@ -143,8 +143,8 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 78,
     latency: 45,
     lastHeartbeat: new Date(Date.now() - 30000),
-    // Top-right
-    position: { x: 580, y: 100 },
+    // Top-right - well separated
+    position: { x: 640, y: 80 },
     connections: ['sc-traffic', 'sc-gateway'],
   },
   {
@@ -165,8 +165,8 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 88,
     latency: 80,
     lastHeartbeat: new Date(),
-    // Bottom-left
-    position: { x: 220, y: 190 },
+    // Bottom-left - well separated
+    position: { x: 160, y: 200 },
     connections: ['sc-traffic', 'sc-gateway'],
   },
   {
@@ -187,8 +187,8 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 95,
     latency: 8,
     lastHeartbeat: new Date(),
-    // Bottom-right
-    position: { x: 580, y: 190 },
+    // Bottom-right - well separated
+    position: { x: 640, y: 200 },
     connections: ['sc-traffic', 'sc-light', 'sc-sensor'],
   },
 ];
