@@ -24,7 +24,7 @@ export default function SyncDetails({ device, twin }: Props) {
   };
 
   const isAnomaly = twin.driftIndicator > 30;
-  const isThreat = twin.status === 'attack';
+  const isThreat = twin.status === 'compromised';
 
   return (
     <div className="p-4 space-y-6 animate-fade-in">

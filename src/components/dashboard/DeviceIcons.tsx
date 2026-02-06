@@ -15,8 +15,8 @@ interface DeviceIconProps {
 // Radar/Traffic Controller Icon
 function RadarIcon({ variant, status, size = 48 }: Omit<DeviceIconProps, 'type'>) {
   const isPhysical = variant === 'physical';
-  const isAttack = status === 'attack';
-  const isWarning = status === 'warning';
+  const isAttack = status === 'compromised';
+  const isWarning = status === 'suspicious';
 
   return (
     <g>
@@ -97,8 +97,8 @@ function RadarIcon({ variant, status, size = 48 }: Omit<DeviceIconProps, 'type'>
 // Camera/Surveillance Icon
 function CameraIcon({ variant, status, size = 48 }: Omit<DeviceIconProps, 'type'>) {
   const isPhysical = variant === 'physical';
-  const isAttack = status === 'attack';
-  const isWarning = status === 'warning';
+  const isAttack = status === 'compromised';
+  const isWarning = status === 'suspicious';
 
   return (
     <g>
@@ -189,8 +189,8 @@ function CameraIcon({ variant, status, size = 48 }: Omit<DeviceIconProps, 'type'
 // Sensor Icon
 function SensorIcon({ variant, status, size = 48 }: Omit<DeviceIconProps, 'type'>) {
   const isPhysical = variant === 'physical';
-  const isAttack = status === 'attack';
-  const isWarning = status === 'warning';
+  const isAttack = status === 'compromised';
+  const isWarning = status === 'suspicious';
 
   return (
     <g>
@@ -258,8 +258,8 @@ function SensorIcon({ variant, status, size = 48 }: Omit<DeviceIconProps, 'type'
 // Gateway Icon
 function GatewayIcon({ variant, status, size = 48 }: Omit<DeviceIconProps, 'type'>) {
   const isPhysical = variant === 'physical';
-  const isAttack = status === 'attack';
-  const isWarning = status === 'warning';
+  const isAttack = status === 'compromised';
+  const isWarning = status === 'suspicious';
 
   return (
     <g>

@@ -22,7 +22,7 @@ function DeviceNode({
 }) {
   const { state } = useDashboard();
   const theme = getTheme(state.useCase);
-  const isAttack = device.status === 'attack';
+  const isAttack = device.status === 'compromised';
   const isTwin = variant === 'twin';
 
   // Get icon based on device type
@@ -350,7 +350,7 @@ export default function NetworkGraph() {
         if (!processed.has(connKey)) {
           const connDevice = devices.find(d => d.id === connId);
           if (connDevice) {
-            const isAttackPath = device.status === 'attack' || connDevice.status === 'attack';
+            const isAttackPath = device.status === 'compromised' || connDevice.status === 'compromised';
             lines.push({
               x1: device.position.x,
               y1: device.position.y,
@@ -385,7 +385,7 @@ export default function NetworkGraph() {
 
         const connKey = [twin.id, connTwin.id].sort().join('-');
         if (!processed.has(connKey)) {
-          const isAttackPath = twin.status === 'attack' || connTwin.status === 'attack';
+          const isAttackPath = twin.status === 'compromised' || connTwin.status === 'compromised';
           lines.push({
             x1: twin.position.x,
             y1: twin.position.y,
@@ -421,7 +421,7 @@ export default function NetworkGraph() {
     }).filter(Boolean);
   }, [twins, devices, showMirroringLinks]);
 
-  const hasActiveAttack = devices.some(d => d.status === 'attack');
+  const hasActiveAttack = devices.some(d => d.status === 'compromised');
 
   return (
     <div className={cn(
@@ -518,7 +518,7 @@ export default function NetworkGraph() {
                 x2={link.x2}
                 y2={link.y2}
                 latency={link.syncLatency}
-                isAttack={link.status === 'attack'}
+                isAttack={link.status === 'compromised'}
               />
             ))}
 
@@ -661,7 +661,7 @@ function HoverTooltip({ deviceId }: { deviceId: string }) {
         <div className="flex items-center gap-3 mb-3 pb-3 border-b border-border">
           <div className={cn(
             "w-10 h-10 rounded-lg flex items-center justify-center",
-            device.status === 'attack' ? "bg-destructive/20 text-destructive" : "bg-primary/20 text-primary"
+            device.status === 'compromised' ? "bg-destructive/20 text-destructive" : "bg-primary/20 text-primary"
           )}>
             {device.deviceType === 'gateway' ? <Server className="w-5 h-5" /> :
               device.deviceType === 'camera' ? <Camera className="w-5 h-5" /> :
@@ -679,11 +679,11 @@ function HoverTooltip({ deviceId }: { deviceId: string }) {
             <span className="text-muted-foreground">Status</span>
             <span className={cn(
               "px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase",
-              device.status === 'online' ? "bg-success/20 text-success" :
-                device.status === 'attack' ? "bg-destructive/20 text-destructive" :
+              device.status === 'benign' ? "bg-success/20 text-success" :
+                device.status === 'compromised' ? "bg-destructive/20 text-destructive" :
                   "bg-warning/20 text-warning"
             )}>
-              {device.status === 'attack' ? theme.terminology.threatLabel : device.status}
+              {device.status === 'compromised' ? theme.terminology.threatLabel : device.status === 'benign' ? 'Benign' : 'Suspicious'}
             </span>
           </div>
           <div className="flex justify-between">

@@ -1,4 +1,6 @@
 import { useDashboard } from '@/context/DashboardContext';
+import { getStatusLabel } from '@/types/dashboard';
+import { getTheme } from '@/config/themes';
 import { cn } from '@/lib/utils';
 import { 
   Wifi, 
@@ -13,11 +15,11 @@ import {
 export default function DiscoveryLevel1() {
   const { state } = useDashboard();
   const { devices } = state;
+  const theme = getTheme(state.useCase);
 
-  const onlineDevices = devices.filter(d => d.status === 'online').length;
-  const offlineDevices = devices.filter(d => d.status === 'offline').length;
-  const warningDevices = devices.filter(d => d.status === 'warning').length;
-  const attackDevices = devices.filter(d => d.status === 'attack').length;
+  const benignDevices = devices.filter(d => d.status === 'benign').length;
+  const suspiciousDevices = devices.filter(d => d.status === 'suspicious').length;
+  const compromisedDevices = devices.filter(d => d.status === 'compromised').length;
 
   const deviceTypes = devices.reduce((acc, device) => {
     acc[device.deviceType] = (acc[device.deviceType] || 0) + 1;
@@ -59,20 +61,19 @@ export default function DiscoveryLevel1() {
             <CheckCircle2 className="w-4 h-4 text-success" />
             <span className="text-xs text-muted-foreground uppercase font-medium">Active Connections</span>
           </div>
-          <span className="text-3xl font-bold text-success">{onlineDevices}</span>
+          <span className="text-3xl font-bold text-success">{devices.length}</span>
         </div>
       </div>
 
-      {/* Status Overview */}
+      {/* Security Status Overview */}
       <div>
         <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-          Online / Offline Status
+          Security Status
         </h4>
         <div className="space-y-2">
-          <StatusRow label="Online" count={onlineDevices} total={devices.length} color="bg-success" />
-          <StatusRow label="Warning" count={warningDevices} total={devices.length} color="bg-warning" />
-          <StatusRow label="Under Attack" count={attackDevices} total={devices.length} color="bg-destructive" />
-          <StatusRow label="Offline" count={offlineDevices} total={devices.length} color="bg-muted-foreground" />
+          <StatusRow label="Benign" count={benignDevices} total={devices.length} color="bg-success" />
+          <StatusRow label="Suspicious" count={suspiciousDevices} total={devices.length} color="bg-warning" />
+          <StatusRow label={theme.terminology.threatLabel} count={compromisedDevices} total={devices.length} color="bg-destructive" />
         </div>
       </div>
 

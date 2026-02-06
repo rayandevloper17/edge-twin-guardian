@@ -20,7 +20,7 @@ export const militaryDevices: PhysicalDevice[] = [
     networkType: 'Fiber Optic',
     ipAddress: '192.168.1.1',
     macAddress: 'AA:BB:CC:DD:E1:01',
-    status: 'online',
+    status: 'benign',
     signalStrength: 100,
     latency: 2,
     lastHeartbeat: new Date(),
@@ -43,7 +43,7 @@ export const militaryDevices: PhysicalDevice[] = [
     networkType: '5G Private',
     ipAddress: '192.168.1.10',
     macAddress: 'AA:BB:CC:DD:E1:10',
-    status: 'online',
+    status: 'benign',
     signalStrength: 98,
     latency: 5,
     lastHeartbeat: new Date(),
@@ -65,7 +65,7 @@ export const militaryDevices: PhysicalDevice[] = [
     networkType: '5G Private',
     ipAddress: '192.168.1.20',
     macAddress: 'AA:BB:CC:DD:E1:20',
-    status: 'attack',
+    status: 'compromised',
     signalStrength: 92,
     latency: 12,
     lastHeartbeat: new Date(),
@@ -87,7 +87,7 @@ export const militaryDevices: PhysicalDevice[] = [
     networkType: 'LoRaWAN',
     ipAddress: '192.168.1.30',
     macAddress: 'AA:BB:CC:DD:E1:30',
-    status: 'online',
+    status: 'benign',
     signalStrength: 85,
     latency: 25,
     lastHeartbeat: new Date(),
@@ -117,7 +117,7 @@ export const smartCityDevices: PhysicalDevice[] = [
     networkType: 'LTE-M',
     ipAddress: '10.0.1.10',
     macAddress: 'CC:DD:EE:FF:01:10',
-    status: 'online',
+    status: 'benign',
     signalStrength: 94,
     latency: 15,
     lastHeartbeat: new Date(),
@@ -139,7 +139,7 @@ export const smartCityDevices: PhysicalDevice[] = [
     networkType: 'Zigbee',
     ipAddress: '10.0.1.20',
     macAddress: 'CC:DD:EE:FF:01:20',
-    status: 'warning',
+    status: 'suspicious',
     signalStrength: 78,
     latency: 45,
     lastHeartbeat: new Date(Date.now() - 30000),
@@ -161,7 +161,7 @@ export const smartCityDevices: PhysicalDevice[] = [
     networkType: 'NB-IoT',
     ipAddress: '10.0.1.30',
     macAddress: 'CC:DD:EE:FF:01:30',
-    status: 'online',
+    status: 'benign',
     signalStrength: 88,
     latency: 80,
     lastHeartbeat: new Date(),
@@ -183,7 +183,7 @@ export const smartCityDevices: PhysicalDevice[] = [
     networkType: 'Fiber',
     ipAddress: '10.0.1.1',
     macAddress: 'CC:DD:EE:FF:01:01',
-    status: 'attack',
+    status: 'compromised',
     signalStrength: 95,
     latency: 8,
     lastHeartbeat: new Date(),
@@ -222,7 +222,7 @@ export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => 
       avgUptime: 99.5 + Math.random() * 0.4,
     },
     contextInputs: ['Network topology', 'Historical patterns', 'Threat intelligence feeds'],
-    driftIndicator: device.status === 'attack' ? 85 : device.status === 'warning' ? 45 : Math.random() * 15,
+    driftIndicator: device.status === 'compromised' ? 85 : device.status === 'suspicious' ? 45 : Math.random() * 15,
     status: device.status,
     // Digital  layer positioned BELOW mirror boundary (y=250)
     position: { x: device.position.x, y: device.position.y + 200 },
@@ -230,8 +230,8 @@ export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => 
 };
 
 export const generateAlerts = (devices: PhysicalDevice[]): Alert[] => {
-  const attackDevices = devices.filter(d => d.status === 'attack');
-  const warningDevices = devices.filter(d => d.status === 'warning');
+  const attackDevices = devices.filter(d => d.status === 'compromised');
+  const warningDevices = devices.filter(d => d.status === 'suspicious');
 
   const alerts: Alert[] = [];
 

@@ -153,12 +153,11 @@ function StatusBadge({ status }: { status: PhysicalDevice['status'] }) {
   return (
     <span className={cn(
       'px-2 py-0.5 rounded-full text-xs font-medium capitalize',
-      status === 'online' && 'status-online',
-      status === 'offline' && 'status-offline',
-      status === 'attack' && 'status-attack',
-      status === 'warning' && 'status-warning'
+      status === 'benign' && 'status-online',
+      status === 'suspicious' && 'status-warning',
+      status === 'compromised' && 'status-attack'
     )}>
-      {status}
+      {status === 'benign' ? 'Benign' : status === 'compromised' ? 'Compromised' : 'Suspicious'}
     </span>
   );
 }

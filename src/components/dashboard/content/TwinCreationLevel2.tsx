@@ -195,12 +195,11 @@ function StatusBadge({ status }: { status: DigitalTwin['status'] }) {
   return (
     <span className={cn(
       'px-3 py-1 rounded-full text-xs font-semibold uppercase',
-      status === 'online' && 'bg-success/20 text-success',
-      status === 'offline' && 'bg-muted text-muted-foreground',
-      status === 'attack' && 'bg-destructive/20 text-destructive animate-pulse',
-      status === 'warning' && 'bg-warning/20 text-warning'
+      status === 'benign' && 'bg-success/20 text-success',
+      status === 'compromised' && 'bg-destructive/20 text-destructive animate-pulse',
+      status === 'suspicious' && 'bg-warning/20 text-warning'
     )}>
-      {status}
+      {status === 'benign' ? 'Benign' : status === 'compromised' ? 'Compromised' : 'Suspicious'}
     </span>
   );
 }
