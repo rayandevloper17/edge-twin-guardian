@@ -1,8 +1,9 @@
 import { PhysicalDevice, DigitalTwin, Alert, SystemMetrics } from '@/types/dashboard';
 
 // ============================================
-// MILITARY TOPOLOGY: Hierarchical Command Structure
-// Gateway at center-top, devices radiate in command hierarchy
+// MILITARY TOPOLOGY: Hub-and-Spoke Command Structure
+// Gateway at center, peripheral devices branch symmetrically
+// Layout: Wide horizontal spread, physical layer y: 60-140
 // ============================================
 
 export const militaryDevices: PhysicalDevice[] = [
@@ -24,9 +25,8 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 100,
     latency: 2,
     lastHeartbeat: new Date(),
-    // Top center - command node
-    position: { x: 400, y: 80 },
-    // Gateway connects to ALL field devices (star topology from command)
+    // Hub center - vertical axis
+    position: { x: 400, y: 100 },
     connections: ['mil-radar', 'mil-camera', 'mil-sensor'],
   },
   {
@@ -47,9 +47,9 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 98,
     latency: 5,
     lastHeartbeat: new Date(),
-    // Far left position - well separated
-    position: { x: 140, y: 170 },
-    connections: ['mil-gateway', 'mil-sensor'],
+    // Left branch
+    position: { x: 150, y: 100 },
+    connections: ['mil-gateway'],
   },
   {
     id: 'mil-camera',
@@ -69,9 +69,9 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 92,
     latency: 12,
     lastHeartbeat: new Date(),
-    // Far right position - well separated
-    position: { x: 660, y: 170 },
-    connections: ['mil-gateway', 'mil-sensor'],
+    // Right branch
+    position: { x: 650, y: 100 },
+    connections: ['mil-gateway'],
   },
   {
     id: 'mil-sensor',
@@ -91,18 +91,41 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 85,
     latency: 25,
     lastHeartbeat: new Date(),
-    // Bottom center - below gateway with good spacing
-    position: { x: 400, y: 200 },
-    connections: ['mil-radar', 'mil-camera'],
+    // Far left branch (below radar level for tree feel, but same row for clean pairing)
+    position: { x: 275, y: 160 },
+    connections: ['mil-gateway'],
   },
 ];
 
 // ============================================
-// SMART CITY TOPOLOGY: Distributed Mesh Network
-// Decentralized many-to-many connections
+// SMART CITY TOPOLOGY: Hub-and-Spoke Municipal Network
+// Gateway at center, devices branch symmetrically
+// Layout: Wide horizontal spread, physical layer y: 60-160
 // ============================================
 
 export const smartCityDevices: PhysicalDevice[] = [
+  {
+    id: 'sc-gateway',
+    name: 'City Gateway',
+    type: 'Utility Gateway',
+    deviceType: 'gateway',
+    manufacturer: 'GridSmart',
+    model: 'CG-200',
+    firmwareVersion: '2.5.1',
+    osVersion: 'Contiki',
+    location: 'District Hub',
+    owner: 'City IT',
+    networkType: 'Fiber',
+    ipAddress: '10.0.1.1',
+    macAddress: 'CC:DD:EE:FF:01:01',
+    status: 'compromised',
+    signalStrength: 95,
+    latency: 8,
+    lastHeartbeat: new Date(),
+    // Hub center - vertical axis
+    position: { x: 400, y: 100 },
+    connections: ['sc-traffic', 'sc-light', 'sc-sensor'],
+  },
   {
     id: 'sc-traffic',
     name: 'Traffic Controller',
@@ -121,9 +144,9 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 94,
     latency: 15,
     lastHeartbeat: new Date(),
-    // Top-left - well separated
-    position: { x: 160, y: 80 },
-    connections: ['sc-light', 'sc-sensor', 'sc-gateway'],
+    // Left branch
+    position: { x: 150, y: 100 },
+    connections: ['sc-gateway'],
   },
   {
     id: 'sc-light',
@@ -143,9 +166,9 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 78,
     latency: 45,
     lastHeartbeat: new Date(Date.now() - 30000),
-    // Top-right - well separated
-    position: { x: 640, y: 80 },
-    connections: ['sc-traffic', 'sc-gateway'],
+    // Right branch
+    position: { x: 650, y: 100 },
+    connections: ['sc-gateway'],
   },
   {
     id: 'sc-sensor',
@@ -165,37 +188,19 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 88,
     latency: 80,
     lastHeartbeat: new Date(),
-    // Bottom-left - well separated
-    position: { x: 160, y: 200 },
-    connections: ['sc-traffic', 'sc-gateway'],
-  },
-  {
-    id: 'sc-gateway',
-    name: 'City Gateway',
-    type: 'Utility Gateway',
-    deviceType: 'gateway',
-    manufacturer: 'GridSmart',
-    model: 'CG-200',
-    firmwareVersion: '2.5.1',
-    osVersion: 'Contiki',
-    location: 'District Hub',
-    owner: 'City IT',
-    networkType: 'Fiber',
-    ipAddress: '10.0.1.1',
-    macAddress: 'CC:DD:EE:FF:01:01',
-    status: 'compromised',
-    signalStrength: 95,
-    latency: 8,
-    lastHeartbeat: new Date(),
-    // Bottom-right - well separated
-    position: { x: 640, y: 200 },
-    connections: ['sc-traffic', 'sc-light', 'sc-sensor'],
+    // Center-left branch
+    position: { x: 275, y: 160 },
+    connections: ['sc-gateway'],
   },
 ];
 
-// Digital  Twin Layer - BOTTOM
-// Mirrors physical topology but in separate spatial layer (below mirror boundary at y=250)
+// Digital Twin Layer - BOTTOM
+// Each twin is positioned DIRECTLY below its physical counterpart
+// Physical layer: y ~60-160, Mirror boundary: y=250, Twin layer: y ~310-420
+// This ensures strict vertical pairing with no diagonal mirroring lines
 export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => {
+  const TWIN_Y_OFFSET = 260; // Consistent vertical offset for all twins
+  
   return devices.map((device, index) => ({
     id: `twin-${device.id}`,
     physicalDeviceId: device.id,
@@ -224,8 +229,8 @@ export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => 
     contextInputs: ['Network topology', 'Historical patterns', 'Threat intelligence feeds'],
     driftIndicator: device.status === 'compromised' ? 85 : device.status === 'suspicious' ? 45 : Math.random() * 15,
     status: device.status,
-    // Digital  layer positioned BELOW mirror boundary (y=250)
-    position: { x: device.position.x, y: device.position.y + 200 },
+    // Strict vertical pairing: same X, offset Y below mirror boundary
+    position: { x: device.position.x, y: device.position.y + TWIN_Y_OFFSET },
   }));
 };
 
