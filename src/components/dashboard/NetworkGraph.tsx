@@ -141,31 +141,31 @@ function DeviceNode({
       {isAttack && (
         <g transform="translate(0, -46)">
           <rect
-            x="-24" y="-10" width="48" height="20" rx="10"
+            x="-36" y="-10" width="72" height="20" rx="10"
             className="fill-destructive shadow-lg"
           />
           <text
             x="0" y="4"
             textAnchor="middle"
-            className="fill-white text-[9px] font-bold tracking-wide"
+            className="fill-white text-[8px] font-bold tracking-wide"
           >
-            {theme.terminology.threatLabel}
+            COMPROMISED
           </text>
         </g>
       )}
 
       {/* Device name */}
       <text
-        y="52"
+        y="50"
         textAnchor="middle"
-        className="fill-foreground text-[11px] font-semibold"
+        className="fill-foreground text-[10px] font-semibold"
       >
-        {isTwin ? `DT-${device.name.split(' ')[0]}` : device.name}
+        {isTwin ? `DT-${device.name}` : device.name}
       </text>
 
       {/* IP Address */}
       <text
-        y="66"
+        y="63"
         textAnchor="middle"
         className="fill-muted-foreground text-[9px] font-mono"
       >
