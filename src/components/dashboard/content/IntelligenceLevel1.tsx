@@ -140,13 +140,6 @@ export default function IntelligenceLevel1() {
         <span className="text-xs text-muted-foreground">Events generated today</span>
       </div>
 
-      {/* Instruction */}
-      <div className="text-center pt-4 border-t border-border/50">
-        <p className="text-sm text-primary font-medium">Full Intelligence View</p>
-        <p className="text-xs text-muted-foreground mt-1">
-          Detailed forensics and AI analysis available in Level 2
-        </p>
-      </div>
     </div>
   );
 }
