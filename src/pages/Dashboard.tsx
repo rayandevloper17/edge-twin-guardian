@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDashboard } from '@/context/DashboardContext';
 import { useAutoProgression } from '@/hooks/useAutoProgression';
+import { useNetworkScanning } from '@/hooks/useNetworkScanning';
 import LeftMenu from '@/components/dashboard/LeftMenu';
 import NetworkGraph from '@/components/dashboard/NetworkGraph';
 import DetailsPanel from '@/components/dashboard/DetailsPanel';
@@ -9,6 +10,9 @@ import DetailsPanel from '@/components/dashboard/DetailsPanel';
 export default function Dashboard() {
   const navigate = useNavigate();
   const { state } = useDashboard();
+
+  // Network scanning: reveals devices sequentially
+  useNetworkScanning();
 
   // Autonomous progression: after twin creation, system auto-advances
   useAutoProgression();
@@ -24,7 +28,7 @@ export default function Dashboard() {
 
   // Update page title based on use case
   useEffect(() => {
-    const baseTitle = 'Network Edge Digital  Twin for IoT Attack Detection';
+    const baseTitle = 'Network Edge Digital Twin for IoT Attack Detection';
     const useCaseTitle = state.useCase === 'military'
       ? 'Military and Critical National Infrastructure'
       : 'Smart Cities';
@@ -40,13 +44,8 @@ export default function Dashboard() {
 
   return (
     <div className="h-screen flex overflow-hidden bg-background">
-      {/* Left Menu - Navigation */}
       <LeftMenu />
-
-      {/* Center - Network Visualization (Content Area based on selection) */}
       <NetworkGraph />
-
-      {/* Right - Details Panel (Content Area 1 & 2) */}
       <DetailsPanel />
     </div>
   );

@@ -1,4 +1,4 @@
-// Types for the Network Edge Digital  Twin Dashboard
+// Types for the Network Edge Digital Twin Dashboard
 
 export type UseCase = 'military' | 'smart-cities';
 
@@ -10,6 +10,17 @@ export type SystemStage =
 
 export type DeviceStatus = 'benign' | 'suspicious' | 'compromised';
 
+export type AttackType = 'ddos_syn' | 'dos_tcp' | 'mirai_udp' | 'recon_portscan';
+
+export function getAttackLabel(type: AttackType): string {
+  switch (type) {
+    case 'ddos_syn': return 'DDoS SYN Flood';
+    case 'dos_tcp': return 'DoS TCP';
+    case 'mirai_udp': return 'Mirai UDP Flood';
+    case 'recon_portscan': return 'Recon Port Scan';
+  }
+}
+
 // Helper to get display label for device security status
 export function getStatusLabel(status: DeviceStatus, threatLabel?: string): string {
   switch (status) {
@@ -17,6 +28,21 @@ export function getStatusLabel(status: DeviceStatus, threatLabel?: string): stri
     case 'suspicious': return 'Suspicious';
     case 'compromised': return threatLabel || 'Compromised';
   }
+}
+
+export interface AttackEvent {
+  id: string;
+  attackType: AttackType;
+  targetDeviceId: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  label: string;
+  description: string;
+  aiReasoning: string;
+  confidence: number;
+  sourceIP: string;
+  destinationPort: number;
+  protocol: string;
+  actionsTaken: string[];
 }
 
 export type TwinModelType = 'physics-based' | 'data-driven' | 'hybrid';
@@ -38,11 +64,11 @@ export interface PhysicalDevice {
   ipAddress: string;
   macAddress: string;
   status: DeviceStatus;
-  signalStrength: number; // 0-100
-  latency: number; // ms
+  signalStrength: number;
+  latency: number;
   lastHeartbeat: Date;
   position: { x: number; y: number };
-  connections: string[]; // IDs of connected devices
+  connections: string[];
 }
 
 export interface DigitalTwin {
@@ -52,7 +78,7 @@ export interface DigitalTwin {
   modelType: TwinModelType;
   modelVersion: string;
   lastSyncTime: Date;
-  syncLatency: number; // ms
+  syncLatency: number;
   normalBehaviorProfile: {
     cpuUsage: { min: number; max: number };
     memoryUsage: { min: number; max: number };
@@ -71,7 +97,7 @@ export interface DigitalTwin {
     avgUptime: number;
   };
   contextInputs: string[];
-  driftIndicator: number; // 0-100, percentage of deviation from baseline
+  driftIndicator: number;
   status: DeviceStatus;
   position: { x: number; y: number };
 }
@@ -101,10 +127,10 @@ export interface SystemMetrics {
   totalTwins: number;
   activeAlerts: number;
   avgSyncLatency: number;
-  mttd: number; // Mean Time To Detect (seconds)
-  overallRiskScore: number; // 0-100
+  mttd: number;
+  overallRiskScore: number;
   attackAttempts: number;
-  maliciousTraffic: number; // in MB
+  maliciousTraffic: number;
   incidentsTrend: { date: Date; count: number }[];
 }
 
@@ -120,4 +146,12 @@ export interface DashboardState {
   metrics: SystemMetrics;
   twinCreationComplete: boolean;
   intelligenceActive: boolean;
+  // Scanning phase
+  scanningComplete: boolean;
+  discoveredDeviceIds: string[];
+  // Device selection for twinning
+  selectedForTwinning: string[];
+  // Progressive attack reveal
+  attackQueue: AttackEvent[];
+  revealedAttacks: AttackEvent[];
 }

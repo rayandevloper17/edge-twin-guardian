@@ -1,32 +1,25 @@
 import { useDashboard } from '@/context/DashboardContext';
-import { getStatusLabel } from '@/types/dashboard';
 import { getTheme } from '@/config/themes';
 import { cn } from '@/lib/utils';
-import { 
-  Wifi, 
-  Radio, 
-  Camera, 
-  Server, 
+import { Progress } from '@/components/ui/progress';
+import {
+  Wifi,
+  Radio,
+  Camera,
+  Server,
   AlertCircle,
   CheckCircle2,
-  Network
+  Network,
+  Loader2,
 } from 'lucide-react';
 
 export default function DiscoveryLevel1() {
   const { state } = useDashboard();
-  const { devices } = state;
+  const { devices, scanningComplete, discoveredDeviceIds } = state;
   const theme = getTheme(state.useCase);
 
-  const benignDevices = devices.filter(d => d.status === 'benign').length;
-  const suspiciousDevices = devices.filter(d => d.status === 'suspicious').length;
-  const compromisedDevices = devices.filter(d => d.status === 'compromised').length;
-
-  const deviceTypes = devices.reduce((acc, device) => {
-    acc[device.deviceType] = (acc[device.deviceType] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const vendors = [...new Set(devices.map(d => d.manufacturer))];
+  const discoveredDevices = devices.filter(d => discoveredDeviceIds.includes(d.id));
+  const scanProgress = devices.length > 0 ? (discoveredDeviceIds.length / devices.length) * 100 : 0;
 
   const getDeviceIcon = (type: string) => {
     switch (type) {
@@ -46,6 +39,21 @@ export default function DiscoveryLevel1() {
         <p className="text-sm text-muted-foreground">Real-time visibility into connected physical devices</p>
       </div>
 
+      {/* Scanning Progress */}
+      {!scanningComplete && (
+        <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+          <div className="flex items-center gap-3 mb-3">
+            <Loader2 className="w-5 h-5 text-primary animate-spin" />
+            <span className="text-sm font-semibold text-primary">Scanning Network...</span>
+          </div>
+          <Progress value={scanProgress} className="h-2 mb-2" />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>{discoveredDeviceIds.length} devices found</span>
+            <span>{Math.round(scanProgress)}%</span>
+          </div>
+        </div>
+      )}
+
       {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-3">
         <div className="p-4 rounded-xl bg-card border border-border">
@@ -53,46 +61,42 @@ export default function DiscoveryLevel1() {
             <Network className="w-4 h-4 text-primary" />
             <span className="text-xs text-muted-foreground uppercase font-medium">Discovered Devices</span>
           </div>
-          <span className="text-3xl font-bold text-foreground">{devices.length}</span>
+          <span className="text-3xl font-bold text-foreground">
+            {scanningComplete ? devices.length : discoveredDeviceIds.length}
+          </span>
         </div>
-        
+
         <div className="p-4 rounded-xl bg-card border border-border">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle2 className="w-4 h-4 text-success" />
-            <span className="text-xs text-muted-foreground uppercase font-medium">Active Connections</span>
+            <span className="text-xs text-muted-foreground uppercase font-medium">Security Status</span>
           </div>
-          <span className="text-3xl font-bold text-success">{devices.length}</span>
+          <span className="text-lg font-bold text-success">All Benign</span>
         </div>
       </div>
 
-      {/* Security Status Overview */}
+      {/* Discovered Devices List */}
       <div>
         <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-          Security Status
+          {scanningComplete ? 'All Devices' : 'Discovered So Far'}
         </h4>
         <div className="space-y-2">
-          <StatusRow label="Benign" count={benignDevices} total={devices.length} color="bg-success" />
-          <StatusRow label="Suspicious" count={suspiciousDevices} total={devices.length} color="bg-warning" />
-          <StatusRow label={theme.terminology.threatLabel} count={compromisedDevices} total={devices.length} color="bg-destructive" />
-        </div>
-      </div>
-
-      {/* Device Types */}
-      <div>
-        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-          Device Types
-        </h4>
-        <div className="grid grid-cols-2 gap-2">
-          {Object.entries(deviceTypes).map(([type, count]) => {
-            const Icon = getDeviceIcon(type);
+          {discoveredDevices.map(device => {
+            const Icon = getDeviceIcon(device.deviceType);
             return (
-              <div 
-                key={type} 
-                className="flex items-center gap-2 p-3 rounded-lg bg-muted/30 border border-border/50"
+              <div
+                key={device.id}
+                className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/50"
+                style={{ animation: 'nodeAppear 0.5s ease-out' }}
               >
-                <Icon className="w-4 h-4 text-primary" />
-                <span className="text-sm text-foreground capitalize flex-1">{type}</span>
-                <span className="text-sm font-bold text-foreground">{count}</span>
+                <Icon className="w-4 h-4 text-primary shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm text-foreground font-medium block">{device.name}</span>
+                  <span className="text-[10px] text-muted-foreground font-mono">{device.ipAddress}</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-success/20 text-success uppercase">
+                  Benign
+                </span>
               </div>
             );
           })}
@@ -100,67 +104,47 @@ export default function DiscoveryLevel1() {
       </div>
 
       {/* Vendors */}
-      <div>
-        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-          Vendors Detected
-        </h4>
-        <div className="flex flex-wrap gap-2">
-          {vendors.map(vendor => (
-            <span 
-              key={vendor} 
-              className="px-3 py-1.5 text-xs font-medium rounded-full bg-primary/10 text-primary border border-primary/20"
-            >
-              {vendor}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Network Topology Note */}
-      <div className="p-4 rounded-xl bg-muted/20 border border-border/50">
-        <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5" />
-          <div>
-            <p className="text-sm font-medium text-foreground mb-1">Network Topology</p>
-            <p className="text-xs text-muted-foreground">
-              Logical view of device connectivity shown in the center panel. Click on any device to inspect details.
-            </p>
+      {scanningComplete && (
+        <div>
+          <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            Vendors Detected
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {[...new Set(devices.map(d => d.manufacturer))].map(vendor => (
+              <span
+                key={vendor}
+                className="px-3 py-1.5 text-xs font-medium rounded-full bg-primary/10 text-primary border border-primary/20"
+              >
+                {vendor}
+              </span>
+            ))}
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Selection Info */}
+      {scanningComplete && !state.twinCreationComplete && (
+        <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-primary mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Ready for Digital Twinning</p>
+              <p className="text-xs text-muted-foreground">
+                {state.selectedForTwinning.length} of {devices.length} devices selected.
+                Click devices in the network graph to toggle selection, then create digital twins.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Instruction */}
-      <div className="text-center pt-4 border-t border-border/50">
-        <p className="text-sm text-primary font-medium">Select a physical IoT device</p>
-        <p className="text-xs text-muted-foreground mt-1">Click a device on the network graph to view specifications</p>
-      </div>
-    </div>
-  );
-}
-
-function StatusRow({ 
-  label, 
-  count, 
-  total, 
-  color 
-}: { 
-  label: string; 
-  count: number; 
-  total: number; 
-  color: string; 
-}) {
-  const percentage = total > 0 ? (count / total) * 100 : 0;
-
-  return (
-    <div className="flex items-center gap-3">
-      <span className="text-xs text-muted-foreground w-24">{label}</span>
-      <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-        <div 
-          className={cn('h-full rounded-full transition-all', color)} 
-          style={{ width: `${percentage}%` }} 
-        />
-      </div>
-      <span className="text-xs font-mono text-foreground w-8 text-right">{count}</span>
+      {!scanningComplete && (
+        <div className="text-center pt-4 border-t border-border/50">
+          <p className="text-sm text-primary font-medium">Network scan in progress</p>
+          <p className="text-xs text-muted-foreground mt-1">Devices will appear as they are discovered</p>
+        </div>
+      )}
     </div>
   );
 }

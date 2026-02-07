@@ -1,9 +1,7 @@
-import { PhysicalDevice, DigitalTwin, Alert, SystemMetrics, DeviceStatus } from '@/types/dashboard';
+import { PhysicalDevice, DigitalTwin, Alert, SystemMetrics, DeviceStatus, AttackEvent } from '@/types/dashboard';
 
 // ============================================
-// MILITARY TOPOLOGY: Hub-and-Spoke Command Structure
-// Gateway at center, peripheral devices branch symmetrically
-// Layout: Wide horizontal spread, physical layer y: 60-140
+// MILITARY TOPOLOGY
 // ============================================
 
 export const militaryDevices: PhysicalDevice[] = [
@@ -25,7 +23,6 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 100,
     latency: 2,
     lastHeartbeat: new Date(),
-    // Hub center - vertical axis
     position: { x: 400, y: 100 },
     connections: ['mil-radar', 'mil-camera', 'mil-sensor'],
   },
@@ -47,7 +44,6 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 98,
     latency: 5,
     lastHeartbeat: new Date(),
-    // Left branch
     position: { x: 150, y: 100 },
     connections: ['mil-gateway'],
   },
@@ -69,7 +65,6 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 92,
     latency: 12,
     lastHeartbeat: new Date(),
-    // Right branch
     position: { x: 650, y: 100 },
     connections: ['mil-gateway'],
   },
@@ -91,16 +86,13 @@ export const militaryDevices: PhysicalDevice[] = [
     signalStrength: 85,
     latency: 25,
     lastHeartbeat: new Date(),
-    // Far left branch (below radar level for tree feel, but same row for clean pairing)
     position: { x: 275, y: 160 },
     connections: ['mil-gateway'],
   },
 ];
 
 // ============================================
-// SMART CITY TOPOLOGY: Hub-and-Spoke Municipal Network
-// Gateway at center, devices branch symmetrically
-// Layout: Wide horizontal spread, physical layer y: 60-160
+// SMART CITY TOPOLOGY
 // ============================================
 
 export const smartCityDevices: PhysicalDevice[] = [
@@ -122,7 +114,6 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 95,
     latency: 8,
     lastHeartbeat: new Date(),
-    // Hub center - vertical axis
     position: { x: 400, y: 100 },
     connections: ['sc-traffic', 'sc-light', 'sc-sensor'],
   },
@@ -144,7 +135,6 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 94,
     latency: 15,
     lastHeartbeat: new Date(),
-    // Left branch
     position: { x: 150, y: 100 },
     connections: ['sc-gateway'],
   },
@@ -166,7 +156,6 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 78,
     latency: 45,
     lastHeartbeat: new Date(Date.now() - 30000),
-    // Right branch
     position: { x: 650, y: 100 },
     connections: ['sc-gateway'],
   },
@@ -188,16 +177,135 @@ export const smartCityDevices: PhysicalDevice[] = [
     signalStrength: 88,
     latency: 80,
     lastHeartbeat: new Date(),
-    // Center-left branch
     position: { x: 275, y: 160 },
     connections: ['sc-gateway'],
   },
 ];
 
 // ============================================
-// ATTACK SCENARIOS — Applied ONLY during Intelligence stage
-// These represent the AI-detected threats revealed after analysis
+// ATTACK EVENT QUEUES — Progressive reveal during Intelligence
+// Based on dataset: benign, ddos_syn, dos_tcp, mirai_udp, recon_portscan
 // ============================================
+
+export const militaryAttackQueue: AttackEvent[] = [
+  {
+    id: 'atk-mil-1',
+    attackType: 'recon_portscan',
+    targetDeviceId: 'mil-radar',
+    severity: 'medium',
+    label: 'Recon Port Scan',
+    description: 'Sequential port scanning activity detected on Site Radar. External IP probing open services.',
+    aiReasoning: 'Digital twin behavioral analysis detected 847 SYN packets to sequential ports (1-1024) within 12 seconds. Pattern matches known reconnaissance toolkit signatures. Source IP geolocation: Eastern Europe. Confidence: High.',
+    confidence: 78,
+    sourceIP: '45.33.32.156',
+    destinationPort: 443,
+    protocol: 'TCP',
+    actionsTaken: ['Enhanced monitoring enabled', 'Port scan logged', 'Firewall rules updated'],
+  },
+  {
+    id: 'atk-mil-2',
+    attackType: 'ddos_syn',
+    targetDeviceId: 'mil-camera',
+    severity: 'critical',
+    label: 'DDoS SYN Flood',
+    description: 'Distributed SYN flood attack detected on Security Camera. Multiple source IPs identified.',
+    aiReasoning: 'Twin drift indicator spiked to 92%. Incoming SYN rate: 45,000 packets/sec from 127 unique IPs. Connection table saturation at 94%. Pattern consistent with coordinated DDoS campaign targeting surveillance infrastructure.',
+    confidence: 94,
+    sourceIP: '185.220.101.x',
+    destinationPort: 80,
+    protocol: 'TCP',
+    actionsTaken: ['Traffic isolated', 'Device quarantined', 'Incident reported to SOC'],
+  },
+  {
+    id: 'atk-mil-3',
+    attackType: 'mirai_udp',
+    targetDeviceId: 'mil-sensor',
+    severity: 'high',
+    label: 'Mirai UDP Flood',
+    description: 'Mirai botnet variant detected targeting Field Sensor with UDP flood.',
+    aiReasoning: 'UDP packet payload analysis matches Mirai variant C&C communication pattern. Flood rate: 12,000 packets/sec. Twin analysis shows 67% deviation from normal UDP baseline. Botnet signature confirmed.',
+    confidence: 89,
+    sourceIP: '23.129.64.x',
+    destinationPort: 53,
+    protocol: 'UDP',
+    actionsTaken: ['UDP traffic filtered', 'Botnet signatures updated', 'Network team alerted'],
+  },
+  {
+    id: 'atk-mil-4',
+    attackType: 'dos_tcp',
+    targetDeviceId: 'mil-gateway',
+    severity: 'critical',
+    label: 'DoS TCP',
+    description: 'TCP connection exhaustion attack on Secure Gateway. Service degradation imminent.',
+    aiReasoning: 'Twin model detected TCP connection pool depletion. 98% of available connections consumed by incomplete handshakes. Slowloris-style attack from single high-bandwidth node. Attack duration: 4 minutes.',
+    confidence: 91,
+    sourceIP: '91.219.236.x',
+    destinationPort: 8443,
+    protocol: 'TCP',
+    actionsTaken: ['Connection rate limiting applied', 'Failover gateway activated', 'Forensic capture initiated'],
+  },
+];
+
+export const smartCityAttackQueue: AttackEvent[] = [
+  {
+    id: 'atk-sc-1',
+    attackType: 'recon_portscan',
+    targetDeviceId: 'sc-light',
+    severity: 'medium',
+    label: 'Recon Port Scan',
+    description: 'Port scanning activity detected on Smart Lighting controller. Probing for vulnerable services.',
+    aiReasoning: 'Digital twin detected 623 sequential SYN probes across common IoT ports (22, 23, 80, 443, 8080). Pattern matches automated scanning toolkit. Source IP traced to compromised residential network.',
+    confidence: 76,
+    sourceIP: '103.25.17.x',
+    destinationPort: 8080,
+    protocol: 'TCP',
+    actionsTaken: ['Enhanced monitoring enabled', 'Firewall rules updated'],
+  },
+  {
+    id: 'atk-sc-2',
+    attackType: 'dos_tcp',
+    targetDeviceId: 'sc-gateway',
+    severity: 'critical',
+    label: 'DoS TCP',
+    description: 'TCP connection exhaustion attack targeting City Gateway. Critical infrastructure at risk.',
+    aiReasoning: 'Twin model detected 96% connection pool depletion. Slowloris-style attack maintaining thousands of half-open connections. Attack sustained for 7 minutes. Critical city services affected.',
+    confidence: 92,
+    sourceIP: '91.219.236.x',
+    destinationPort: 443,
+    protocol: 'TCP',
+    actionsTaken: ['Connection rate limiting applied', 'Backup gateway activated', 'City SOC notified'],
+  },
+  {
+    id: 'atk-sc-3',
+    attackType: 'ddos_syn',
+    targetDeviceId: 'sc-traffic',
+    severity: 'critical',
+    label: 'DDoS SYN Flood',
+    description: 'Distributed SYN flood targeting Traffic Controller. Traffic management systems at risk.',
+    aiReasoning: 'Twin analysis shows 89% deviation from baseline. 38,000 SYN packets/sec from 94 distributed sources. Traffic controller response time degraded by 340%. Coordinated attack on city infrastructure.',
+    confidence: 95,
+    sourceIP: '185.220.101.x',
+    destinationPort: 80,
+    protocol: 'TCP',
+    actionsTaken: ['Traffic rerouted', 'Device quarantined', 'Emergency traffic protocols activated'],
+  },
+  {
+    id: 'atk-sc-4',
+    attackType: 'mirai_udp',
+    targetDeviceId: 'sc-sensor',
+    severity: 'high',
+    label: 'Mirai UDP Flood',
+    description: 'Mirai botnet variant targeting Air Quality Sensor with UDP flood.',
+    aiReasoning: 'UDP payload analysis matches Mirai C&C signatures. Sensor reporting 78% deviation from normal behavior. Flood rate: 8,500 packets/sec. Environmental monitoring integrity compromised.',
+    confidence: 87,
+    sourceIP: '23.129.64.x',
+    destinationPort: 53,
+    protocol: 'UDP',
+    actionsTaken: ['UDP traffic filtered', 'Sensor isolated for analysis', 'Environmental data backup activated'],
+  },
+];
+
+// Legacy attack scenarios (kept for compatibility)
 export const attackScenarios: Record<string, Record<string, DeviceStatus>> = {
   military: {
     'mil-camera': 'compromised',
@@ -208,13 +316,10 @@ export const attackScenarios: Record<string, Record<string, DeviceStatus>> = {
   },
 };
 
-// Digital Twin Layer - BOTTOM
-// Each twin is positioned DIRECTLY below its physical counterpart
-// Physical layer: y ~60-160, Mirror boundary: y=250, Twin layer: y ~310-420
-// This ensures strict vertical pairing with no diagonal mirroring lines
+// Digital Twin Layer
 export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => {
-  const TWIN_Y_OFFSET = 260; // Consistent vertical offset for all twins
-  
+  const TWIN_Y_OFFSET = 260;
+
   return devices.map((device, index) => ({
     id: `twin-${device.id}`,
     physicalDeviceId: device.id,
@@ -241,9 +346,8 @@ export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => 
       avgUptime: 99.5 + Math.random() * 0.4,
     },
     contextInputs: ['Network topology', 'Historical patterns', 'Threat intelligence feeds'],
-    driftIndicator: device.status === 'compromised' ? 85 : device.status === 'suspicious' ? 45 : Math.random() * 15,
-    status: device.status,
-    // Strict vertical pairing: same X, offset Y below mirror boundary
+    driftIndicator: Math.random() * 15,
+    status: 'benign' as DeviceStatus,
     position: { x: device.position.x, y: device.position.y + TWIN_Y_OFFSET },
   }));
 };
@@ -251,7 +355,6 @@ export const createDigitalTwins = (devices: PhysicalDevice[]): DigitalTwin[] => 
 export const generateAlerts = (devices: PhysicalDevice[]): Alert[] => {
   const attackDevices = devices.filter(d => d.status === 'compromised');
   const warningDevices = devices.filter(d => d.status === 'suspicious');
-
   const alerts: Alert[] = [];
 
   attackDevices.forEach((device, i) => {
@@ -259,25 +362,12 @@ export const generateAlerts = (devices: PhysicalDevice[]): Alert[] => {
       id: `alert-${i + 1}`,
       timestamp: new Date(Date.now() - 60000),
       severity: 'critical',
-      type: 'DOS attack detected',
+      type: 'Attack detected',
       deviceId: device.id,
       twinId: `twin-${device.id}`,
-      description: `DDoS attack detected on ${device.name}. Immediate action required.`,
-      aiReasoning: 'Pattern analysis indicates distributed denial of service attack originating from multiple external IPs. Behavior deviation score: 92%. Confidence: High.',
+      description: `Attack detected on ${device.name}. Immediate action required.`,
+      aiReasoning: 'Pattern analysis indicates ongoing attack. Behavior deviation score: 92%. Confidence: High.',
       actionsTaken: ['In Quarantine', 'Traffic isolated', 'Incident reported to SOC'],
-      resolved: false,
-    });
-
-    alerts.push({
-      id: `alert-${i + 2}`,
-      timestamp: new Date(Date.now() - 120000),
-      severity: 'critical',
-      type: 'DOS attack detected',
-      deviceId: device.id,
-      twinId: `twin-${device.id}`,
-      description: `Continued attack pattern on ${device.name}.`,
-      aiReasoning: 'Secondary wave detected. Attack vector: DDoS.',
-      actionsTaken: ['In Quarantine'],
       resolved: false,
     });
   });
@@ -308,8 +398,8 @@ export const generateMetrics = (devices: PhysicalDevice[], alerts: Alert[]): Sys
     avgSyncLatency: Math.floor(Math.random() * 30) + 20,
     mttd: hasAttacks ? Math.floor(Math.random() * 120) + 30 : 0,
     overallRiskScore: alerts.some(a => a.severity === 'critical') ? 75 : hasAttacks ? 25 : 0,
-    attackAttempts: hasAttacks ? 17 : 0,
-    maliciousTraffic: hasAttacks ? 157 : 0,
+    attackAttempts: hasAttacks ? alerts.length * 4 : 0,
+    maliciousTraffic: hasAttacks ? alerts.length * 38 : 0,
     incidentsTrend: Array.from({ length: 7 }, (_, i) => ({
       date: new Date(Date.now() - (6 - i) * 86400000),
       count: hasAttacks ? Math.floor(Math.random() * 10) + 1 : 0,
