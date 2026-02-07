@@ -119,4 +119,5 @@ export interface DashboardState {
   alerts: Alert[];
   metrics: SystemMetrics;
   twinCreationComplete: boolean;
+  intelligenceActive: boolean;
 }

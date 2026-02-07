@@ -3,7 +3,7 @@ import { useDashboard } from '@/context/DashboardContext';
 import { PhysicalDevice, DigitalTwin } from '@/types/dashboard';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Wifi, Radio, Camera, Cpu, Server } from 'lucide-react';
+import { ArrowRight, Wifi, Radio, Camera, Cpu, Server, Brain } from 'lucide-react';
 import { getTheme } from '@/config/themes';
 
 // ─── Device Node ────────────────────────────────────────────────
@@ -333,7 +333,7 @@ export default function NetworkGraph() {
   const showPhysicalLayer = true;
   const showDigitalLayer = currentStage !== 'network-discovery' && state.twinCreationComplete;
   const showMirroringLinks = showDigitalLayer && (currentStage === 'synchronization' || currentStage === 'intelligence');
-  const isIntelligenceFocus = currentStage === 'intelligence';
+  // Attack visuals are now stage-driven — only visible during intelligence
 
   // Identify compromised device IDs for threat isolation
   const compromisedIds = useMemo(() => new Set(
@@ -440,7 +440,7 @@ export default function NetworkGraph() {
   return (
     <div className={cn(
       "flex-1 flex flex-col relative overflow-hidden transition-colors duration-500",
-      hasActiveAttack && currentStage === 'synchronization' && "bg-destructive/[0.02]"
+      hasActiveAttack && "bg-destructive/[0.02]"
     )}>
       {/* Grid background */}
       <div
@@ -471,7 +471,7 @@ export default function NetworkGraph() {
             preserveAspectRatio="xMidYMid meet"
           >
             {/* ===== PHYSICAL NETWORK LAYER (TOP) ===== */}
-            <g className={cn(isIntelligenceFocus && "opacity-50 transition-opacity")}>
+            <g>
               <LayerLabel x={50} y={40} label="Physical Network" color="fill-physical" />
 
               {/* Physical connections */}
@@ -482,7 +482,7 @@ export default function NetworkGraph() {
                   x2={line.x2} y2={line.y2}
                   isAttack={line.isAttackPath}
                   showFlow={line.isAttackPath}
-                  muted={hasActiveAttack && !line.isAttackPath && currentStage === 'synchronization'}
+                  muted={hasActiveAttack && !line.isAttackPath}
                 />
               ))}
 
@@ -528,13 +528,13 @@ export default function NetworkGraph() {
                 y2={link.y2}
                 latency={link.syncLatency}
                 isAttack={link.status === 'compromised'}
-                muted={hasActiveAttack && !link.isDirectThreat && currentStage === 'synchronization'}
+                muted={hasActiveAttack && !link.isDirectThreat}
               />
             ))}
 
             {/* ===== DIGITAL TWIN LAYER (BOTTOM) ===== */}
             {showDigitalLayer && (
-              <g className={cn(isIntelligenceFocus && "opacity-50 transition-opacity")}>
+              <g>
                 <LayerLabel x={50} y={290} label="Digital Twin Network" color="fill-twin" />
 
                 {/* Twin connections */}
@@ -546,7 +546,7 @@ export default function NetworkGraph() {
                     isAttack={line.isAttackPath}
                     isDashed={true}
                     showFlow={line.isAttackPath}
-                    muted={hasActiveAttack && !line.isAttackPath && currentStage === 'synchronization'}
+                    muted={hasActiveAttack && !line.isAttackPath}
                   />
                 ))}
 
@@ -638,6 +638,19 @@ export default function NetworkGraph() {
           >
             <ArrowRight className="w-4 h-4" />
             Start Synchronization
+          </Button>
+        </div>
+      )}
+
+      {currentStage === 'synchronization' && (
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20">
+          <Button
+            onClick={() => setStage('intelligence')}
+            size="lg"
+            className="gap-2 shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-shadow"
+          >
+            <Brain className="w-4 h-4" />
+            Start AI Analysis
           </Button>
         </div>
       )}
