@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDashboard } from '@/context/DashboardContext';
+import { useAutoProgression } from '@/hooks/useAutoProgression';
 import LeftMenu from '@/components/dashboard/LeftMenu';
 import NetworkGraph from '@/components/dashboard/NetworkGraph';
 import DetailsPanel from '@/components/dashboard/DetailsPanel';
@@ -8,6 +9,9 @@ import DetailsPanel from '@/components/dashboard/DetailsPanel';
 export default function Dashboard() {
   const navigate = useNavigate();
   const { state } = useDashboard();
+
+  // Autonomous progression: after twin creation, system auto-advances
+  useAutoProgression();
 
   // Redirect to home if no use case selected, otherwise apply theme
   useEffect(() => {

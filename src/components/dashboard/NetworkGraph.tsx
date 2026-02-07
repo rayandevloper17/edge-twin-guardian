@@ -3,7 +3,7 @@ import { useDashboard } from '@/context/DashboardContext';
 import { PhysicalDevice, DigitalTwin } from '@/types/dashboard';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Wifi, Radio, Camera, Cpu, Server, Brain } from 'lucide-react';
+import { ArrowRight, Wifi, Radio, Camera, Cpu, Server } from 'lucide-react';
 import { getTheme } from '@/config/themes';
 
 // ─── Device Node ────────────────────────────────────────────────
@@ -318,7 +318,7 @@ function LayerLabel({ x, y, label, color }: { x: number; y: number; label: strin
 
 // ─── Main Network Graph ──────────────────────────────────────────
 export default function NetworkGraph() {
-  const { state, selectDevice, selectTwin, hoverDevice, createTwins, setStage } = useDashboard();
+  const { state, selectDevice, selectTwin, hoverDevice, createTwins } = useDashboard();
   const { devices, twins, currentStage, selectedDeviceId, selectedTwinId, hoveredDeviceId } = state;
   const theme = getTheme(state.useCase);
 
@@ -615,8 +615,8 @@ export default function NetworkGraph() {
         </div>
       </div>
 
-      {/* Action buttons */}
-      {currentStage === 'network-discovery' && (
+      {/* Action button — ONLY manual action: Create Digital Twins */}
+      {currentStage === 'network-discovery' && !state.twinCreationComplete && (
         <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20">
           <Button
             onClick={() => createTwins()}
@@ -625,32 +625,6 @@ export default function NetworkGraph() {
           >
             <ArrowRight className="w-4 h-4" />
             Create Digital Twins
-          </Button>
-        </div>
-      )}
-
-      {currentStage === 'Digital -twin-creation' && state.twinCreationComplete && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20">
-          <Button
-            onClick={() => setStage('synchronization')}
-            size="lg"
-            className="gap-2 shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-shadow"
-          >
-            <ArrowRight className="w-4 h-4" />
-            Start Synchronization
-          </Button>
-        </div>
-      )}
-
-      {currentStage === 'synchronization' && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20">
-          <Button
-            onClick={() => setStage('intelligence')}
-            size="lg"
-            className="gap-2 shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-shadow"
-          >
-            <Brain className="w-4 h-4" />
-            Start AI Analysis
           </Button>
         </div>
       )}
