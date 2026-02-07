@@ -13,7 +13,8 @@ import {
   smartCityDevices,
   createDigitalTwins,
   generateAlerts,
-  generateMetrics
+  generateMetrics,
+  attackScenarios,
 } from '@/data/mockData';
 
 type DashboardAction =
@@ -46,33 +47,63 @@ const initialState: DashboardState = {
     incidentsTrend: [],
   },
   twinCreationComplete: false,
+  intelligenceActive: false,
 };
 
 function dashboardReducer(state: DashboardState, action: DashboardAction): DashboardState {
   switch (action.type) {
     case 'SET_USE_CASE': {
       const devices = action.payload === 'military' ? militaryDevices : smartCityDevices;
-      const alerts = generateAlerts(devices);
       return {
         ...state,
         useCase: action.payload,
         devices,
-        alerts,
-        metrics: generateMetrics(devices, alerts),
+        alerts: [],
+        metrics: generateMetrics(devices, []),
         currentStage: 'network-discovery',
         twinCreationComplete: false,
+        intelligenceActive: false,
         twins: [],
       };
     }
-    case 'SET_STAGE':
+    case 'SET_STAGE': {
       // Enforce lifecycle order
       const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'intelligence'];
-      const currentIndex = stageOrder.indexOf(state.currentStage);
       const newIndex = stageOrder.indexOf(action.payload);
 
       // Can only go forward if twins are created (for sync and intelligence stages)
       if (newIndex > 1 && !state.twinCreationComplete) {
         return state;
+      }
+
+      // Intelligence stage: activate AI analysis and reveal attacks
+      if (action.payload === 'intelligence') {
+        const scenarios = attackScenarios[state.useCase || 'military'] || {};
+        const updatedDevices = state.devices.map(d => ({
+          ...d,
+          status: scenarios[d.id] || d.status,
+        }));
+        const updatedTwins = state.twins.map(t => {
+          const attackStatus = scenarios[t.physicalDeviceId];
+          return {
+            ...t,
+            status: attackStatus || t.status,
+            driftIndicator: attackStatus === 'compromised' ? 85 :
+                           attackStatus === 'suspicious' ? 45 : t.driftIndicator,
+          };
+        });
+        const alerts = generateAlerts(updatedDevices);
+        return {
+          ...state,
+          currentStage: 'intelligence',
+          devices: updatedDevices,
+          twins: updatedTwins,
+          alerts,
+          metrics: generateMetrics(updatedDevices, alerts),
+          intelligenceActive: true,
+          selectedDeviceId: null,
+          selectedTwinId: null,
+        };
       }
 
       return {
@@ -81,6 +112,7 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
         selectedDeviceId: null,
         selectedTwinId: null,
       };
+    }
     case 'SELECT_DEVICE':
       return {
         ...state,
@@ -98,18 +130,19 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
         ...state,
         hoveredDeviceId: action.payload,
       };
-    case 'CREATE_TWINS':
+    case 'CREATE_TWINS': {
       const twins = createDigitalTwins(state.devices);
       return {
         ...state,
         twins,
         twinCreationComplete: true,
-        currentStage: 'synchronization',
+        currentStage: 'Digital -twin-creation',
         metrics: {
           ...state.metrics,
           totalTwins: twins.length,
         },
       };
+    }
     case 'RESET':
       return initialState;
     default:

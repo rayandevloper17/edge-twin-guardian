@@ -1,4 +1,4 @@
-import { PhysicalDevice, DigitalTwin, Alert, SystemMetrics } from '@/types/dashboard';
+import { PhysicalDevice, DigitalTwin, Alert, SystemMetrics, DeviceStatus } from '@/types/dashboard';
 
 // ============================================
 // MILITARY TOPOLOGY: Hub-and-Spoke Command Structure
@@ -65,7 +65,7 @@ export const militaryDevices: PhysicalDevice[] = [
     networkType: '5G Private',
     ipAddress: '192.168.1.20',
     macAddress: 'AA:BB:CC:DD:E1:20',
-    status: 'compromised',
+    status: 'benign',
     signalStrength: 92,
     latency: 12,
     lastHeartbeat: new Date(),
@@ -118,7 +118,7 @@ export const smartCityDevices: PhysicalDevice[] = [
     networkType: 'Fiber',
     ipAddress: '10.0.1.1',
     macAddress: 'CC:DD:EE:FF:01:01',
-    status: 'compromised',
+    status: 'benign',
     signalStrength: 95,
     latency: 8,
     lastHeartbeat: new Date(),
@@ -162,7 +162,7 @@ export const smartCityDevices: PhysicalDevice[] = [
     networkType: 'Zigbee',
     ipAddress: '10.0.1.20',
     macAddress: 'CC:DD:EE:FF:01:20',
-    status: 'suspicious',
+    status: 'benign',
     signalStrength: 78,
     latency: 45,
     lastHeartbeat: new Date(Date.now() - 30000),
@@ -193,6 +193,20 @@ export const smartCityDevices: PhysicalDevice[] = [
     connections: ['sc-gateway'],
   },
 ];
+
+// ============================================
+// ATTACK SCENARIOS — Applied ONLY during Intelligence stage
+// These represent the AI-detected threats revealed after analysis
+// ============================================
+export const attackScenarios: Record<string, Record<string, DeviceStatus>> = {
+  military: {
+    'mil-camera': 'compromised',
+  },
+  'smart-cities': {
+    'sc-gateway': 'compromised',
+    'sc-light': 'suspicious',
+  },
+};
 
 // Digital Twin Layer - BOTTOM
 // Each twin is positioned DIRECTLY below its physical counterpart
@@ -285,17 +299,20 @@ export const generateAlerts = (devices: PhysicalDevice[]): Alert[] => {
   return alerts;
 };
 
-export const generateMetrics = (devices: PhysicalDevice[], alerts: Alert[]): SystemMetrics => ({
-  totalDevices: devices.length,
-  totalTwins: devices.length,
-  activeAlerts: alerts.filter(a => !a.resolved).length,
-  avgSyncLatency: Math.floor(Math.random() * 30) + 20,
-  mttd: Math.floor(Math.random() * 120) + 30,
-  overallRiskScore: alerts.some(a => a.severity === 'critical') ? 75 : 25,
-  attackAttempts: 17,
-  maliciousTraffic: 157,
-  incidentsTrend: Array.from({ length: 7 }, (_, i) => ({
-    date: new Date(Date.now() - (6 - i) * 86400000),
-    count: Math.floor(Math.random() * 10) + 1,
-  })),
-});
+export const generateMetrics = (devices: PhysicalDevice[], alerts: Alert[]): SystemMetrics => {
+  const hasAttacks = alerts.length > 0;
+  return {
+    totalDevices: devices.length,
+    totalTwins: devices.length,
+    activeAlerts: alerts.filter(a => !a.resolved).length,
+    avgSyncLatency: Math.floor(Math.random() * 30) + 20,
+    mttd: hasAttacks ? Math.floor(Math.random() * 120) + 30 : 0,
+    overallRiskScore: alerts.some(a => a.severity === 'critical') ? 75 : hasAttacks ? 25 : 0,
+    attackAttempts: hasAttacks ? 17 : 0,
+    maliciousTraffic: hasAttacks ? 157 : 0,
+    incidentsTrend: Array.from({ length: 7 }, (_, i) => ({
+      date: new Date(Date.now() - (6 - i) * 86400000),
+      count: hasAttacks ? Math.floor(Math.random() * 10) + 1 : 0,
+    })),
+  };
+};
