@@ -12,7 +12,7 @@ import {
 
 export default function IntelligenceLevel2() {
   const { state } = useDashboard();
-  const { alerts, devices, twins } = state;
+  const { alerts, devices, twins, revealedAttacks } = state;
 
   const recentAlerts = [...alerts]
     .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
@@ -27,6 +27,11 @@ export default function IntelligenceLevel2() {
     }).format(date);
   };
 
+  // Dynamic confidence from revealed attacks
+  const avgConfidence = revealedAttacks.length > 0
+    ? Math.round(revealedAttacks.reduce((sum, a) => sum + a.confidence, 0) / revealedAttacks.length)
+    : 0;
+
   return (
     <div className="p-4 space-y-6 animate-fade-in">
       {/* Header */}
@@ -38,7 +43,7 @@ export default function IntelligenceLevel2() {
       {/* Event Logs */}
       <Section title="Event Logs" icon={FileText}>
         <div className="space-y-2 max-h-48 overflow-y-auto">
-          {recentAlerts.map((alert) => (
+          {recentAlerts.length > 0 ? recentAlerts.map((alert) => (
             <div
               key={alert.id}
               className={cn(
@@ -56,7 +61,7 @@ export default function IntelligenceLevel2() {
                   alert.severity === 'critical' ? 'text-destructive' :
                     alert.severity === 'medium' ? 'text-warning' : 'text-primary'
                 )}>
-                  {alert.type.replace('-', ' ')}
+                  {alert.type}
                 </span>
                 <span className="text-[10px] text-muted-foreground">{formatDate(alert.timestamp)}</span>
               </div>
@@ -68,29 +73,37 @@ export default function IntelligenceLevel2() {
                 </div>
               )}
             </div>
-          ))}
+          )) : (
+            <p className="text-xs text-muted-foreground text-center py-4">
+              Waiting for AI analysis results...
+            </p>
+          )}
         </div>
       </Section>
 
       {/* AI Analysis */}
       <Section title="AI Analysis" icon={Brain}>
         <div className="space-y-3">
-          {/* Attack Patterns */}
+          {/* Detected Attack Patterns — from real data */}
           <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
             <span className="text-xs text-muted-foreground block mb-2">Detected Attack Patterns</span>
             <div className="flex flex-wrap gap-2">
-              {['DDoS Attempt', 'Port Scanning', 'Data Exfiltration'].map((pattern, i) => (
-                <span
-                  key={i}
-                  className={cn(
-                    'px-2 py-1 rounded text-[10px] font-medium',
-                    i === 0 ? 'bg-destructive/20 text-destructive' :
-                      i === 1 ? 'bg-warning/20 text-warning' : 'bg-primary/20 text-primary'
-                  )}
-                >
-                  {pattern}
-                </span>
-              ))}
+              {revealedAttacks.length > 0 ? (
+                revealedAttacks.map((attack) => (
+                  <span
+                    key={attack.id}
+                    className={cn(
+                      'px-2 py-1 rounded text-[10px] font-medium',
+                      attack.severity === 'critical' ? 'bg-destructive/20 text-destructive' :
+                        attack.severity === 'high' ? 'bg-warning/20 text-warning' : 'bg-primary/20 text-primary'
+                    )}
+                  >
+                    {attack.label}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs text-muted-foreground italic">Analyzing traffic patterns...</span>
+              )}
             </div>
           </div>
 
@@ -99,9 +112,12 @@ export default function IntelligenceLevel2() {
             <span className="text-xs text-muted-foreground">AI Confidence Level</span>
             <div className="flex items-center gap-2">
               <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-success rounded-full" style={{ width: '87%' }} />
+                <div
+                  className="h-full bg-success rounded-full transition-all duration-500"
+                  style={{ width: `${avgConfidence}%` }}
+                />
               </div>
-              <span className="text-xs font-mono text-foreground">87%</span>
+              <span className="text-xs font-mono text-foreground">{avgConfidence}%</span>
             </div>
           </div>
 
@@ -132,27 +148,38 @@ export default function IntelligenceLevel2() {
           <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
             <span className="text-xs text-muted-foreground block mb-2">Related Devices</span>
             <div className="flex flex-wrap gap-1">
-              {devices.filter(d => d.status === 'compromised' || d.status === 'suspicious').slice(0, 3).map(device => (
-                <span key={device.id} className="px-2 py-1 rounded text-[10px] bg-destructive/10 text-destructive">
-                  {device.name}
-                </span>
-              ))}
-              {devices.filter(d => d.status === 'compromised' || d.status === 'suspicious').length === 0 && (
-                <span className="text-xs text-muted-foreground">No affected devices</span>
+              {devices.filter(d => d.status === 'compromised' || d.status === 'suspicious').length > 0 ? (
+                devices.filter(d => d.status === 'compromised' || d.status === 'suspicious').slice(0, 4).map(device => (
+                  <span key={device.id} className={cn(
+                    "px-2 py-1 rounded text-[10px]",
+                    device.status === 'compromised' ? 'bg-destructive/10 text-destructive' : 'bg-warning/10 text-warning'
+                  )}>
+                    {device.name}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs text-muted-foreground">No affected devices yet</span>
               )}
             </div>
           </div>
 
           <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
-            <span className="text-xs text-muted-foreground block mb-2">Associated Digital  Twins</span>
+            <span className="text-xs text-muted-foreground block mb-2">Associated Digital Twins</span>
             <div className="flex flex-wrap gap-1">
-              {twins.filter(t => t.status === 'compromised' || t.status === 'suspicious').slice(0, 3).map(twin => (
-                <span key={twin.id} className="px-2 py-1 rounded text-[10px] bg-warning/10 text-warning">
-                  DT-{twin.id.split('-')[1]}
-                </span>
-              ))}
-              {twins.filter(t => t.status === 'compromised' || t.status === 'suspicious').length === 0 && (
-                <span className="text-xs text-muted-foreground">No affected twins</span>
+              {twins.filter(t => t.status === 'compromised' || t.status === 'suspicious').length > 0 ? (
+                twins.filter(t => t.status === 'compromised' || t.status === 'suspicious').slice(0, 4).map(twin => {
+                  const physDevice = devices.find(d => d.id === twin.physicalDeviceId);
+                  return (
+                    <span key={twin.id} className={cn(
+                      "px-2 py-1 rounded text-[10px]",
+                      twin.status === 'compromised' ? 'bg-destructive/10 text-destructive' : 'bg-warning/10 text-warning'
+                    )}>
+                      DT-{physDevice?.name || twin.id}
+                    </span>
+                  );
+                })
+              ) : (
+                <span className="text-xs text-muted-foreground">No affected twins yet</span>
               )}
             </div>
           </div>
@@ -168,66 +195,70 @@ export default function IntelligenceLevel2() {
                   <span className="text-foreground flex-1 truncate">{alert.type}</span>
                 </div>
               ))}
+              {recentAlerts.length === 0 && (
+                <span className="text-xs text-muted-foreground">No events yet</span>
+              )}
             </div>
           </div>
         </div>
       </Section>
 
+      {/* Attack Source Intelligence */}
+      {revealedAttacks.length > 0 && (
+        <Section title="Source Intelligence" icon={Server}>
+          <div className="space-y-2">
+            {revealedAttacks.map(attack => (
+              <div key={attack.id} className="p-3 rounded-lg bg-muted/30 border border-border/50">
+                <div className="flex items-center justify-between mb-1">
+                  <span className={cn(
+                    "text-[10px] font-semibold uppercase",
+                    attack.severity === 'critical' ? 'text-destructive' : 'text-warning'
+                  )}>
+                    {attack.label}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground font-mono">{attack.protocol}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-1 text-[10px] mt-2">
+                  <div>
+                    <span className="text-muted-foreground">Source: </span>
+                    <span className="text-foreground font-mono">{attack.sourceIP}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Port: </span>
+                    <span className="text-foreground font-mono">{attack.destinationPort}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+      )}
+
       {/* Audit & Compliance */}
       <Section title="Audit & Compliance" icon={FileText}>
         <div className="space-y-2">
-          <AuditRow
-            icon={User}
-            label="User Actions"
-            value={`${Math.floor(Math.random() * 20) + 5} today`}
-          />
-          <AuditRow
-            icon={Server}
-            label="System Decisions"
-            value={`${alerts.length} automated`}
-          />
-          <AuditRow
-            icon={FileText}
-            label="Historical Records"
-            value="30 days retained"
-          />
+          <AuditRow icon={User} label="User Actions" value={`${Math.floor(Math.random() * 20) + 5} today`} />
+          <AuditRow icon={Server} label="System Decisions" value={`${alerts.length} automated`} />
+          <AuditRow icon={FileText} label="Historical Records" value="30 days retained" />
         </div>
       </Section>
     </div>
   );
 }
 
-function Section({
-  title,
-  icon: Icon,
-  children
-}: {
-  title: string;
-  icon: React.ElementType;
-  children: React.ReactNode;
-}) {
+function Section({ title, icon: Icon, children }: { title: string; icon: React.ElementType; children: React.ReactNode }) {
   return (
     <div>
       <div className="flex items-center gap-2 mb-3">
         <Icon className="w-4 h-4 text-primary" />
-        <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          {title}
-        </h5>
+        <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{title}</h5>
       </div>
       <div className="pl-6">{children}</div>
     </div>
   );
 }
 
-function AuditRow({
-  icon: Icon,
-  label,
-  value
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string;
-}) {
+function AuditRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
   return (
     <div className="flex items-center justify-between p-2 rounded bg-muted/30">
       <div className="flex items-center gap-2">

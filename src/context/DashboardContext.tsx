@@ -3,18 +3,17 @@ import {
   DashboardState,
   UseCase,
   SystemStage,
-  PhysicalDevice,
-  DigitalTwin,
+  AttackEvent,
+  DeviceStatus,
   Alert,
-  SystemMetrics
 } from '@/types/dashboard';
 import {
   militaryDevices,
   smartCityDevices,
   createDigitalTwins,
-  generateAlerts,
   generateMetrics,
-  attackScenarios,
+  militaryAttackQueue,
+  smartCityAttackQueue,
 } from '@/data/mockData';
 
 type DashboardAction =
@@ -24,6 +23,11 @@ type DashboardAction =
   | { type: 'SELECT_TWIN'; payload: string | null }
   | { type: 'HOVER_DEVICE'; payload: string | null }
   | { type: 'CREATE_TWINS' }
+  | { type: 'DISCOVER_DEVICE'; payload: string }
+  | { type: 'SET_SCANNING_COMPLETE' }
+  | { type: 'TOGGLE_DEVICE_FOR_TWINNING'; payload: string }
+  | { type: 'SELECT_ALL_FOR_TWINNING' }
+  | { type: 'REVEAL_NEXT_ATTACK' }
   | { type: 'RESET' };
 
 const initialState: DashboardState = {
@@ -48,6 +52,11 @@ const initialState: DashboardState = {
   },
   twinCreationComplete: false,
   intelligenceActive: false,
+  scanningComplete: false,
+  discoveredDeviceIds: [],
+  selectedForTwinning: [],
+  attackQueue: [],
+  revealedAttacks: [],
 };
 
 function dashboardReducer(state: DashboardState, action: DashboardAction): DashboardState {
@@ -64,43 +73,66 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
         twinCreationComplete: false,
         intelligenceActive: false,
         twins: [],
+        scanningComplete: false,
+        discoveredDeviceIds: [],
+        selectedForTwinning: [],
+        attackQueue: [],
+        revealedAttacks: [],
       };
     }
+
+    case 'DISCOVER_DEVICE': {
+      if (state.discoveredDeviceIds.includes(action.payload)) return state;
+      return {
+        ...state,
+        discoveredDeviceIds: [...state.discoveredDeviceIds, action.payload],
+      };
+    }
+
+    case 'SET_SCANNING_COMPLETE':
+      return {
+        ...state,
+        scanningComplete: true,
+        selectedForTwinning: state.devices.map(d => d.id),
+      };
+
+    case 'TOGGLE_DEVICE_FOR_TWINNING': {
+      const isSelected = state.selectedForTwinning.includes(action.payload);
+      return {
+        ...state,
+        selectedForTwinning: isSelected
+          ? state.selectedForTwinning.filter(id => id !== action.payload)
+          : [...state.selectedForTwinning, action.payload],
+      };
+    }
+
+    case 'SELECT_ALL_FOR_TWINNING': {
+      const allSelected = state.selectedForTwinning.length === state.devices.length;
+      return {
+        ...state,
+        selectedForTwinning: allSelected ? [] : state.devices.map(d => d.id),
+      };
+    }
+
     case 'SET_STAGE': {
-      // Enforce lifecycle order
       const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'intelligence'];
       const newIndex = stageOrder.indexOf(action.payload);
 
-      // Can only go forward if twins are created (for sync and intelligence stages)
       if (newIndex > 1 && !state.twinCreationComplete) {
         return state;
       }
 
-      // Intelligence stage: activate AI analysis and reveal attacks
+      // Intelligence stage: populate attack queue (attacks revealed progressively)
       if (action.payload === 'intelligence') {
-        const scenarios = attackScenarios[state.useCase || 'military'] || {};
-        const updatedDevices = state.devices.map(d => ({
-          ...d,
-          status: scenarios[d.id] || d.status,
-        }));
-        const updatedTwins = state.twins.map(t => {
-          const attackStatus = scenarios[t.physicalDeviceId];
-          return {
-            ...t,
-            status: attackStatus || t.status,
-            driftIndicator: attackStatus === 'compromised' ? 85 :
-                           attackStatus === 'suspicious' ? 45 : t.driftIndicator,
-          };
-        });
-        const alerts = generateAlerts(updatedDevices);
+        const queue = (state.useCase === 'military' ? militaryAttackQueue : smartCityAttackQueue)
+          .filter(atk => state.twins.some(t => t.physicalDeviceId === atk.targetDeviceId));
+
         return {
           ...state,
           currentStage: 'intelligence',
-          devices: updatedDevices,
-          twins: updatedTwins,
-          alerts,
-          metrics: generateMetrics(updatedDevices, alerts),
           intelligenceActive: true,
+          attackQueue: queue,
+          revealedAttacks: [],
           selectedDeviceId: null,
           selectedTwinId: null,
         };
@@ -113,38 +145,83 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
         selectedTwinId: null,
       };
     }
+
+    case 'REVEAL_NEXT_ATTACK': {
+      if (state.attackQueue.length === 0) return state;
+
+      const [nextAttack, ...remainingQueue] = state.attackQueue;
+      const newRevealed = [...state.revealedAttacks, nextAttack];
+
+      const newStatus: DeviceStatus =
+        nextAttack.severity === 'critical' ? 'compromised' : 'suspicious';
+
+      const updatedDevices = state.devices.map(d =>
+        d.id === nextAttack.targetDeviceId ? { ...d, status: newStatus } : d
+      );
+
+      const updatedTwins = state.twins.map(t => {
+        if (t.physicalDeviceId === nextAttack.targetDeviceId) {
+          return {
+            ...t,
+            status: newStatus,
+            driftIndicator: newStatus === 'compromised' ? 85 : 45,
+          };
+        }
+        return t;
+      });
+
+      const newAlert: Alert = {
+        id: `alert-${nextAttack.id}`,
+        timestamp: new Date(),
+        severity: nextAttack.severity,
+        type: nextAttack.label,
+        deviceId: nextAttack.targetDeviceId,
+        twinId: `twin-${nextAttack.targetDeviceId}`,
+        description: nextAttack.description,
+        aiReasoning: nextAttack.aiReasoning,
+        actionsTaken: nextAttack.actionsTaken,
+        resolved: false,
+      };
+
+      const newAlerts = [...state.alerts, newAlert];
+
+      return {
+        ...state,
+        attackQueue: remainingQueue,
+        revealedAttacks: newRevealed,
+        devices: updatedDevices,
+        twins: updatedTwins,
+        alerts: newAlerts,
+        metrics: generateMetrics(updatedDevices, newAlerts),
+      };
+    }
+
     case 'SELECT_DEVICE':
-      return {
-        ...state,
-        selectedDeviceId: action.payload,
-        selectedTwinId: null,
-      };
+      return { ...state, selectedDeviceId: action.payload, selectedTwinId: null };
+
     case 'SELECT_TWIN':
-      return {
-        ...state,
-        selectedTwinId: action.payload,
-        selectedDeviceId: null,
-      };
+      return { ...state, selectedTwinId: action.payload, selectedDeviceId: null };
+
     case 'HOVER_DEVICE':
-      return {
-        ...state,
-        hoveredDeviceId: action.payload,
-      };
+      return { ...state, hoveredDeviceId: action.payload };
+
     case 'CREATE_TWINS': {
-      const twins = createDigitalTwins(state.devices);
+      const selectedDevices = state.devices.filter(d =>
+        state.selectedForTwinning.includes(d.id)
+      );
+      const twins = createDigitalTwins(selectedDevices);
       return {
         ...state,
         twins,
         twinCreationComplete: true,
         currentStage: 'Digital -twin-creation',
-        metrics: {
-          ...state.metrics,
-          totalTwins: twins.length,
-        },
+        metrics: { ...state.metrics, totalTwins: twins.length },
       };
     }
+
     case 'RESET':
       return initialState;
+
     default:
       return state;
   }
@@ -160,6 +237,8 @@ interface DashboardContextType {
   hoverDevice: (id: string | null) => void;
   createTwins: () => void;
   canAccessStage: (stage: SystemStage) => boolean;
+  toggleDeviceForTwinning: (id: string) => void;
+  selectAllForTwinning: () => void;
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
@@ -173,15 +252,13 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const selectTwin = (id: string | null) => dispatch({ type: 'SELECT_TWIN', payload: id });
   const hoverDevice = (id: string | null) => dispatch({ type: 'HOVER_DEVICE', payload: id });
   const createTwins = () => dispatch({ type: 'CREATE_TWINS' });
+  const toggleDeviceForTwinning = (id: string) => dispatch({ type: 'TOGGLE_DEVICE_FOR_TWINNING', payload: id });
+  const selectAllForTwinning = () => dispatch({ type: 'SELECT_ALL_FOR_TWINNING' });
 
   const canAccessStage = (stage: SystemStage): boolean => {
     const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'intelligence'];
     const targetIndex = stageOrder.indexOf(stage);
-
-    // Can always access first two stages
     if (targetIndex <= 1) return true;
-
-    // Need twins created for sync and intelligence
     return state.twinCreationComplete;
   };
 
@@ -197,6 +274,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         hoverDevice,
         createTwins,
         canAccessStage,
+        toggleDeviceForTwinning,
+        selectAllForTwinning,
       }}
     >
       {children}
