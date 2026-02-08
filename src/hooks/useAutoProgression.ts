@@ -6,16 +6,17 @@ import { useDashboard } from '@/context/DashboardContext';
  * 
  * After the user creates digital twins (the ONLY manual action),
  * the system automatically advances through remaining stages:
- *   Twin Creation → Synchronization → Intelligence → Progressive Attacks
+ *   Twin Creation → Synchronization → Intelligence → Cycling Attack Simulation
  * 
- * This reflects the patent's autonomous cyber-defense architecture
- * where the user is an observer, not an operator.
+ * Attacks appear one at a time, linger for a few seconds, then fade.
+ * The cycle repeats continuously, simulating real-time edge defense.
  */
 export function useAutoProgression() {
   const { state, setStage, dispatch } = useDashboard();
   const hasStartedProgression = useRef(false);
   const hasStartedAttacks = useRef(false);
-  const attackIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const attackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isShowingAttack = useRef(false);
 
   // Stage progression after twin creation
   useEffect(() => {
@@ -38,44 +39,51 @@ export function useAutoProgression() {
     };
   }, [state.twinCreationComplete, setStage]);
 
-  // Progressive attack reveal during intelligence stage
+  // Cycling attack simulation during intelligence stage
   useEffect(() => {
     if (state.currentStage !== 'intelligence' || hasStartedAttacks.current) return;
+    if (state.attackPool.length === 0) return;
     hasStartedAttacks.current = true;
 
-    // Start revealing attacks after a brief delay
-    const startDelay = setTimeout(() => {
-      attackIntervalRef.current = setInterval(() => {
-        dispatch({ type: 'REVEAL_NEXT_ATTACK' });
-      }, 2000); // One attack every 2 seconds
-    }, 1500);
+    function runAttackCycle() {
+      // Show next attack
+      isShowingAttack.current = true;
+      dispatch({ type: 'SHOW_NEXT_ATTACK' });
 
-    // Safety cleanup after 30s
-    const safetyTimer = setTimeout(() => {
-      if (attackIntervalRef.current) {
-        clearInterval(attackIntervalRef.current);
-        attackIntervalRef.current = null;
-      }
-    }, 30000);
+      // After 3-4 seconds, hide the attack
+      attackTimeoutRef.current = setTimeout(() => {
+        dispatch({ type: 'HIDE_ACTIVE_ATTACK' });
+        isShowingAttack.current = false;
+
+        // Brief pause (1-2 seconds) then show next attack
+        attackTimeoutRef.current = setTimeout(() => {
+          runAttackCycle();
+        }, 1500);
+      }, 3500);
+    }
+
+    // Start the first attack after a brief AI analysis delay
+    attackTimeoutRef.current = setTimeout(() => {
+      runAttackCycle();
+    }, 2000);
 
     return () => {
-      clearTimeout(startDelay);
-      clearTimeout(safetyTimer);
-      if (attackIntervalRef.current) {
-        clearInterval(attackIntervalRef.current);
-        attackIntervalRef.current = null;
+      if (attackTimeoutRef.current) {
+        clearTimeout(attackTimeoutRef.current);
+        attackTimeoutRef.current = null;
       }
     };
-  }, [state.currentStage, dispatch]);
+  }, [state.currentStage, state.attackPool.length, dispatch]);
 
   // Reset refs when use case changes (system reset)
   useEffect(() => {
     if (!state.twinCreationComplete) {
       hasStartedProgression.current = false;
       hasStartedAttacks.current = false;
-      if (attackIntervalRef.current) {
-        clearInterval(attackIntervalRef.current);
-        attackIntervalRef.current = null;
+      isShowingAttack.current = false;
+      if (attackTimeoutRef.current) {
+        clearTimeout(attackTimeoutRef.current);
+        attackTimeoutRef.current = null;
       }
     }
   }, [state.twinCreationComplete]);

@@ -151,7 +151,9 @@ export interface DashboardState {
   discoveredDeviceIds: string[];
   // Device selection for twinning
   selectedForTwinning: string[];
-  // Progressive attack reveal
-  attackQueue: AttackEvent[];
-  revealedAttacks: AttackEvent[];
+  // Attack simulation
+  attackPool: AttackEvent[];       // Full list of possible attacks (never consumed)
+  activeAttack: AttackEvent | null; // Currently displayed attack (cycles)
+  attackHistory: AttackEvent[];     // Running log of all past attacks shown
+  attackCycleIndex: number;         // Current position in the attack pool
 }
