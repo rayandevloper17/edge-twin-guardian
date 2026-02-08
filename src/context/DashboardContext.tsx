@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
 import {
   DashboardState,
   UseCase,
@@ -294,21 +294,21 @@ const DashboardContext = createContext<DashboardContextType | undefined>(undefin
 export function DashboardProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
 
-  const setUseCase = (useCase: UseCase) => dispatch({ type: 'SET_USE_CASE', payload: useCase });
-  const setStage = (stage: SystemStage) => dispatch({ type: 'SET_STAGE', payload: stage });
-  const selectDevice = (id: string | null) => dispatch({ type: 'SELECT_DEVICE', payload: id });
-  const selectTwin = (id: string | null) => dispatch({ type: 'SELECT_TWIN', payload: id });
-  const hoverDevice = (id: string | null) => dispatch({ type: 'HOVER_DEVICE', payload: id });
-  const createTwins = () => dispatch({ type: 'CREATE_TWINS' });
-  const toggleDeviceForTwinning = (id: string) => dispatch({ type: 'TOGGLE_DEVICE_FOR_TWINNING', payload: id });
-  const selectAllForTwinning = () => dispatch({ type: 'SELECT_ALL_FOR_TWINNING' });
+  const setUseCase = useCallback((useCase: UseCase) => dispatch({ type: 'SET_USE_CASE', payload: useCase }), []);
+  const setStage = useCallback((stage: SystemStage) => dispatch({ type: 'SET_STAGE', payload: stage }), []);
+  const selectDevice = useCallback((id: string | null) => dispatch({ type: 'SELECT_DEVICE', payload: id }), []);
+  const selectTwin = useCallback((id: string | null) => dispatch({ type: 'SELECT_TWIN', payload: id }), []);
+  const hoverDevice = useCallback((id: string | null) => dispatch({ type: 'HOVER_DEVICE', payload: id }), []);
+  const createTwins = useCallback(() => dispatch({ type: 'CREATE_TWINS' }), []);
+  const toggleDeviceForTwinning = useCallback((id: string) => dispatch({ type: 'TOGGLE_DEVICE_FOR_TWINNING', payload: id }), []);
+  const selectAllForTwinning = useCallback(() => dispatch({ type: 'SELECT_ALL_FOR_TWINNING' }), []);
 
-  const canAccessStage = (stage: SystemStage): boolean => {
+  const canAccessStage = useCallback((stage: SystemStage): boolean => {
     const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'intelligence'];
     const targetIndex = stageOrder.indexOf(stage);
     if (targetIndex <= 1) return true;
     return state.twinCreationComplete;
-  };
+  }, [state.twinCreationComplete]);
 
   return (
     <DashboardContext.Provider

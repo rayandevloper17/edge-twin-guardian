@@ -12,11 +12,10 @@ import { useDashboard } from '@/context/DashboardContext';
  * The cycle repeats continuously, simulating real-time edge defense.
  */
 export function useAutoProgression() {
-  const { state, setStage, dispatch } = useDashboard();
+  const { state, dispatch } = useDashboard();
   const hasStartedProgression = useRef(false);
   const hasStartedAttacks = useRef(false);
   const attackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isShowingAttack = useRef(false);
 
   // Stage progression after twin creation
   useEffect(() => {
@@ -25,19 +24,20 @@ export function useAutoProgression() {
 
     // Stage 2 → 3: Auto-advance to Synchronization after brief delay
     const syncTimer = setTimeout(() => {
-      setStage('synchronization');
+      dispatch({ type: 'SET_STAGE', payload: 'synchronization' });
     }, 3000);
 
     // Stage 3 → 4: Auto-advance to Intelligence (AI analysis)
     const intelligenceTimer = setTimeout(() => {
-      setStage('intelligence');
+      dispatch({ type: 'SET_STAGE', payload: 'intelligence' });
     }, 8000);
 
     return () => {
       clearTimeout(syncTimer);
       clearTimeout(intelligenceTimer);
     };
-  }, [state.twinCreationComplete, setStage]);
+  // dispatch from useReducer is stable and won't cause re-runs
+  }, [state.twinCreationComplete, dispatch]);
 
   // Cycling attack simulation during intelligence stage
   useEffect(() => {
@@ -47,13 +47,11 @@ export function useAutoProgression() {
 
     function runAttackCycle() {
       // Show next attack
-      isShowingAttack.current = true;
       dispatch({ type: 'SHOW_NEXT_ATTACK' });
 
       // After 3-4 seconds, hide the attack
       attackTimeoutRef.current = setTimeout(() => {
         dispatch({ type: 'HIDE_ACTIVE_ATTACK' });
-        isShowingAttack.current = false;
 
         // Brief pause (1-2 seconds) then show next attack
         attackTimeoutRef.current = setTimeout(() => {
@@ -80,7 +78,6 @@ export function useAutoProgression() {
     if (!state.twinCreationComplete) {
       hasStartedProgression.current = false;
       hasStartedAttacks.current = false;
-      isShowingAttack.current = false;
       if (attackTimeoutRef.current) {
         clearTimeout(attackTimeoutRef.current);
         attackTimeoutRef.current = null;
