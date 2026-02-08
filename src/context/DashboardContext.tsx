@@ -3,7 +3,6 @@ import {
   DashboardState,
   UseCase,
   SystemStage,
-  AttackEvent,
   DeviceStatus,
   Alert,
 } from '@/types/dashboard';
@@ -27,7 +26,8 @@ type DashboardAction =
   | { type: 'SET_SCANNING_COMPLETE' }
   | { type: 'TOGGLE_DEVICE_FOR_TWINNING'; payload: string }
   | { type: 'SELECT_ALL_FOR_TWINNING' }
-  | { type: 'REVEAL_NEXT_ATTACK' }
+  | { type: 'SHOW_NEXT_ATTACK' }
+  | { type: 'HIDE_ACTIVE_ATTACK' }
   | { type: 'RESET' };
 
 const initialState: DashboardState = {
@@ -55,8 +55,10 @@ const initialState: DashboardState = {
   scanningComplete: false,
   discoveredDeviceIds: [],
   selectedForTwinning: [],
-  attackQueue: [],
-  revealedAttacks: [],
+  attackPool: [],
+  activeAttack: null,
+  attackHistory: [],
+  attackCycleIndex: 0,
 };
 
 function dashboardReducer(state: DashboardState, action: DashboardAction): DashboardState {
@@ -76,8 +78,10 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
         scanningComplete: false,
         discoveredDeviceIds: [],
         selectedForTwinning: [],
-        attackQueue: [],
-        revealedAttacks: [],
+        attackPool: [],
+        activeAttack: null,
+        attackHistory: [],
+        attackCycleIndex: 0,
       };
     }
 
@@ -122,17 +126,19 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
         return state;
       }
 
-      // Intelligence stage: populate attack queue (attacks revealed progressively)
+      // Intelligence stage: populate attack pool for cycling simulation
       if (action.payload === 'intelligence') {
-        const queue = (state.useCase === 'military' ? militaryAttackQueue : smartCityAttackQueue)
+        const pool = (state.useCase === 'military' ? militaryAttackQueue : smartCityAttackQueue)
           .filter(atk => state.twins.some(t => t.physicalDeviceId === atk.targetDeviceId));
 
         return {
           ...state,
           currentStage: 'intelligence',
           intelligenceActive: true,
-          attackQueue: queue,
-          revealedAttacks: [],
+          attackPool: pool,
+          activeAttack: null,
+          attackHistory: [],
+          attackCycleIndex: 0,
           selectedDeviceId: null,
           selectedTwinId: null,
         };
@@ -146,15 +152,16 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
       };
     }
 
-    case 'REVEAL_NEXT_ATTACK': {
-      if (state.attackQueue.length === 0) return state;
+    // Show the next attack in the cycle (devices get marked)
+    case 'SHOW_NEXT_ATTACK': {
+      if (state.attackPool.length === 0) return state;
 
-      const [nextAttack, ...remainingQueue] = state.attackQueue;
-      const newRevealed = [...state.revealedAttacks, nextAttack];
+      const nextAttack = state.attackPool[state.attackCycleIndex % state.attackPool.length];
 
       const newStatus: DeviceStatus =
         nextAttack.severity === 'critical' ? 'compromised' : 'suspicious';
 
+      // Mark the targeted device and its twin
       const updatedDevices = state.devices.map(d =>
         d.id === nextAttack.targetDeviceId ? { ...d, status: newStatus } : d
       );
@@ -170,8 +177,9 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
         return t;
       });
 
+      // Create an alert for the log
       const newAlert: Alert = {
-        id: `alert-${nextAttack.id}`,
+        id: `alert-${nextAttack.id}-${Date.now()}`,
         timestamp: new Date(),
         severity: nextAttack.severity,
         type: nextAttack.label,
@@ -183,16 +191,56 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
         resolved: false,
       };
 
-      const newAlerts = [...state.alerts, newAlert];
+      // Keep only the last 10 alerts for the log
+      const newAlerts = [...state.alerts, newAlert].slice(-10);
+
+      // Add to attack history (keep recent unique entries)
+      const isInHistory = state.attackHistory.some(a => a.id === nextAttack.id);
+      const newHistory = isInHistory
+        ? state.attackHistory
+        : [...state.attackHistory, nextAttack].slice(-8);
 
       return {
         ...state,
-        attackQueue: remainingQueue,
-        revealedAttacks: newRevealed,
+        activeAttack: nextAttack,
+        attackHistory: newHistory,
+        attackCycleIndex: state.attackCycleIndex + 1,
         devices: updatedDevices,
         twins: updatedTwins,
         alerts: newAlerts,
         metrics: generateMetrics(updatedDevices, newAlerts),
+      };
+    }
+
+    // Hide the active attack (reset device to benign)
+    case 'HIDE_ACTIVE_ATTACK': {
+      if (!state.activeAttack) return state;
+
+      const clearedDevices = state.devices.map(d =>
+        d.id === state.activeAttack!.targetDeviceId ? { ...d, status: 'benign' as DeviceStatus } : d
+      );
+
+      const clearedTwins = state.twins.map(t => {
+        if (t.physicalDeviceId === state.activeAttack!.targetDeviceId) {
+          return { ...t, status: 'benign' as DeviceStatus, driftIndicator: Math.random() * 15 };
+        }
+        return t;
+      });
+
+      // Mark the corresponding alert as resolved
+      const resolvedAlerts = state.alerts.map(a =>
+        a.deviceId === state.activeAttack!.targetDeviceId && !a.resolved
+          ? { ...a, resolved: true }
+          : a
+      );
+
+      return {
+        ...state,
+        activeAttack: null,
+        devices: clearedDevices,
+        twins: clearedTwins,
+        alerts: resolvedAlerts,
+        metrics: generateMetrics(clearedDevices, resolvedAlerts),
       };
     }
 

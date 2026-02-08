@@ -403,16 +403,21 @@ export default function NetworkGraph() {
   const compromisedIds = useMemo(() => new Set(
     devices.filter(d => d.status === 'compromised').map(d => d.id)
   ), [devices]);
-  const hasActiveAttack = compromisedIds.size > 0;
+  const suspiciousIds = useMemo(() => new Set(
+    devices.filter(d => d.status === 'suspicious').map(d => d.id)
+  ), [devices]);
+  const hasActiveAttack = compromisedIds.size > 0 || suspiciousIds.size > 0;
 
   const isAttackPath = (id1: string, id2: string) => {
     return compromisedIds.has(id1) || compromisedIds.has(id2);
   };
 
-  // Get attack label for a device
+  // Get attack label for a device (from active attack)
   const getAttackLabel = (deviceId: string) => {
-    const attack = state.revealedAttacks.find(a => a.targetDeviceId === deviceId);
-    return attack?.label;
+    if (state.activeAttack?.targetDeviceId === deviceId) {
+      return state.activeAttack.label;
+    }
+    return undefined;
   };
 
   // Physical connections (only between visible devices)
@@ -539,7 +544,7 @@ export default function NetworkGraph() {
           </div>
         </div>
       )}
-      {currentStage === 'intelligence' && state.attackQueue.length > 0 && state.revealedAttacks.length === 0 && (
+      {currentStage === 'intelligence' && !state.activeAttack && state.attackHistory.length === 0 && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
           <div className="bg-card/90 backdrop-blur-sm border border-primary/30 rounded-xl px-5 py-3 flex items-center gap-3">
             <Brain className="w-4 h-4 text-primary animate-pulse" />
@@ -547,14 +552,21 @@ export default function NetworkGraph() {
           </div>
         </div>
       )}
-      {currentStage === 'intelligence' && state.revealedAttacks.length > 0 && (
+      {currentStage === 'intelligence' && state.activeAttack && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
-          <div className="bg-destructive/90 backdrop-blur-sm border border-destructive rounded-xl px-5 py-3 flex items-center gap-3">
+          <div className="bg-destructive/90 backdrop-blur-sm border border-destructive rounded-xl px-5 py-3 flex items-center gap-3 animate-fade-in">
             <AlertTriangle className="w-4 h-4 text-white" />
             <span className="text-sm font-medium text-white">
-              {state.revealedAttacks.length} threat{state.revealedAttacks.length > 1 ? 's' : ''} detected
-              {state.attackQueue.length > 0 && ' — analyzing...'}
+              Threat detected: {state.activeAttack.label}
             </span>
+          </div>
+        </div>
+      )}
+      {currentStage === 'intelligence' && !state.activeAttack && state.attackHistory.length > 0 && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
+          <div className="bg-card/90 backdrop-blur-sm border border-primary/30 rounded-xl px-5 py-3 flex items-center gap-3">
+            <Brain className="w-4 h-4 text-primary animate-pulse" />
+            <span className="text-sm font-medium text-primary">Monitoring network traffic...</span>
           </div>
         </div>
       )}
@@ -737,7 +749,7 @@ function HoverTooltip({ deviceId }: { deviceId: string }) {
   const { state } = useDashboard();
   const device = state.devices.find(d => d.id === deviceId);
   const twin = state.twins.find(t => t.physicalDeviceId === deviceId);
-  const attack = state.revealedAttacks.find(a => a.targetDeviceId === deviceId);
+  const attack = state.activeAttack?.targetDeviceId === deviceId ? state.activeAttack : undefined;
 
   if (!device) return null;
 

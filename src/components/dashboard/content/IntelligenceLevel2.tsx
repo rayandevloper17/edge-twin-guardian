@@ -12,7 +12,7 @@ import {
 
 export default function IntelligenceLevel2() {
   const { state } = useDashboard();
-  const { alerts, devices, twins, revealedAttacks } = state;
+  const { alerts, devices, twins, attackHistory, activeAttack } = state;
 
   const recentAlerts = [...alerts]
     .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
@@ -27,9 +27,9 @@ export default function IntelligenceLevel2() {
     }).format(date);
   };
 
-  // Dynamic confidence from revealed attacks
-  const avgConfidence = revealedAttacks.length > 0
-    ? Math.round(revealedAttacks.reduce((sum, a) => sum + a.confidence, 0) / revealedAttacks.length)
+  // Dynamic confidence from attack history
+  const avgConfidence = attackHistory.length > 0
+    ? Math.round(attackHistory.reduce((sum, a) => sum + a.confidence, 0) / attackHistory.length)
     : 0;
 
   return (
@@ -88,12 +88,13 @@ export default function IntelligenceLevel2() {
           <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
             <span className="text-xs text-muted-foreground block mb-2">Detected Attack Patterns</span>
             <div className="flex flex-wrap gap-2">
-              {revealedAttacks.length > 0 ? (
-                revealedAttacks.map((attack) => (
+              {attackHistory.length > 0 ? (
+                attackHistory.map((attack) => (
                   <span
                     key={attack.id}
                     className={cn(
-                      'px-2 py-1 rounded text-[10px] font-medium',
+                      'px-2 py-1 rounded text-[10px] font-medium transition-all',
+                      activeAttack?.id === attack.id ? 'ring-1 ring-offset-1 ring-destructive' : '',
                       attack.severity === 'critical' ? 'bg-destructive/20 text-destructive' :
                         attack.severity === 'high' ? 'bg-warning/20 text-warning' : 'bg-primary/20 text-primary'
                     )}
@@ -204,17 +205,25 @@ export default function IntelligenceLevel2() {
       </Section>
 
       {/* Attack Source Intelligence */}
-      {revealedAttacks.length > 0 && (
+      {attackHistory.length > 0 && (
         <Section title="Source Intelligence" icon={Server}>
           <div className="space-y-2">
-            {revealedAttacks.map(attack => (
-              <div key={attack.id} className="p-3 rounded-lg bg-muted/30 border border-border/50">
+            {attackHistory.map(attack => (
+              <div key={attack.id} className={cn(
+                "p-3 rounded-lg border transition-all duration-300",
+                activeAttack?.id === attack.id
+                  ? "bg-destructive/10 border-destructive/40 shadow-sm"
+                  : "bg-muted/30 border-border/50"
+              )}>
                 <div className="flex items-center justify-between mb-1">
                   <span className={cn(
                     "text-[10px] font-semibold uppercase",
                     attack.severity === 'critical' ? 'text-destructive' : 'text-warning'
                   )}>
                     {attack.label}
+                    {activeAttack?.id === attack.id && (
+                      <span className="ml-2 text-[8px] bg-destructive/20 px-1.5 py-0.5 rounded-full animate-pulse">LIVE</span>
+                    )}
                   </span>
                   <span className="text-[10px] text-muted-foreground font-mono">{attack.protocol}</span>
                 </div>
