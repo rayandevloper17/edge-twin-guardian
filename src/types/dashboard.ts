@@ -6,6 +6,7 @@ export type SystemStage =
   | 'network-discovery'
   | 'Digital -twin-creation'
   | 'synchronization'
+  | 'ai-analysis'
   | 'intelligence';
 
 export type DeviceStatus = 'benign' | 'suspicious' | 'compromised';

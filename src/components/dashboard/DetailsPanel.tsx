@@ -100,6 +100,8 @@ function ContentArea1() {
       return <TwinCreationLevel1 />;
     case 'synchronization':
       return <SyncLevel1 />;
+    case 'ai-analysis':
+      return <IntelligenceLevel1 />;
     case 'intelligence':
       return <IntelligenceLevel1 />;
     default:
@@ -147,6 +149,9 @@ function ContentArea2() {
         }
       }
       return <EmptyState message="Select a device or twin to view synchronization health and threat status" />;
+
+    case 'ai-analysis':
+      return <IntelligenceLevel2 />;
 
     case 'intelligence':
       return <IntelligenceLevel2 />;

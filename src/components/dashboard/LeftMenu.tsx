@@ -1,4 +1,4 @@
-import { Home, Search, Copy, RefreshCw, Brain, Info, Lock, CheckCircle, Shield, Building2 } from 'lucide-react';
+import { Home, Search, Copy, RefreshCw, Brain, Info, Lock, CheckCircle, Shield, Building2, Scan } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDashboard } from '@/context/DashboardContext';
 import { SystemStage } from '@/types/dashboard';
@@ -10,9 +10,10 @@ interface StageMenuItem {
   label: string;
   description: string;
   icon: React.ElementType;
+  isDataLayer?: boolean; // Not a flow step, always accessible
 }
 
-// UX Copy as per specification
+// Flow steps (sequential) + Intelligence (data layer, always accessible)
 const stageItems: StageMenuItem[] = [
   {
     id: 'network-discovery',
@@ -22,7 +23,7 @@ const stageItems: StageMenuItem[] = [
   },
   {
     id: 'Digital -twin-creation',
-    label: 'Digital  Twin Creation',
+    label: 'Digital Twin Creation',
     description: 'Create and manage virtual representations of physical assets',
     icon: Copy,
   },
@@ -33,10 +34,17 @@ const stageItems: StageMenuItem[] = [
     icon: RefreshCw,
   },
   {
+    id: 'ai-analysis',
+    label: 'AI Analysis & Detection',
+    description: 'AI analyzes mirrored traffic to detect potential attacks',
+    icon: Scan,
+  },
+  {
     id: 'intelligence',
     label: 'System Intelligence & Logs',
-    description: 'Analyze system behavior, intelligence outputs, and event logs',
+    description: 'View attack records, AI decisions, logs, and correlated data',
     icon: Brain,
+    isDataLayer: true,
   },
 ];
 
@@ -51,18 +59,21 @@ export default function LeftMenu() {
     }
   };
 
+  const flowSteps = stageItems.filter(s => !s.isDataLayer);
+  const dataLayers = stageItems.filter(s => s.isDataLayer);
+
   const getStageNumber = (stage: SystemStage): number => {
-    return stageItems.findIndex(item => item.id === stage) + 1;
+    return flowSteps.findIndex(item => item.id === stage) + 1;
   };
 
   const isStageComplete = (stage: SystemStage): boolean => {
-    const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'intelligence'];
+    const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'ai-analysis'];
     const currentIndex = stageOrder.indexOf(state.currentStage);
     const targetIndex = stageOrder.indexOf(stage);
 
     if (stage === 'network-discovery') return state.twinCreationComplete;
     if (stage === 'Digital -twin-creation') return state.twinCreationComplete;
-    return targetIndex < currentIndex;
+    return targetIndex < currentIndex && targetIndex >= 0;
   };
 
   // Theme-specific icon
@@ -101,13 +112,13 @@ export default function LeftMenu() {
 
       <div className="my-4 mx-4 border-t border-sidebar-border/50" />
 
-      {/* Stage Machine - Sequential Steps */}
+      {/* Stage Machine - Sequential Flow Steps */}
       <nav className="flex-1 px-3 overflow-y-auto">
         <p className="px-3 mb-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
           System Lifecycle
         </p>
         <ul className="space-y-1">
-          {stageItems.map((item) => {
+          {flowSteps.map((item) => {
             const isActive = item.id === state.currentStage;
             const isLocked = !canAccessStage(item.id);
             const isComplete = isStageComplete(item.id);
@@ -162,6 +173,50 @@ export default function LeftMenu() {
             );
           })}
         </ul>
+
+        {/* Separator before data layer */}
+        <div className="my-3 mx-1 border-t border-sidebar-border/30" />
+
+        <p className="px-3 mb-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          Data & Intelligence
+        </p>
+        <ul className="space-y-1">
+          {dataLayers.map((item) => {
+            const isActive = item.id === state.currentStage;
+            const Icon = item.icon;
+
+            return (
+              <li key={item.id}>
+                <button
+                  onClick={() => handleStageClick(item.id)}
+                  className={cn(
+                    'w-full flex items-start gap-3 px-3 py-3 rounded-xl transition-all duration-200',
+                    isActive && 'bg-primary/10 border border-primary/20',
+                    !isActive && 'hover:bg-sidebar-accent/50'
+                  )}
+                >
+                  <span className={cn(
+                    'w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5',
+                    isActive ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
+                  )}>
+                    <Icon className="w-4 h-4" />
+                  </span>
+                  <div className="flex-1 text-left min-w-0">
+                    <span className={cn(
+                      'text-sm block font-medium leading-tight',
+                      isActive ? 'text-primary' : 'text-sidebar-foreground'
+                    )}>
+                      {item.label}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground leading-snug block mt-1">
+                      {item.description}
+                    </span>
+                  </div>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
       </nav>
 
       <div className="my-3 mx-4 border-t border-sidebar-border/50" />
@@ -196,7 +251,7 @@ export default function LeftMenu() {
             Physical Devices: <span className="text-foreground font-mono font-medium">{state.devices.length}</span>
           </div>
           <div className="text-muted-foreground">
-            Digital  Twins: <span className="text-foreground font-mono font-medium">{state.twins.length}</span>
+            Digital Twins: <span className="text-foreground font-mono font-medium">{state.twins.length}</span>
           </div>
         </div>
         {state.alerts.filter(a => !a.resolved && a.severity === 'critical').length > 0 && (
