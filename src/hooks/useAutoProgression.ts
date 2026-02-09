@@ -6,10 +6,11 @@ import { useDashboard } from '@/context/DashboardContext';
  * 
  * After the user creates digital twins (the ONLY manual action),
  * the system automatically advances through remaining stages:
- *   Twin Creation → Synchronization → Intelligence → Cycling Attack Simulation
+ *   Twin Creation → Synchronization → AI Analysis
  * 
- * Attacks appear one at a time, linger for a few seconds, then fade.
- * The cycle repeats continuously, simulating real-time edge defense.
+ * During AI Analysis, attacks are revealed one at a time with delays.
+ * Once a device is flagged, it stays red permanently (persistent detection).
+ * Intelligence is NOT part of this flow — it's a user-accessible data layer.
  */
 export function useAutoProgression() {
   const { state, dispatch } = useDashboard();
@@ -27,42 +28,42 @@ export function useAutoProgression() {
       dispatch({ type: 'SET_STAGE', payload: 'synchronization' });
     }, 3000);
 
-    // Stage 3 → 4: Auto-advance to Intelligence (AI analysis)
-    const intelligenceTimer = setTimeout(() => {
-      dispatch({ type: 'SET_STAGE', payload: 'intelligence' });
+    // Stage 3 → 4: Auto-advance to AI Analysis
+    const aiAnalysisTimer = setTimeout(() => {
+      dispatch({ type: 'SET_STAGE', payload: 'ai-analysis' });
     }, 8000);
 
     return () => {
       clearTimeout(syncTimer);
-      clearTimeout(intelligenceTimer);
+      clearTimeout(aiAnalysisTimer);
     };
-  // dispatch from useReducer is stable and won't cause re-runs
   }, [state.twinCreationComplete, dispatch]);
 
-  // Cycling attack simulation during intelligence stage
+  // Persistent attack detection during AI Analysis stage
   useEffect(() => {
-    if (state.currentStage !== 'intelligence' || hasStartedAttacks.current) return;
+    if (state.currentStage !== 'ai-analysis' || hasStartedAttacks.current) return;
     if (state.attackPool.length === 0) return;
     hasStartedAttacks.current = true;
 
-    function runAttackCycle() {
-      // Show next attack
+    let currentIndex = 0;
+
+    function showNextAttack() {
+      if (currentIndex >= state.attackPool.length) return; // All attacks shown, stop
+
       dispatch({ type: 'SHOW_NEXT_ATTACK' });
+      currentIndex++;
 
-      // After 3-4 seconds, hide the attack
-      attackTimeoutRef.current = setTimeout(() => {
-        dispatch({ type: 'HIDE_ACTIVE_ATTACK' });
-
-        // Brief pause (1-2 seconds) then show next attack
+      // If more attacks remain, show next after a delay
+      if (currentIndex < state.attackPool.length) {
         attackTimeoutRef.current = setTimeout(() => {
-          runAttackCycle();
-        }, 1500);
-      }, 3500);
+          showNextAttack();
+        }, 3500); // 3.5s between each attack detection
+      }
     }
 
     // Start the first attack after a brief AI analysis delay
     attackTimeoutRef.current = setTimeout(() => {
-      runAttackCycle();
+      showNextAttack();
     }, 2000);
 
     return () => {

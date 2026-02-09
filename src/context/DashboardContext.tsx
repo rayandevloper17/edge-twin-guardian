@@ -27,7 +27,6 @@ type DashboardAction =
   | { type: 'TOGGLE_DEVICE_FOR_TWINNING'; payload: string }
   | { type: 'SELECT_ALL_FOR_TWINNING' }
   | { type: 'SHOW_NEXT_ATTACK' }
-  | { type: 'HIDE_ACTIVE_ATTACK' }
   | { type: 'RESET' };
 
 const initialState: DashboardState = {
@@ -119,21 +118,32 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
     }
 
     case 'SET_STAGE': {
-      const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'intelligence'];
+      const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'ai-analysis'];
+
+      // Intelligence is always accessible (it's a data layer, not a flow step)
+      if (action.payload === 'intelligence') {
+        return {
+          ...state,
+          currentStage: 'intelligence',
+          selectedDeviceId: null,
+          selectedTwinId: null,
+        };
+      }
+
       const newIndex = stageOrder.indexOf(action.payload);
 
       if (newIndex > 1 && !state.twinCreationComplete) {
         return state;
       }
 
-      // Intelligence stage: populate attack pool for cycling simulation
-      if (action.payload === 'intelligence') {
+      // AI Analysis stage: populate attack pool for persistent detection
+      if (action.payload === 'ai-analysis') {
         const pool = (state.useCase === 'military' ? militaryAttackQueue : smartCityAttackQueue)
           .filter(atk => state.twins.some(t => t.physicalDeviceId === atk.targetDeviceId));
 
         return {
           ...state,
-          currentStage: 'intelligence',
+          currentStage: 'ai-analysis',
           intelligenceActive: true,
           attackPool: pool,
           activeAttack: null,
@@ -152,16 +162,19 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
       };
     }
 
-    // Show the next attack in the cycle (devices get marked)
+    // Show the next attack — PERSISTENT: devices stay red once flagged
     case 'SHOW_NEXT_ATTACK': {
       if (state.attackPool.length === 0) return state;
 
       const nextAttack = state.attackPool[state.attackCycleIndex % state.attackPool.length];
 
+      // If we've shown all attacks, stop cycling
+      if (state.attackCycleIndex >= state.attackPool.length) return state;
+
       const newStatus: DeviceStatus =
         nextAttack.severity === 'critical' ? 'compromised' : 'suspicious';
 
-      // Mark the targeted device and its twin
+      // Mark the targeted device and its twin — PERSISTENT, no clearing
       const updatedDevices = state.devices.map(d =>
         d.id === nextAttack.targetDeviceId ? { ...d, status: newStatus } : d
       );
@@ -191,14 +204,9 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
         resolved: false,
       };
 
-      // Keep only the last 10 alerts for the log
-      const newAlerts = [...state.alerts, newAlert].slice(-10);
+      const newAlerts = [...state.alerts, newAlert];
 
-      // Add to attack history (keep recent unique entries)
-      const isInHistory = state.attackHistory.some(a => a.id === nextAttack.id);
-      const newHistory = isInHistory
-        ? state.attackHistory
-        : [...state.attackHistory, nextAttack].slice(-8);
+      const newHistory = [...state.attackHistory, nextAttack];
 
       return {
         ...state,
@@ -209,38 +217,6 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
         twins: updatedTwins,
         alerts: newAlerts,
         metrics: generateMetrics(updatedDevices, newAlerts),
-      };
-    }
-
-    // Hide the active attack (reset device to benign)
-    case 'HIDE_ACTIVE_ATTACK': {
-      if (!state.activeAttack) return state;
-
-      const clearedDevices = state.devices.map(d =>
-        d.id === state.activeAttack!.targetDeviceId ? { ...d, status: 'benign' as DeviceStatus } : d
-      );
-
-      const clearedTwins = state.twins.map(t => {
-        if (t.physicalDeviceId === state.activeAttack!.targetDeviceId) {
-          return { ...t, status: 'benign' as DeviceStatus, driftIndicator: Math.random() * 15 };
-        }
-        return t;
-      });
-
-      // Mark the corresponding alert as resolved
-      const resolvedAlerts = state.alerts.map(a =>
-        a.deviceId === state.activeAttack!.targetDeviceId && !a.resolved
-          ? { ...a, resolved: true }
-          : a
-      );
-
-      return {
-        ...state,
-        activeAttack: null,
-        devices: clearedDevices,
-        twins: clearedTwins,
-        alerts: resolvedAlerts,
-        metrics: generateMetrics(clearedDevices, resolvedAlerts),
       };
     }
 
@@ -304,7 +280,10 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const selectAllForTwinning = useCallback(() => dispatch({ type: 'SELECT_ALL_FOR_TWINNING' }), []);
 
   const canAccessStage = useCallback((stage: SystemStage): boolean => {
-    const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'intelligence'];
+    // Intelligence is always accessible — it's a data/log layer
+    if (stage === 'intelligence') return true;
+
+    const stageOrder: SystemStage[] = ['network-discovery', 'Digital -twin-creation', 'synchronization', 'ai-analysis'];
     const targetIndex = stageOrder.indexOf(stage);
     if (targetIndex <= 1) return true;
     return state.twinCreationComplete;
