@@ -397,7 +397,7 @@ export default function NetworkGraph() {
 
   // Stage-driven visibility
   const showDigitalLayer = currentStage !== 'network-discovery' && state.twinCreationComplete;
-  const showMirroringLinks = showDigitalLayer && (currentStage === 'synchronization' || currentStage === 'intelligence');
+  const showMirroringLinks = showDigitalLayer && (currentStage === 'synchronization' || currentStage === 'ai-analysis' || currentStage === 'intelligence');
 
   // Attack state
   const compromisedIds = useMemo(() => new Set(
@@ -414,9 +414,12 @@ export default function NetworkGraph() {
 
   // Get attack label for a device (from active attack)
   const getAttackLabel = (deviceId: string) => {
+    // Check active attack first, then history for persistent labels
     if (state.activeAttack?.targetDeviceId === deviceId) {
       return state.activeAttack.label;
     }
+    const historicalAttack = state.attackHistory.find(a => a.targetDeviceId === deviceId);
+    if (historicalAttack) return historicalAttack.label;
     return undefined;
   };
 
@@ -544,7 +547,7 @@ export default function NetworkGraph() {
           </div>
         </div>
       )}
-      {currentStage === 'intelligence' && !state.activeAttack && state.attackHistory.length === 0 && (
+      {currentStage === 'ai-analysis' && state.attackHistory.length === 0 && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
           <div className="bg-card/90 backdrop-blur-sm border border-primary/30 rounded-xl px-5 py-3 flex items-center gap-3">
             <Brain className="w-4 h-4 text-primary animate-pulse" />
@@ -552,21 +555,23 @@ export default function NetworkGraph() {
           </div>
         </div>
       )}
-      {currentStage === 'intelligence' && state.activeAttack && (
+      {currentStage === 'ai-analysis' && state.activeAttack && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
           <div className="bg-destructive/90 backdrop-blur-sm border border-destructive rounded-xl px-5 py-3 flex items-center gap-3 animate-fade-in">
             <AlertTriangle className="w-4 h-4 text-white" />
             <span className="text-sm font-medium text-white">
-              Threat detected: {state.activeAttack.label}
+              Potential Attack Detected: {state.activeAttack.label}
             </span>
           </div>
         </div>
       )}
-      {currentStage === 'intelligence' && !state.activeAttack && state.attackHistory.length > 0 && (
+      {currentStage === 'ai-analysis' && !state.activeAttack && state.attackHistory.length > 0 && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
-          <div className="bg-card/90 backdrop-blur-sm border border-primary/30 rounded-xl px-5 py-3 flex items-center gap-3">
-            <Brain className="w-4 h-4 text-primary animate-pulse" />
-            <span className="text-sm font-medium text-primary">Monitoring network traffic...</span>
+          <div className="bg-destructive/80 backdrop-blur-sm border border-destructive/50 rounded-xl px-5 py-3 flex items-center gap-3">
+            <AlertTriangle className="w-4 h-4 text-white" />
+            <span className="text-sm font-medium text-white">
+              {state.attackHistory.length} Threat{state.attackHistory.length > 1 ? 's' : ''} Detected — Persistent Alert
+            </span>
           </div>
         </div>
       )}
@@ -678,7 +683,7 @@ export default function NetworkGraph() {
               { id: 'network-discovery', label: 'Discovery' },
               { id: 'Digital -twin-creation', label: 'Twin Creation' },
               { id: 'synchronization', label: 'Synchronization' },
-              { id: 'intelligence', label: 'Intelligence' },
+              { id: 'ai-analysis', label: 'AI Analysis' },
             ].map((stage, index, arr) => (
               <div key={stage.id} className="flex items-center gap-3 flex-1">
                 <div className="flex items-center gap-2 flex-1">
