@@ -494,7 +494,7 @@ export default function NetworkGraph() {
     }).filter(Boolean);
   }, [twins, devices, showMirroringLinks, compromisedIds]);
 
-  const viewBoxHeight = showDigitalLayer ? 520 : 260;
+  const viewBoxHeight = showDigitalLayer ? 560 : 280;
 
   // Handle device click based on mode
   const handleDeviceClick = (deviceId: string) => {
@@ -582,7 +582,7 @@ export default function NetworkGraph() {
           <svg className="w-full h-full" viewBox={`0 0 800 ${viewBoxHeight}`} preserveAspectRatio="xMidYMid meet">
             {/* Scanning overlay */}
             {isScanning && (
-              <ScanningOverlay centerX={400} centerY={100} progress={scanProgress} />
+              <ScanningOverlay centerX={400} centerY={120} progress={scanProgress} />
             )}
 
             {/* ===== PHYSICAL NETWORK LAYER (TOP) ===== */}
