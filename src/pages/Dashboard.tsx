@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDashboard } from '@/context/DashboardContext';
 import { useAutoProgression } from '@/hooks/useAutoProgression';
@@ -6,10 +6,12 @@ import { useNetworkScanning } from '@/hooks/useNetworkScanning';
 import LeftMenu from '@/components/dashboard/LeftMenu';
 import NetworkGraph from '@/components/dashboard/NetworkGraph';
 import DetailsPanel from '@/components/dashboard/DetailsPanel';
+import IntelligenceDialog from '@/components/dashboard/IntelligenceDialog';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { state } = useDashboard();
+  const [intelligenceOpen, setIntelligenceOpen] = useState(false);
 
   // Network scanning: reveals devices sequentially
   useNetworkScanning();
@@ -44,9 +46,10 @@ export default function Dashboard() {
 
   return (
     <div className="h-screen flex overflow-hidden bg-background">
-      <LeftMenu />
+      <LeftMenu onOpenIntelligence={() => setIntelligenceOpen(true)} />
       <NetworkGraph />
       <DetailsPanel />
+      <IntelligenceDialog open={intelligenceOpen} onOpenChange={setIntelligenceOpen} />
     </div>
   );
 }

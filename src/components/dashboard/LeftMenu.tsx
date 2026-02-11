@@ -48,12 +48,16 @@ const stageItems: StageMenuItem[] = [
   },
 ];
 
-export default function LeftMenu() {
+export default function LeftMenu({ onOpenIntelligence }: { onOpenIntelligence?: () => void }) {
   const navigate = useNavigate();
   const { state, setStage, canAccessStage } = useDashboard();
   const theme = getTheme(state.useCase);
 
   const handleStageClick = (stage: SystemStage) => {
+    if (stage === 'intelligence' && onOpenIntelligence) {
+      onOpenIntelligence();
+      return;
+    }
     if (canAccessStage(stage)) {
       setStage(stage);
     }
